@@ -1,0 +1,32 @@
+<table class="table table-bordered tb-detail wf-act-history">
+  <tr>
+    <th class="w-mid">NO.</th>
+    <td class="process-no">
+      {{ process_instance.no }}
+    </td>
+    <th class="w-mid">Created by</th>
+    <td>{{ process_instance.created_by }}</td>
+  </tr>
+  <tr>
+    <th>Created on</th>
+    <td>{{ process_instance.created_on|date:"Y-m-d H:i" }}</td>
+    <th>Current node</th>
+    <td>
+      {{ process_instance.cur_node.name }}
+      {% if task.is_hold %}
+        (hold)
+      {% endif %}
+    </td>
+  </tr>
+  <tr>
+    <th>Process name</th>
+    <td>{{ process.name }}</td>
+    <th>Current operator</th>
+    <td>
+      {{ operators_display }}
+      {% if not process_instance.has_received %}
+          [unreceived]
+      {% endif %}
+    </td>
+  </tr>
+</table>

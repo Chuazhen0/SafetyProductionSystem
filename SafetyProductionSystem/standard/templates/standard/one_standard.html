@@ -1,0 +1,134 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">指标定义</span>
+        <small>编辑</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>指标管理</span></li>
+        <li class="active">指标定义</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_edit %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/standard/standard/?action=list&menuid=19"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="document.getElementById('myform').submit();" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block content %}
+<form action="/standard/{{data.id}}/standard_edit/?action=edit" class="form-horizontal"
+      method="post" enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+    <div class="box-body">
+        {% csrf_token %}
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">监督类型</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="Supervision_type" id="Supervision_type">
+                    {% for nid in supervise_list %}
+                    {% if nid.id == data.Supervision_type.id %}
+                    <option selected="selected" value="{{data.Supervision_type.id}}">
+                        {{data.Supervision_type.supervision_major}}
+                    </option>
+                    {% else %}
+                    <option value="{{nid.id}}">
+                        {{nid.supervision_major}}
+                    </option>
+                    {% endif %}
+                    {% empty %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">编&nbsp;号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="number" name="number" value="{{data.number}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">定义描述</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="describe" name="describe" value="{{data.describe}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label"><span class="bt">*</span>填报周期</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="cycle" name="cycle" value="{{data.cycle}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">状态</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="state" name="state" value="{{data.state}}"
+                >
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+  $(function(){
+  $("#jump").click(function(){
+  var second = 3;
+   //获取显示秒数的元素，通过定时器来更改秒数。
+   var message = document.getElementById("countTime");
+    function clock()
+    {
+        if(second==0)
+        {
+            goTo();
+        }
+        else
+        {
+            document.getElementById('yes').setAttribute('style', 'display: block');
+            message.innerHTML = second-- + "秒后回到详情页";
+            window.setTimeout(clock,1000);
+        }
+    }
+    clock();
+   //通过window的location和history对象来控制网页的跳转。
+   function goTo()
+   {
+       window.location.href = "http://localhost:8000/standard/mon_plan_sum/?action=list";
+   }
+   function goBack()
+   {
+    //   window.history.Back();
+        window.location.href = "http://localhost:8000/standard/mon_plan_sum/?action=list";
+   }
+  })
+  })
+
+function checked() {
+            var date1 = $("#cycle").val();
+            if(date1==''){
+             alert('您还未填写周期');
+                return false;
+
+            }else{
+                return true;
+
+
+            }
+            console.log(checked());
+	}
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

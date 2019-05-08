@@ -1,0 +1,436 @@
+{% extends 'my_base.html' %}
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">报表管理</span>
+    <small>指标填报</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span>技术监督</span></li>
+    <li><span>报表管理</span></li>
+    <li class="active">指标填报</li>
+</ol>
+{% endblock %}
+{% block list_new %}
+<!--<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/myform/show_all_form/?action=list&menuid=16"-->
+<!--data-toggle="tooltip" data-placement="top"></a>-->
+{% endblock %}
+{% block save %}
+
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh"
+   title="刷新"></a>
+{% endblock %}
+{% block content %}
+{% load pagetag %}
+<body>
+<div class="col-md-12">
+    <!-- Custom Tabs -->
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="true" id="tab_first">查看月汇总表</a></li>
+            <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">查看季度汇总表</a></li>
+            <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">查看半年度汇总表</a></li>
+            <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">查看年度汇总表</a></li>
+            <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane" id="tab_1">
+                <div class="box-body">
+					<div class="row">
+						<div class="state_box" style="width: 80%;">
+							<span style="font-size:16px">年份</span>&nbsp;&nbsp;&nbsp;&nbsp;
+							<select id="particular_year" name="particular_year">
+								<option value="2018">2018</option>
+								<option value="2019">2019</option>
+								<option value="2020">2020</option>
+								<option value="2021">2021</option>
+								<option value="2022">2022</option>
+							</select>&nbsp;&nbsp;&nbsp;&nbsp;
+							<span style="font-size:16px">月份</span>&nbsp;&nbsp;&nbsp;&nbsp;
+							<select id="particular_month" name="particular_month">
+								<option value="01月">01月</option>
+								<option value="02月">02月</option>
+								<option value="03月">03月</option>
+								<option value="04月">04月</option>
+								<option value="05月">05月</option>
+								<option value="06月">06月</option>
+								<option value="07月">07月</option>
+								<option value="08月">08月</option>
+								<option value="09月">09月</option>
+								<option value="10月">10月</option>
+								<option value="11月">11月</option>
+								<option value="12月">12月</option>
+							</select>&nbsp;&nbsp;&nbsp;&nbsp;
+							&nbsp;
+							<a class="btn btn-primary" id="linkToCart" href="" title="查看详情"
+                                       data-toggle="tooltip" data-placement="top">查询</a>
+                        </div>
+					</div>
+					<!--
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-4 control-label">年份</label>
+                                <div class="col-md-6">
+                                    <select id="particular_year" name="particular_year">
+                                        <option value="2018">2018</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-2 control-label">月份</label>
+                                <div class="col-md-6">
+                                    <select id="particular_month" name="particular_month">
+                                        <option value="01月">01月</option>
+                                        <option value="02月">02月</option>
+                                        <option value="03月">03月</option>
+                                        <option value="04月">04月</option>
+                                        <option value="05月">05月</option>
+                                        <option value="06月">06月</option>
+                                        <option value="07月">07月</option>
+                                        <option value="08月">08月</option>
+                                        <option value="09月">09月</option>
+                                        <option value="10月">10月</option>
+                                        <option value="11月">11月</option>
+                                        <option value="12月">12月</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-2 control-label">操作</label>
+                                <div class="col-md-8">
+                                    <a id="linkToCart" href="" title="查看详情"
+                                       data-toggle="tooltip" data-placement="top"><span
+                                            class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+                <!--<div class="form-group" style="margin-left:-12px">-->
+                    <!--<label class="col-md-2 control-label">操作</label>-->
+                    <!--<div class="col-md-8">-->
+                        <!--<a id="linkToCart" href="" title="查看详情"-->
+                           <!--data-toggle="tooltip" data-placement="top"><span-->
+                                <!--class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_2">
+                <div class="box-body">
+					<div class="row">
+						<div class="state_box" style="width: 80%;">
+							<span style="font-size:16px">年份</span>&nbsp;&nbsp;&nbsp;&nbsp;
+							<select id="particular_year2" name="particular_year2">
+								<option value="2018">2018</option>
+								<option value="2019">2019</option>
+								<option value="2020">2020</option>
+								<option value="2021">2021</option>
+								<option value="2022">2022</option>
+							</select>&nbsp;&nbsp;&nbsp;&nbsp;
+							<span style="font-size:16px">季度</span>&nbsp;&nbsp;&nbsp;&nbsp;
+							<select id="quarter_data" name="quarter_data">
+								<option value="1季度">1季度</option>
+								<option value="2季度">2季度</option>
+								<option value="3季度">3季度</option>
+								<option value="4季度">4季度</option>
+							</select>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<a class="btn btn-primary" id="linkToCart2" href="" title="查看详情"
+                                       data-toggle="tooltip" data-placement="top">查询</a>
+
+                        </div>
+					</div>
+					<!--
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-4 control-label">年份</label>
+                                <div class="col-md-6">
+                                    <select id="particular_year2" name="particular_year2">
+                                        <option value="2018">2018</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-2 control-label">季度</label>
+                                <div class="col-md-6">
+                                    <select id="quarter_data" name="quarter_data">
+                                        <option value="1季度">1季度</option>
+                                        <option value="2季度">2季度</option>
+                                        <option value="3季度">3季度</option>
+                                        <option value="4季度">4季度</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-2 control-label">操作</label>
+                                <div class="col-md-8">
+                                    <a id="linkToCart2" href="" title="查看详情"
+                                       data-toggle="tooltip" data-placement="top"><span
+                                            class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+
+            </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_3">
+                <div class="box-body">
+					<div class="row">
+						<div class="state_box" style="width: 80%;">
+							<span style="font-size:16px">年份</span>&nbsp;&nbsp;&nbsp;&nbsp;
+							<select id="particular_year3" name="particular_year2">
+								<option value="2018">2018</option>
+								<option value="2019">2019</option>
+								<option value="2020">2020</option>
+								<option value="2021">2021</option>
+								<option value="2022">2022</option>
+							</select>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<span style="font-size:16px">季度</span>&nbsp;&nbsp;&nbsp;&nbsp;
+							<select id="quarter_data2" name="quarter_data">
+								<option value="上半年">上半年</option>
+								<option value="下半年">下半年</option>
+							</select>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<a class="btn btn-primary" id="linkToCart3" href="" title="查看详情"
+                                       data-toggle="tooltip" data-placement="top">查询</a>
+
+
+                        </div>
+					</div>
+
+					<!--
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-4 control-label">年份</label>
+                                <div class="col-md-6">
+                                    <select id="particular_year3" name="particular_year2">
+                                        <option value="2018">2018</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-2 control-label">季度</label>
+                                <div class="col-md-6">
+                                    <select id="quarter_data2" name="quarter_data">
+                                        <option value="上半年">上半年</option>
+                                        <option value="下半年">下半年</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-2 control-label">操作</label>
+                                <div class="col-md-8">
+                                    <a id="linkToCart3" href="" title="查看详情"
+                                       data-toggle="tooltip" data-placement="top"><span
+                                            class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="tab_4">
+                <div class="box-body">
+					<div class="row">
+						<div class="state_box" style="width: 80%;">
+							<span style="font-size:16px">年份</span>&nbsp;&nbsp;&nbsp;&nbsp;
+							<select id="particular_year4" name="particular_year2">
+								<option value="2018">2018</option>
+								<option value="2019">2019</option>
+								<option value="2020">2020</option>
+								<option value="2021">2021</option>
+								<option value="2022">2022</option>
+							</select>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<span style="font-size:16px">全年</span>&nbsp;&nbsp;&nbsp;&nbsp;
+							<select id="quarter_data3" name="quarter_data">
+								<option value="全年">全年</option>
+							</select>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<a class="btn btn-primary" id="linkToCart4" href="" title="查看详情"
+                                       data-toggle="tooltip" data-placement="top">查询</a>
+
+                        </div>
+					</div>
+
+					<!--
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-4 control-label">年份</label>
+                                <div class="col-md-6">
+                                    <select id="particular_year4" name="particular_year2">
+                                        <option value="2018">2018</option>
+                                        <option value="2018">2019</option>
+                                        <option value="2018">2020</option>
+                                        <option value="2018">2021</option>
+                                        <option value="2018">2022</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-2 control-label">全年</label>
+                                <div class="col-md-6">
+                                    <select id="quarter_data3" name="quarter_data">
+                                        <option value="1">全年</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-left:-12px">
+                                <label class="col-md-2 control-label">操作</label>
+                                <div class="col-md-8">
+                                    <a id="linkToCart4" href="" title="查看详情"
+                                       data-toggle="tooltip" data-placement="top"><span
+                                            class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+
+            </div>
+            <!-- /.tab-pane -->
+        </div>
+        <!-- /.tab-content -->
+    </div>
+    <!-- nav-tabs-custom -->
+</div>
+{% endblock %}
+{% block javascript %}
+</body>
+<script type="text/javascript">
+    document.getElementById('tab_first').click();
+
+    var sb = document.getElementById('sb');
+
+
+    function go() {
+
+        var demo = $("#report_iframe1").contents().find(".vrSubmitReport").click();
+        //console.log(demo)
+    }
+
+    //
+    // function xxx(patternID , resID){
+    //     $.ajax({
+    //         type: 'GET',
+    //         url:"http://192.168.104.228:8800/reportmis/gezEntry.url?patternID="+patternID+"&resID="+resID+"",
+    //         success: function( result ) {
+    //         console.log(result)
+    //         }
+    //     });
+    // }
+    // 搜索框，点击放大镜后触发函数
+    function prom() {
+        // 将搜索框和内容清空
+        $("#myform").val('');
+        $("#list").find("td").remove();
+        $('#myModal').modal('show');
+        $('#myModal').on('hide.bs.modal', function () {
+            //$("#myform")[0].reset();
+            $(this).find("shujuzhanshi").remove();
+        });
+    };
+
+    // 点击隐藏
+    function closed() {
+        $('#myModal').hide();
+    };
+    // 点击搜索触发函数，获取输入的值
+    // 按钮悬浮效果
+    $("[data-toggle='tooltip']").tooltip();
+
+    // function submited() {
+    //
+    // 月度报表
+    $(document).ready(function () {
+        //点击链接的时候调用
+        $("#linkToCart").click(function () {
+
+            //得到input的值
+            var years = $("#particular_year").val();
+            var month = $("#particular_month").val();
+
+            //设置linkToCart的href的值
+            $("#linkToCart").attr("href", "/myform/one_remittance_show/?years=" + years + "&month=" + month);
+        });
+    });
+    //   季度报表
+    $(document).ready(function () {
+        //点击链接的时候调用
+        $("#linkToCart2").click(function () {
+
+            //得到input的值
+            var years = $("#particular_year2").val();
+            var quarter = $("#quarter_data").val();
+
+            //设置linkToCart的href的值
+            $("#linkToCart2").attr("href", "/myform/one_remittance_show/?years=" + years + "&month=" + quarter);
+        });
+    });
+    //   半年度报表
+    $(document).ready(function () {
+        //点击链接的时候调用
+        $("#linkToCart3").click(function () {
+
+            //得到input的值
+            var years = $("#particular_year3").val();
+            var quarter = $("#quarter_data2").val();
+
+            //设置linkToCart的href的值
+            $("#linkToCart3").attr("href", "/myform/one_remittance_show/?years=" + years + "&month=" + quarter);
+        });
+    });
+    //   年度报表
+    $(document).ready(function () {
+        //点击链接的时候调用
+        $("#linkToCart4").click(function () {
+
+            //得到input的值
+            var years = $("#particular_year4").val();
+            var quarter = $("#quarter_data3").val();
+
+            //设置linkToCart的href的值
+            $("#linkToCart4").attr("href", "/myform/one_remittance_show/?years=" + years + "&month=" + quarter);
+        });
+    });
+</script>
+{% endblock %}

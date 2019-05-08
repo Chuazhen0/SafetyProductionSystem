@@ -1,0 +1,411 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">定期工作策划</span>
+    <small>详情</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span>技术监督</span></li>
+    <li><span>定期工作管理</span></li>
+    <li class="active">定期工作策划</li>
+</ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_detail %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/regularworkplan/list/?action=list&menuid=48"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block modify %}
+<a href="/regularworkplan/{{regularworkplan.id}}/edit/?action=edit&menuid=48" data-toggle="tooltip"
+   data-placement="top" class="btn btn-primary glyphicon glyphicon-edit "
+   title="编辑定期工作"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"
+   data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/regularworkplan/{{regularworkplan.id}}/delete/?action=del&menuid=48';}"
+   title="删除定期工作" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block content %}
+{% block right_side %}
+<section class="content-header">
+    {% include "incs/messages.html" %}
+    {% block right_side_header %}
+    <div class="right-btns">
+        {% include "lbworkflow/inc_wf_btns.html" %}
+        {% block flow_help %}
+        {% endblock %}
+
+        {% block right_side_header_ext_btns %}
+        {% if processinstance %}
+        <a class="" target="_blank" href="{% url 'wf_print_detail' processinstance.pk %}">打印</a>
+        {% endif %}
+        <span>|</span>
+        {% endblock %}
+    </div>
+    {% endblock %}
+</section>
+<section class="content">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs" role="tablist" id="id-m-nav-tabs">
+            <li class="active">
+                <a href="#id-tb-base" role="tab" data-toggle="tab">基础信息</a>
+            </li>
+            <!--<li class="active">-->
+            <!--<a href="#id-tb-base1" role="tab" data-toggle="tab">工作准备</a>-->
+            <!--</li>-->
+            <!--<li class="active">-->
+            <!--<a href="#id-tb-base2" role="tab" data-toggle="tab">注意事项</a>-->
+            <!--</li>-->
+            {% block right_side_tab_nav_ext %}
+            {% endblock %}
+
+        </ul>
+        <div class="tab-content">
+            {% block right_side_tab_ctx_ext %}
+            <div class="tab-pane active" id="id-tb-base">
+                <table class="table table-bordered tb-detail no-margin ">
+                    <tr>
+                        <th>公司名称</th>
+                        <td>{{ regularworkplan.place }}</td>
+                        <th>定期工作编码</th>
+                        <td>{{ regularworkplan.number }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>KKS编码</th>
+                        <td>{{ regularworkplan.KKS_code }}</td>
+                        <th>KKS编码名称</th>
+                        <td>{{ regularworkplan.KKS_codename }}</td>
+                    </tr>
+
+
+                    <tr>
+                        <th>责任人</th>
+                        <td>{{ regularworkplan.exe_user }}</td>
+                        <th>责任组</th>
+                        <td>{{ regularworkplan.exe_group }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>设备专业</th>
+                        <td>{{ regularworkplan.equipment_major }}</td>
+                        <th>监督专业</th>
+                        <td>{{ regularworkplan.supervision_major }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>性质</th>
+                        <td>{{ regularworkplan.nature }}</td>
+                        <th>定期工作类型</th>
+                        <td>{{ regularworkplan.type }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>标准分值</th>
+                        <td>{{ regularworkplan.score }}</td>
+                        <th>工作项目</th>
+                        <td>{{ regularworkplan.work_content }}</td>
+                    </tr>
+
+                    <tr>
+                <th>周期描述</th>
+                {% if regularworkplan.weekend_desc == '一次性工作计划' %}
+                <td>{{ regularworkplan.weekend_desc }}</td>
+                {% elif regularworkplan.weekend_desc == '小时'  %}
+                <td>按{{ regularworkplan.weekend_desc }},每{{regularworkplan.num1}}个小时,每小时{{regularworkplan.num2}}分</td>
+                {% elif regularworkplan.weekend_desc == '天'  %}
+                <td>按{{ regularworkplan.weekend_desc }},每{{regularworkplan.num1}}天,天{{regularworkplan.num2}}时</td>
+                {% elif regularworkplan.weekend_desc == '周'  %}
+                <td>按{{ regularworkplan.weekend_desc }},每{{regularworkplan.num1}}周,每周{{regularworkplan.num2}}</td>
+                {% elif regularworkplan.weekend_desc == '月'  %}
+                <td>按{{ regularworkplan.weekend_desc }},每{{regularworkplan.num1}}个月,每月{{regularworkplan.num2}}日</td>
+                {% else %}
+                <td>按{{ regularworkplan.weekend_desc }},每{{regularworkplan.num1}}年,每年{{regularworkplan.num2}}月</td>
+                {% endif %}
+                <th>提前提醒时间</th>
+                <td>{{ regularworkplan.warinig_time }}</td>
+              </tr>
+
+                    <tr>
+                        <th>状态</th>
+                        <td>{{ regularworkplan.state }}</td>
+                        <th>超期一级预警</th>
+                        <td>{{ regularworkplan.overdue_1 }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>超期二级预警</th>
+                        <td>{{ regularworkplan.overdue_2 }}</td>
+                        <th>超期三级预警</th>
+                        <td>{{ regularworkplan.overdue_3 }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>业务来源</th>
+                        <td>{{ regularworkplan.resource }}</td>
+                        <th>开始时间</th>
+                        <td>{{ regularworkplan.start_time }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>结束时间</th>
+                        <td>{{ regularworkplan.end_time }}</td>
+                        <th>是否激活</th>
+                        <td>{{ regularworkplan.is_activate }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>标准编码</th>
+                        <td>{{ regularworkplan.stard }}</td>
+                        <th>标准号</th>
+                        <td>{{ regularworkplan.stard_smallnumber }}</td>
+                    </tr>
+                    <tr>
+                        <th>计划创建时间</th>
+                        <td>{{ regularworkplan.create_time }}</td>
+                         <th>计划最后修改时间</th>
+                        <td>{{ regularworkplan.last_edit_time }}</td>
+                    </tr>
+
+                    {% comment %}
+                    <tr>
+                        <th>Reason</th>
+                        <td colspan="3">
+                            {{ regularworkplan.reason|linebreaks }}
+                        </td>
+                    </tr>
+                    {% endcomment %}
+                </table>
+            </div>
+
+            {% endblock %}
+        </div>
+
+    </div>
+    {% block wf_detail_ext %}
+    {% with btn_css="1" %}
+    <div class="bottom-btns">
+        {% with is_btn="1" %}
+        {% include "lbworkflow/inc_wf_btns.html" %}
+        {% endwith %}
+    </div>
+    {% endwith %}
+    {% endblock %}
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">工作准备</a></li>
+            <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">注意事项</a></li>
+            <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">工作内容</a></li>
+            <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">工作数据</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="first">序号</th>
+                        <th class="fourth">创建时间</th>
+                        <th class="fourth">创建人</th>
+                        <th class="fourth">更新时间</th>
+                        <th class="fourth">更新人</th>
+                        {% if user.is_superuser == 1 %}
+                        <th class="fourth">
+                            <a href="/regularworkplan/ready_add/{{pid}}/?action=new&menuid=52" class="btn btn-primary glyphicon glyphicon-plus"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="添加工作准备"></a>
+                        </th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    {% for ready_form in work_ready %}
+                    <tr>
+                        <!--<td class="first ">{{ready_form.number}}</td>-->
+                        <td class="first ">{{forloop.counter}}</td>
+                        <td class="fourth">{{ready_form.created_at}}</td>
+                        <td class="fourth">{{ready_form.created_by.name}}</td>
+                        <td class="fourth">{{ready_form.last_updated_at}}</td>
+                        <td class="fourth">{{ready_form.last_updated_by.name}}</td>
+
+                        <td>
+                            <a href="/regularworkplan/ready_detail/{{pid}}/{{ready_form.id}}/?action=detail&menuid=52"
+                               title="查看工作准备" data-toggle="tooltip" data-placement="top"><span
+                                    class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>
+                            <!--<a href="/regularworkplan/{{regular_work_plan.id}}/edit/?action=edit&menuid=48"-->
+                            <!--title="编辑定期工作策划" data-toggle="tooltip" data-placement="top"><span-->
+                            <!--class="glyphicon glyphicon-edit"></span></a>-->
+                            <a href="javascript:;"
+                               onclick="if(confirm('您确定删除这条记录？')){location.href='/regularworkplan/ready_delete/{{pid}}/{{ready_form.id}}/?action=delete&menuid=52';}"
+                               title="删除准备工作" data-toggle="tooltip" data-placement="top"><span
+                                    class="btn btn-default glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">暂无</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_2">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="first">序号</th>
+                        <th class="fourth">创建时间</th>
+                        <th class="fourth">创l建人</th>
+                        <th class="fourth">更新时间</th>
+                        <th class="fourth">更新人</th>
+                        {% if user.is_superuser == 1 %}
+                        <th class="fourth">
+                            <a href="/regularworkplan/matter_add/{{pid}}/?action=new&menuid=53" class="btn btn-primary glyphicon glyphicon-plus"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="添加注意事项"></a>
+                        </th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    {% for work_matter in work_matters %}
+                    <tr>
+                        <td class="first ">{{forloop.counter}}</td>
+                        <!--<td class="first ">{{work_matter.number}}</td>-->
+                        <td class="fourth">{{work_matter.created_at}}</td>
+                        <td class="fourth">{{work_matter.created_by.name}}</td>
+                        <td class="fourth">{{work_matter.last_updated_at}}</td>
+                        <td class="fourth">{{work_matter.last_updated_by.name}}</td>
+
+                        <td>
+                            <a href="/regularworkplan/matter_detail/{{pid}}/{{work_matter.id}}/?action=detail&menuid=53"
+                               title="查看注意事项" data-toggle="tooltip" data-placement="top"><span
+                                    class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>
+                            <!--<a href="/regularworkplan/{{regular_work_plan.id}}/edit/?action=edit&menuid=48"-->
+                            <!--title="编辑定期工作策划" data-toggle="tooltip" data-placement="top"><span-->
+                            <!--class="glyphicon glyphicon-edit"></span></a>-->
+                            <a href="javascript:;"
+                               onclick="if(confirm('您确定删除这条记录？')){location.href='/regularworkplan/matter_delete/{{pid}}/{{work_matter.id}}/?action=delete&menuid=53';}"
+                               title="删除注意事项" data-toggle="tooltip" data-placement="top"><span
+                                    class="btn btn-default glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">暂无</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_3">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="first">序号</th>
+                        <th class="fourth">创建时间</th>
+                        <th class="fourth">创建人</th>
+                        <th class="fourth">更新时间</th>
+                        <th class="fourth">更新人</th>
+                        {% if user.is_superuser == 1 %}
+                        <th class="fourth">
+                            <a href="/regularworkplan/work_content_add/{{pid}}/?action=new&menuid=54" class="btn btn-primary glyphicon glyphicon-plus"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="添加工作内容"></a>
+                        </th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    {% for work_content in work_contents %}
+                    <tr>
+                        <td class="first ">{{forloop.counter}}</td>
+                        <!--<td class="first ">{{work_content.number}}</td>-->
+                        <td class="fourth">{{work_content.created_at}}</td>
+                        <td class="fourth">{{work_content.created_by.name}}</td>
+                        <td class="fourth">{{work_content.last_updated_at}}</td>
+                        <td class="fourth">{{work_content.last_updated_by.name}}</td>
+
+                        <td>
+                            <a href="/regularworkplan/work_content_detail/{{pid}}/{{work_content.id}}/?action=detail&menuid=54"
+                               title="查看工作内容" data-toggle="tooltip" data-placement="top"><span
+                                    class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>
+                            <!--<a href="/regularworkplan/{{regular_work_plan.id}}/edit/?action=edit&menuid=48"-->
+                            <!--title="编辑定期工作策划" data-toggle="tooltip" data-placement="top"><span-->
+                            <!--class="glyphicon glyphicon-edit"></span></a>-->
+                            <a href="javascript:;"
+                               onclick="if(confirm('您确定删除这条记录？')){location.href='/regularworkplan/work_content_delete/{{pid}}/{{work_content.id}}/?action=delete&menuid=54';}"
+                               title="删除工作内容" data-toggle="tooltip" data-placement="top"><span
+                                    class="btn btn-default glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">暂无</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="tab-pane" id="tab_4">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="first">序号</th>
+                        <th class="fourth">数据名称</th>
+                        <th class="fourth">数据标准值</th>
+                        {% if user.is_superuser == 1 %}
+                        <th class="fourth">
+                            <a href="/regularworkplan/work_data_add/{{pid}}/?action=new&menuid=55" class="btn btn-primary glyphicon glyphicon-plus"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="添加工作数据"></a>
+                        </th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    {% for work_data in work_datas %}
+                    <tr>
+                        <td class="first ">{{forloop.counter}}</td>
+                        <!--<td class="first ">{{work_data.number}}</td>-->
+                        <td class="fourth">{{work_data.data_name}}</td>
+                        <td class="fourth">{{work_data.data_value}}</td>
+
+                        <td>
+                            <a href="/regularworkplan/work_data_detail/{{pid}}/{{work_data.id}}/?action=detail&menuid=55"
+                               title="查看工作数据" data-toggle="tooltip" data-placement="top"><span
+                                    class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>
+                            <!--<a href="/regularworkplan/{{regular_work_plan.id}}/edit/?action=edit&menuid=48"-->
+                            <!--title="编辑定期工作策划" data-toggle="tooltip" data-placement="top"><span-->
+                            <!--class="glyphicon glyphicon-edit"></span></a>-->
+                            <a href="javascript:;"
+                               onclick="if(confirm('您确定删除这条记录？')){location.href='/regularworkplan/work_data_delete/{{pid}}/{{work_data.id}}/?action=delete&menuid=52';}"
+                               title="删除工作数据" data-toggle="tooltip" data-placement="top"><span
+                                    class="btn btn-default glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">暂无</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <!-- /.tab-pane -->
+        </div>
+        <!-- /.tab-content -->
+    </div>
+</section>
+{% endblock %}
+
+{% endblock %}
+
+

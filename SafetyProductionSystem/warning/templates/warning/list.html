@@ -1,0 +1,129 @@
+{% extends "base_ext.html" %}
+
+{% load crispy_forms_tags %}
+{% load el_pagination_tags %}
+{% load lbworkflow_tags %}
+
+{% block nav_sel_node %}id-nav-warning{% endblock %}
+
+{% block right_side %}
+  <section class="content-header">
+    {% include "incs/messages.html" %}
+    <div class="right-btns">
+    </div>
+    <h1>
+      告警通知单
+    </h1>
+  </section>
+  <section class="content">
+    <div class="box">
+      {% if search_form %}
+      <div class="box-header">
+        <div class="input-group show-label-form">
+          {% crispy search_form %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <tbody>
+            <tr>
+              <th>NO.</th>
+              <th>Created by</th>
+              
+              <th>公司名称</th>
+              
+              <th>状态</th>
+              
+              <th>告警通知单编码</th>
+              
+              <th>来源</th>
+              
+              <th>附件</th>
+              
+              <th>告警通知单名称</th>
+              
+              <th>监督类型</th>
+              
+              <th>关联设备</th>
+              
+              <th>关联问题</th>
+              
+              <th>责任人</th>
+              
+              <th>异常情况</th>
+              
+              <th>可能或已经造成的后果</th>
+              
+              <th>整改建议</th>
+              
+              <th>整改时间要求</th>
+              
+              <th>是否激活</th>
+              
+              <th>最后更新时间</th>
+              
+              <th>工单类型</th>
+              
+              <th>Created on</th>
+              <th>Current operator</th>
+              <th>Activity</th>
+            </tr>
+            {% paginate object_list %}
+            {% for o in object_list %}{% with pi=o.pinstance %}
+              <tr>
+                <td><a href="{% url 'wf_detail' pi.pk %}">{{ pi.no }}</a></td>
+                <td>{{ pi.created_by }}</td>
+                
+                <td>{{ o.place }}</td>
+                
+                <td>{{ o.state }}</td>
+                
+                <td>{{ o.number }}</td>
+                
+                <td>{{ o.resource }}</td>
+                
+                <td>{{ o.enclosure }}</td>
+                
+                <td>{{ o.title }}</td>
+                
+                <td>{{ o.supervise_major }}</td>
+                
+                <td>{{ o.equipment }}</td>
+                
+                <td>{{ o.problem }}</td>
+                
+                <td>{{ o.exetuct_user }}</td>
+                
+                <td>{{ o.abnormal }}</td>
+                
+                <td>{{ o.result }}</td>
+                
+                <td>{{ o.suggest }}</td>
+                
+                <td>{{ o.time_require }}</td>
+                
+                <td>{{ o.is_activate }}</td>
+                
+                <td>{{ o.last_updated_at }}</td>
+                
+                <td>{{ o.work_type }}</td>
+                
+                <td>{{ pi.created_on|date:"Y-m-d H:i" }}</td>
+                <td>{{ pi.get_operators_display }}</td>
+                <td>
+                  <span class="label label-{{ pi|flow_status_css_class }}">
+                    {{ pi.cur_activity.name }}
+                  </span>
+                </td>
+              </tr>
+            {% endwith %}{% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="box-footer clearfix">
+        {% show_pages %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

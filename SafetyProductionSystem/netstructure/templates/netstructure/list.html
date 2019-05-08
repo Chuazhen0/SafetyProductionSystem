@@ -1,0 +1,110 @@
+{% extends "base_ext.html" %}
+
+{% load crispy_forms_tags %}
+{% load el_pagination_tags %}
+{% load lbworkflow_tags %}
+
+{% block nav_sel_node %}id-nav-netstructure{% endblock %}
+
+{% block right_side %}
+  <section class="content-header">
+    {% include "incs/messages.html" %}
+    <div class="right-btns">
+    </div>
+    <h1>
+      网络结构信息
+    </h1>
+  </section>
+  <section class="content">
+    <div class="box">
+      {% if search_form %}
+      <div class="box-header">
+        <div class="input-group show-label-form">
+          {% crispy search_form %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <tbody>
+            <tr>
+              <th>NO.</th>
+              <th>Created by</th>
+              
+              <th>组织</th>
+              
+              <th>地点</th>
+              
+              <th>网络结构编号</th>
+              
+              <th>上级监督网络</th>
+              
+              <th>描述</th>
+              
+              <th>类别</th>
+              
+              <th>状态</th>
+              
+              <th>创建时间</th>
+              
+              <th>是否激活</th>
+              
+              <th>最后更新人</th>
+              
+              <th>最后更新时间</th>
+              
+              <th>工单类型</th>
+              
+              <th>Created on</th>
+              <th>Current operator</th>
+              <th>Activity</th>
+            </tr>
+            {% paginate object_list %}
+            {% for o in object_list %}{% with pi=o.pinstance %}
+              <tr>
+                <td><a href="{% url 'wf_detail' pi.pk %}">{{ pi.no }}</a></td>
+                <td>{{ pi.created_by }}</td>
+                
+                <td>{{ o.orgid }}</td>
+                
+                <td>{{ o.place }}</td>
+                
+                <td>{{ o.number }}</td>
+                
+                <td>{{ o.parent }}</td>
+                
+                <td>{{ o.desc }}</td>
+                
+                <td>{{ o.classify }}</td>
+                
+                <td>{{ o.state }}</td>
+                
+                <td>{{ o.created_at }}</td>
+                
+                <td>{{ o.is_activate }}</td>
+                
+                <td>{{ o.last_updated_by }}</td>
+                
+                <td>{{ o.last_updated_at }}</td>
+                
+                <td>{{ o.work_type }}</td>
+                
+                <td>{{ pi.created_on|date:"Y-m-d H:i" }}</td>
+                <td>{{ pi.get_operators_display }}</td>
+                <td>
+                  <span class="label label-{{ pi|flow_status_css_class }}">
+                    {{ pi.cur_node.name }}
+                  </span>
+                </td>
+              </tr>
+            {% endwith %}{% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="box-footer clearfix">
+        {% show_pages %}
+
+      </div>
+    </div>
+  </section>
+{% endblock %}

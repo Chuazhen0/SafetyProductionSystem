@@ -1,0 +1,294 @@
+{% extends 'my_base.html' %}
+
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">网络人员维护</span>
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>监督网络管理</span></li>
+        <li class="active">网络人员维护</li>
+    </ol>
+{% endblock %}
+
+{% block search %}
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top"></a>
+
+{% endblock %}
+{% block content %}
+
+{% load pagetag %}
+<!-------------------------------搜索框  模态框---------------------------->
+<!-- Modal -->
+<div class="modal fade panel" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        onclick="closed()">
+                    &times;
+                </button>
+                <h4 class="modal-title " id="myModalLabel">
+                    网络结构搜索
+                </h4>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+<!-------------  END搜索框 ------------------->
+------------------------------
+
+
+<style type="text/css">
+
+	ul li {
+		list-style-type: none;
+
+	}
+
+	ul {
+		margin-left: 20px;
+		/*border: 1px solid blue;*/
+	}
+
+	.menuUl li {
+		margin: 10px 0;
+
+	}
+
+	.menuUl li span:hover {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	.menuUl li i { margin-right: 10px; top: 0px; cursor: pointer; color: #161616; 			}
+</style>
+
+<body>
+
+<div class="innerUl"></div>
+<div id="box_tan"  style="width:200px;height:300px;background:red;position:absolute;top:0;right:0;display: none;"></div>
+<!--</div>-->
+
+
+
+------------------------------
+<h2>监督网络</h2>
+<table class="table table-striped table-bordered">
+    <tr>
+        <th class="first">编号</th>
+        <th class="second">类别</th>
+        <th class="fourth">公司名称</th>
+        <th class="sixth">描述</th>
+        <th class="third">上级监督网络</th>
+        <th class="third">操作</th>
+    </tr>
+
+    {% for structure in structure_list1 %}
+    {% if structure.is_activate == 1 %}
+    <tr>
+        <td class="first">{{forloop.counter}}</td>
+        <td class="second">{{structure.classify}}</td>
+        <td class="fourth">{{structure.place}}</td>
+        <td class="sixth">{{structure.desc}}</td>
+        {% if structure.parent.id %}
+        <td class="third">{{structure.parent.desc}}</td>
+        <td><a href="/netstructure/{{structure.id}}/detail/?action=detail&menuid=3/"
+               title="查看网络结构详情" data-toggle="tooltip" data-placement="top"><span
+                class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>&nbsp;&nbsp;&nbsp;
+            <a href="/netstructure/{{structure.id}}/edit/?action=edit&menuid=3/"
+                title="编辑网络结构" data-toggle="tooltip" data-placement="top"><span
+                class="btn btn-default glyphicon glyphicon-edit" ></span></a>&nbsp;&nbsp;&nbsp;
+            <a href="javascript:;"
+               onclick="if(confirm('您确定删除这条记录？')){location.href='/netstructure/{{structure.id}}/2/delete/?action=del&menuid=3';}"
+               title="删除网络结构" data-toggle="tooltip" data-placement="top"><span class="btn btn-default glyphicon glyphicon-trash"></span></a>
+        </td>
+        {% else %}
+        <td>无</td>
+        <td><a href="/netstructure/{{structure.id}}/detail/?action=detail&menuid=3/"
+               title="查看网络结构详情"><span
+                class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>&nbsp;&nbsp;&nbsp;
+            <a href="/netstructure/{{structure.id}}/edit/?action=edit&menuid=3/"
+                title="编辑网络结构"><span
+                class="btn btn-default glyphicon glyphicon-edit"></span></a>&nbsp;&nbsp;&nbsp;
+            <a href="javascript:;"
+               onclick="if(confirm('您确定删除这条记录？')){location.href='/netstructure/{{structure.id}}/2/delete/?action=del/';}"
+               title="删除网络结构"><span class="btn btn-default glyphicon glyphicon-trash"></span></a>
+        </td>
+        {% endif %}
+    </tr>
+    {% endif %}
+    {% empty %}
+    <tr><td colspan="6">暂时还没有网络结构</td></tr>
+    {% endfor %}
+</table>
+<div class="box-footer clearfix">
+  <ul class="pagination pagination-sm no-margin pull-left">
+    {% if structure_list.has_previous %}
+    <li>
+      <a href="?page={{ structure_list.previous_page_number }}" aria-label="Previous">
+        <span aria-label="true">&laquo;</span>
+      </a>
+    </li>
+    {% endif %}
+
+
+  {% for pg in structure_list.paginator.page_range %}
+        {% circle_page menuid structure_list.number pg %}
+  {% endfor %}
+
+  {% if structure_list.has_next %}
+    <li>
+      <a href="?page={{ structure_list.next_page_number }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  {% endif %}
+  </ul>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<!--<script src="/static/bootstrap-3.3.7-dist/js/bootstrap-treeview.js"></script>-->
+<script src="/static/js/proTree.js"></script>
+<script type="text/javascript">
+// 搜索框，点击放大镜后触发函数
+// function prom(){
+//     // 将搜索框和内容清空
+//     $("#myform").val('');
+//     $("#list").find("td").remove();
+// 		$('#myModal').modal('show');
+// 		$('#myModal').on('hide.bs.modal', function() {
+// 			 //$("#myform")[0].reset();
+// 			 $(this).find("shujuzhanshi").remove();
+// 		});
+// 		};
+//
+// // 点击隐藏
+// function closed(){
+// $('#myModal').hide();
+// };
+
+// 点击搜索触发函数，获取输入的值
+//重置表单数据
+//  $(function() {
+//        $("#myModal").on('hide.bs.modal',function() {
+//           //关闭后重置表单数据
+//           $("#myform")[0].reset();
+//
+//
+//        });
+//
+//        $("#myModal").on('show.bs.modal',function() {
+//           //打开前重置表单数据
+//           document.getElementById("myform").reset();
+//        });
+//    });
+
+// 按钮悬浮效果
+// $("[data-toggle='tooltip']").tooltip();
+// function getTree() {
+//   // Some logic to retrieve, or generate tree structure
+//   return data;
+// };
+// $('#tree').treeview();
+
+// $('ul li:gt(2)').hide();
+// $('ul').hover(function(){
+//         $('ul li').show();
+//     },function(){
+//         $('ul li:gt(2)').hide();
+//         });
+$('.innerUl > ul li').hide();
+var arr = {{ data_list|safe }};
+var off = true;
+// 标题的图标是集成bootstrap 的图标  更改 请参考bootstrap的字体图标替换自己想要的图标
+$(".innerUl").ProTree({
+	arr: arr,
+	simIcon: "fa fa-file-o",//单个标题字体图标 不传默认glyphicon-file
+	mouIconOpen: "fa fa-folder-open-o",//含多个标题的打开字体图标  不传默认glyphicon-folder-open
+	mouIconClose:"fa fa-folder-o",//含多个标题的关闭的字体图标  不传默认glyphicon-folder-close
+	callback: function(id,name) {
+		// alert("你选择的id是" + id + "，名字是" + name);
+	}
+
+});
+
+$(function(){
+$(".topicList h3").click(function(){
+var UL = $(this).next("ul");
+if(UL.css("display")=="block"){
+UL.css("display","none");
+}
+else{
+UL.css("display","block");
+}
+});
+});
+
+
+$(function(){
+$(".topicList1 h4").click(function(){
+var UL = $(this).next("ul");
+if(UL.css("display")=="block"){
+UL.css("display","none");
+}
+else{
+UL.css("display","block");
+}
+});
+});
+
+
+$(function(){
+$(".topicList2 h5").click(function(){
+var UL = $(this).next("ul");
+if(UL.css("display")=="block"){
+UL.css("display","none");
+}
+else{
+UL.css("display","block");
+}
+});
+});
+
+
+$(function(){
+$(".topicList3 h6").click(function(){
+var UL = $(this).next("ul");
+if(UL.css("display")=="block"){
+UL.css("display","none");
+}
+else{
+UL.css("display","block");
+}
+});
+});
+// $("#{{data1.desc}}").click(function(){
+//     $("#dyry").toggle();
+// });
+
+// $(".sjb").click(function(){
+//
+//     // console.log($("#dyry").style.display);
+//     // $("#dyry").css("display",'');
+//     $(this).toggle(
+//
+// function(){$('#dyry').hide();},
+//
+// function(){$('#dyry').show();}
+//
+// );
+// })
+</script>
+{% endblock %}

@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  dj_web:
+    build: .
+    command: python3 ./manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8090:8000"
+    depends_on:
+      - db
+    networks:
+      default:
+        aliases:
+         - dj.com
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: fizzbuzz
+    ports:
+      - "3311:3306"
+    volumes:
+      - dj_data:/var/lib/mysql
+
+networks:
+  default:
+    external:
+      name: dj_shared
+
+volumes:
+  dj_data:
+

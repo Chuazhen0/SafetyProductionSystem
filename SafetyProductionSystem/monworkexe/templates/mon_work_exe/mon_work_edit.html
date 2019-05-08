@@ -1,0 +1,392 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">月度工作执行</span>
+        <small>编辑</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>计划与总结</span></li>
+        <li class="active">月度工作执行</li>
+    </ol>
+{% endblock %}
+
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_edit %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/monworkexe/list/?action=list&menuid=8" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存"  onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" data-toggle="tooltip" data-placement="top" class="css3 btn btn-primary glyphicon glyphicon-refresh"
+   title="刷新"></a>
+{% endblock %}
+{% block content %}
+<form action="/monworkexe/{{mon_work.id}}/edit/?action=new" class="form-horizontal" method="post"
+      id="myform">
+    <div class="box-body">
+        <div class="form-group">
+            <label class="col-md-1 control-label">组&nbsp;织</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="orgid" id="orgid" required>
+                    <option selected value="{{mon_work.orgid}}">
+                        {{mon_work.orgid}}
+                    </option>
+                    {% if request.session.mylogin.profile.Department.name == mon_work.orgid %}
+                    {% else %}
+                    <option value="{{request.session.mylogin.profile.Department.name}}">
+                        {{request.session.mylogin.profile.Department.name}}
+                    </option>
+                    {% endif %}
+                    {% for or in orgid %}
+                    {% if or.name == mon_work.orgid %}
+                    {% else %}
+                    <option value="{{or.name}}">{{or.name}}
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <label class="col-md-1 control-label">创建人</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" name="created_by" id="created_by"
+                       value="{{mon_work.created_by.user.username}} " readonly>
+            </div>
+            <label class="col-md-2 control-label">创建时间</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="created_at" id="created_at"
+                       value="{{mon_work.created_at}}" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-1 control-label">地&nbsp;点</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="place" id="place" value="{{mon_work.place}}"
+                       readonly>
+            </div>
+
+            <label class="col-md-1 control-label">最后更新人</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" name="last_updated_by" id="last_updated_by"
+                       value="{{request.session.mylogin.username}}" readonly>
+            </div>
+            <label class="col-md-2 control-label">最后更新时间</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="last_updated_at" id="last_updated_at"
+                       value="{{now}}" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-1 control-label">状&nbsp;态</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="state" name="state" value="{{mon_work.state}}"
+                       readonly>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="col-md-1 control-label"><span class="bt">*</span>人&nbsp;员</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" id="execute_staff_number" name="execute_staff_number"
+                       value="{{mon_work.execute_staff.username}}">
+            </div>
+
+            <div class="col-md-1">
+                <span class="glyphicon glyphicon-search " onclick="prom()" id="staff_list" data-toggle="modal"
+                   style="margin-top:5px;margin-left:-20px;cursor:pointer;"></span>
+            </div>
+
+            <!------------------------人员列表模态框------------------------->
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                    onclick="closed()">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                人员信息列表
+                            </h4>
+                            <!--列表组-->
+                            <div id="sb1">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th>用户名</th>
+                                        <th>组织</th>
+                                    </tr>
+                                    {% for staff in staff_list %}
+                                    <tr class="check_staff">
+                                        <td>{{staff.username}}</td>
+                                        <td>{{staff.profile.Department.name}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="2">没有员工信息</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id='btn' class="btn btn-primary" data-dismiss="modal"
+                                    onclick="closed()">关闭
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal -->
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-1 control-label"><span class="bt">*</span>部&nbsp;门</label>
+            <div class="col-md-2">
+                <input type="text" id="execute_department_number" name="execute_department_number"
+                       class="form-control" value="{{mon_work.execute_department.number}}">
+            </div>
+
+            <div class="col-md-1">
+                <span class="glyphicon glyphicon-search" onclick="prom2()" id="Department_list" data-toggle="modal"
+                   style="margin-top:5px;margin-left:-20px;cursor:pointer;"></span>
+            </div>
+            <div class="col-md-2" style="margin-left:-80px">
+                <input type="text" id="execute_department" name="execute_department" class="form-control"
+                       value="{{mon_work.execute_department.name}}">
+            </div>
+            <!------------------------部门信息模态框------------------------->
+            <!-- Modal -->
+            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                    onclick="closed2()">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel2">
+                                部门信息列表
+                            </h4>
+                            <!--列表组-->
+                            <div id="sb2">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th>部门编号</th>
+                                        <th>部门名称</th>
+                                    </tr>
+                                    {% for Department in Department_list %}
+                                    <tr class="check_department">
+                                        <td>{{Department.number}}</td>
+                                        <td>{{Department.name}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="2">没有部门信息</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id='btn2' class="btn btn-primary" data-dismiss="modal"
+                                    onclick="closed2()">
+                                关闭
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal -->
+            </div>
+
+
+            <!--<label class="col-md-2 control-label">关联问题:</label>-->
+            <!--<div class="col-md-4">-->
+            <!--<input type="file" id="enclosure" name="enclosure">-->
+            <!--</div>-->
+        </div>
+        <div class="form-group" style="margin-left:-80px">
+            <label class="col-md-2 control-label"><span class="bt">*</span>计划完成时间</label>
+            <div class="col-md-2">
+                <input type="date" class="form-control" name="finish_time" id="finish_time"
+                       value="{{mon_work.finish_time}}" required>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-80px">
+            <label class="col-md-2 control-label"><span class="bt">*</span>计划工作内容</label>
+            <div class="col-md-10">
+                    <textarea class="form-control" name="plan_content"
+                              id="plan_content" required>{{mon_work.plan_content}}</textarea>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-80px">
+            <label class="col-md-2 control-label">执行情况</label>
+            <div class="col-md-10">
+                    <textarea class="form-control" name="execute_desc"
+                              id="execute_desc">{{mon_work.execute_desc}}</textarea>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-left:-80px">
+            <label class="col-md-2 control-label">存在问题</label>
+            <div class="col-md-10">
+                    <textarea class="form-control" name="problem_desc"
+                              id="problem_desc">{{mon_work.problem_desc}}</textarea>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-80px">
+            <label class="col-md-2 control-label">备&nbsp;注</label>
+            <div class="col-md-10">
+                <textarea class="form-control" name="remarks" id="remarks">{{mon_work.remarks}}</textarea>
+            </div>
+        </div>
+        <!--</div>-->
+        <!--<input type="submit" value="保存" id="jump" class="btn btn-primary">-->
+        <!--<a class="btn btn-primary" href="/monworkexe/list/?action=list&menuid=8">取消</a>-->
+        <div id="yes" style="font-size:20px;display:none;">
+            <p id="info">修改成功,页面正在跳转......</p>
+            <!--<span id="countTime"></span>&nbsp;<a href='javascript:goBack()'>返回</a>-->
+        </div>
+    </div>
+</form>
+
+<!-- /.box-body -->
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+  $(function(){
+  $("#jump").click(function(){
+  var second = 3;
+   //获取显示秒数的元素，通过定时器来更改秒数。
+    var message = document.getElementById("countTime");
+    function clock()
+    {
+        if(second==0)
+        {
+            goTo();
+        }
+        else
+        {
+            document.getElementById('yes').setAttribute('style', 'display: block');
+            message.innerHTML = second-- + "秒后回到详情页";
+            window.setTimeout(clock,1000);
+
+        }
+    }
+    clock();
+
+   //通过window的location和history对象来控制网页的跳转。
+
+   function goTo()
+
+   {
+        window.location.href = "http://localhost:8000/monworkexe/list/?action=list";
+
+   }
+   function goBack()
+   {
+
+    //   window.history.Back();
+
+        window.location.href = "http://localhost:8000/monworkexe/list/?action=list";
+   }
+  })
+  })
+  // 人员信息列表，点击放大镜后触发函数
+function prom(){
+		$('#myModal').modal('show');
+		$('#myModal').on('hide.bs.modal', function() {
+
+			 //$("#myform")[0].reset();
+			 $(this).find("shujuzhanshi").remove();
+		});
+		};
+
+// 部门信息列表，点击放大镜后触发函数
+function prom2(){
+    //模态框显示
+		$('#myModal2').modal('show');
+		$('#myModal2').on('hide.bs.modal', function() {
+			// $("#myform2")[0].reset();
+			 $(this).find("shujuzhanshi2").remove();
+		});
+		};
+
+// 点击隐藏
+function closed(){
+$('#myModal').hide();
+}
+
+//点击隐藏
+function closed2(){
+$('#myModal2').hide();
+}
+$(function(){
+    $(".check_staff").click(function(){
+    // 选中某条数据，变为蓝色
+    $(this).css("background-color","skyblue");
+    //  其他同级元素为白色
+    $(this).siblings().css("background-color","white");
+    // 获取选中的td的值
+    var $number = $(this).children("td:first").text()
+    // 发送ajax 请求
+    $.ajax({
+    url:'/monworkexe/check_staff/',
+    data:{'number':$number},
+    type:'POST',
+    success:function(data){
+        var $name = data['name'];
+        var $department = data['department'];
+        var $org_number = data['org_number'];
+        // 接受数据并写入页面
+        $("#execute_staff_number").val($number);
+         $("#execute_staff").val($name);
+        $("#execute_department_number").val($org_number);
+        $("#execute_department").val($department);
+        $("#btn").text("确定");
+    },
+    })
+    })
+})
+
+
+// form表单不能为空的验证
+function checked() {
+            var date = $("#finish_time").val();
+            var user = $("#execute_staff").val();
+            var dept = $("#execute_department").val();
+            if(date=='' ){
+             alert('您还未选择日期');
+                return false;
+            }
+            else if(user==''){
+            alert('您还未选择人员');
+                return false;
+            }
+             else if(dept==''){
+            alert('您还未选择部门');
+                return false;
+            }
+            else{
+                return true;
+
+
+            }
+            console.log(checked());
+   }
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

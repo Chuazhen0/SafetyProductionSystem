@@ -1,0 +1,79 @@
+{% extends 'my_base.html' %}
+{% block title %}
+组织机构详情
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block list_detail %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/systemsettings/show_og/?action=list&menuid=56" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block modify %}
+<a href="/systemsettings/{{data.id}}/show/edit_Department/?action=edit&menuid=40" class="btn btn-primary glyphicon glyphicon-edit" title="编辑组织机构" data-toggle="tooltip" data-placement="top"></a >
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/systemsettings/{{data.id}}/{{org_level}}/delete_origaniza/?action=del&menuid=56';}"
+   title="删除组织机构" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+<!--<a href="/supervision/{{mon_plan_sum.id}}/mon_plan_sum_delete/?action=del&menuid=20" class="btn btn-danger delete" >{{power.title}}</a>-->
+{% endblock %}
+{% block content %}
+<form method="post" action="#" class="form-horizontal"
+          enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+    <div class="box-body">
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >名&nbsp;称</label>
+            <div class="col-md-3">
+                {% if org_level == 1 %}
+                    <input type="text" class="form-control" name="name" value="{{data.comname}}" readonly>
+                {% elif org_level == 2 %}
+                    <input type="text" class="form-control" name="name" value="{{data.departname}}" readonly>
+                {% endif %}
+
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >上级目录</label>
+            <div class="col-md-3">
+                {% if org_level == 1 %}
+                    <input type="text" class="form-control" name="tage" value="无" readonly>
+                {% elif org_level == 2 %}
+                    <input type="text" class="form-control" name="tage" value="{{data.company.comname}}" readonly>
+                {% endif %}
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >级&nbsp;别</label>
+            <div class="col-md-3">
+                {% if org_level == 1 %}
+                    <input type="text" class="form-control" value="公司" readonly>
+                {% elif org_level == 2 %}
+                    <input type="text" class="form-control" value="部门" readonly>
+                {% endif %}
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >代码编号</label>
+            <div class="col-md-3">
+                {% if org_level == 1 %}
+                    <input type="text" class="form-control"  name="number" value="{{data.comnumber}}" readonly>
+                {% elif org_level == 2 %}
+                    <input type="text" class="form-control"  name="number" value="{{data.departnumber}}" readonly>
+                {% endif %}
+
+            </div>
+    </div>
+    <h1>{{error}}</h1>
+    </div>
+</form>
+{% endblock %}
+
+{% block javascript %}
+<script>
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

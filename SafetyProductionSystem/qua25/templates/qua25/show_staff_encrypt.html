@@ -1,0 +1,175 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+展示资质编码
+{% endblock %}
+
+{% block add %}
+{% endblock %}
+
+{% block search %}
+<a href="#" class="btn btn-primary btn-secondary glyphicon glyphicon-search" data-toggle="tooltip" onclick="prom()"
+   data-placement="top" title="查询资质类型"></a>
+{% endblock %}
+
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+
+{% block content %}
+{% load pagetag %}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        onclick="closed()">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    资质类型搜索
+                </h4>
+                <form action="/qua25/search/?action=list&menuid=37" class="form-horizontal"
+                      method="post"
+                      enctype="multipart/form-data" id="myform">
+                    {% csrf_token %}
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">编号</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="number" id="number">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">描述</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="desc" id="desc">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">专业</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="supervision" id="supervision">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id='btn' class="btn btn-primary" data-dismiss="modal"
+                                onclick="closed()">关闭
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+<!-------------  END搜索框 ------------------->
+<table class="table table-striped table-bordered">
+    <tr>
+        <th>编号</th>
+        <th>名称</th>
+        <th>资质类型编号</th>
+        <th>提前提醒天数</th>
+    </tr>
+
+    {% for qua_type in data %}
+    {% if qua_type.is_activate == 1 %}
+    <tr>
+        <td>{{forloop.number}}</td>
+        <td>{{qua_type.name}}</td>
+        <td>{{qua_type.qua_type.number}}</td>
+        <td>{{qua_type.warining_time}}</td>
+    </tr>
+    {% endif %}
+    {% empty %}
+    <tr>
+        <td>暂时还没有资质编码</td>
+    </tr>
+    {% endfor %}
+
+</table>
+<div class="box-footer clearfix">
+    <ul class="pagination pagination-sm no-margin pull-left">
+        {% if qua_type_list.has_previous %}
+        <li>
+            <a href="?page={{ qua_type_list.previous_page_number }}" aria-label="Previous">
+                <span aria-label="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% for pg in qua_type_list.paginator.page_range %}
+        {% circle_page qua_type_list.number pg %}
+        {% endfor %}
+
+        <!--{% for pg in qua_type_list.paginator.page_range %}-->
+        <!--{% if qua_type_list.number == pg %}-->
+        <!--<li class="active"><a href="?page={{pg}}">{{pg}}</a></li>-->
+        <!--{% else %}-->
+        <!--<li><a href="?page={{pg}}">{{pg}}</a></li>-->
+        <!--{% endif %}-->
+        <!--{% endfor %}-->
+
+        {% if qua_type_list.has_next %}
+        <li>
+            <a href="?page={{ qua_type_list.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+// 搜索框，点击放大镜后触发函数
+function prom(){
+    // 将搜索框和内容清空
+    $("#myform").val('');
+    $("#list").find("td").remove();
+		$('#myModal').modal('show');
+		$('#myModal').on('hide.bs.modal', function() {
+			 //$("#myform")[0].reset();
+			 $(this).find("shujuzhanshi").remove();
+		});
+		};
+
+// 点击隐藏
+function closed(){
+$('#myModal').hide();
+};
+
+// 点击搜索触发函数，获取输入的值
+//重置表单数据
+ $(function() {
+       $("#myModal").on('hide.bs.modal',function() {
+          //关闭后重置表单数据
+          $("#myform")[0].reset();
+
+
+       });
+
+       $("#myModal").on('show.bs.modal',function() {
+          //打开前重置表单数据
+          document.getElementById("myform").reset();
+       });
+   });
+
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}
+

@@ -1,0 +1,175 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">资质管理</span>
+        <small>新增</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>25项反措</span></li>
+        <li><span>资质管理</span></li>
+        <li class="active">资质管理</li>
+    </ol>
+{% endblock %}
+
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary btn-secondary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+
+{% block list_new %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/qua25/list/?action=list&menuid=30" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block save %}
+<!--<a class="btn btn-primary btn-secondary glyphicon glyphicon-floppy-save" title="保存" -->
+   <!--onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top"></a>-->
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-floppy-save" title="保存"
+   id="create_btn" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary btn-secondary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block content %}
+  <form class="form-horizontal" method="post" id="myform" action="/qua25/add/?action=new&menuid=31">
+    {% csrf_token %}
+    <div class="box-body" style="margin-top: 20px;">
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">资质编码</label>
+        <div class="col-sm-3">
+          <input type="text" name="number" class="form-control" id="number" value="{{number}}" readonly>
+        </div>
+
+        <label class="col-sm-2 control-label">资质类型</label>
+        <div class="col-sm-3">
+          <select name="qua_type" class="form-control" id="qua_type">
+            {% for qua in data %}
+            <option value="{{qua.id}}">
+              {{qua.desc}}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+      <div class="col-sm-6">
+      <div class="form-group">
+        <label class="col-sm-4 control-label"><span class="bt">*</span>资质名称</label>
+        <div class="col-sm-6">
+          <input type="text" name="name" class="form-control" id="name" value="{{name}}">
+        </div>
+      </div>
+      </div>
+
+      <div class="col-sm-6">
+      <div class="form-group">
+        <label class="col-md-2 control-label"><span class="bt">*</span>提前提醒时间（天）:</label>
+            <!--<div class="col-md-3">-->
+                <!--<input type="text" id="warining_time" name="warining_time" class="form-control"-->
+                       <!--onblur="check_warinig_time()"/>-->
+                <!--<span class="glyphicon glyphicon-remove-sign error" id="two">请输入正确数字（非零正整数)！</span>-->
+            <!--</div>-->
+          <div class="col-md-6">
+                <input type="text" id="warining_time" name="warining_time" class="form-control">
+          </div>
+      </div>
+      </div>
+      </div>
+    </div>
+    <!-- /.box-footer -->
+  </form>
+{% endblock %}
+
+{% block javascript %}
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+<script>
+  //指定必选项为必填项
+//function checked() {
+//            var date1 = $("#name").val();
+//            var date2 = $("#qua_type").val();
+//            var date3 = $('#warining_time').val();
+//
+//            if(date1='' | date2=='' | date2 ==''){
+//             alert('您还有未填写的选项');
+//                return false;
+//            }else{
+//                return true;
+//            }
+//            console.log(checked());
+//   }
+//      // 按钮悬浮效果
+//$("[data-toggle='tooltip']").tooltip();
+
+
+////指定时间为整数且为必填项
+//function check_warinig_time(){
+//         $("#two").hide();
+//        var warinig_time = $("#warining_time").val();
+//        var reg=/^[1-9]\d*$/;
+//        data = reg.test(warinig_time);
+//        if (!data){
+//                //请填写数字
+//                $("#two").show();
+//                }
+//            }
+
+   $(function (){
+       $('#myform').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields:{
+            name:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入资质名称'
+                    },
+                    callback:{
+                        message:'资质名称错误'
+                    }
+                }
+            },
+            warining_time:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入提前提醒天数'
+                    },
+                    callback:{
+                        message:'提前提醒天数错误'
+                    },
+                     regexp: {//正则验证
+                        regexp: /^[0-9]+$/,
+                        message: '请输入正确数字（非零正整数)！'
+                    },
+                }
+            },
+        }
+    })
+   });
+
+$("#myform").submit(function (ev) {
+            ev.preventDefault();
+        });
+        $("#create_btn").on("click", function () {
+            var bootstrapValidator = $("#myform").data('bootstrapValidator');
+            bootstrapValidator.validate();
+            if (bootstrapValidator.isValid()) {
+                document.getElementById('myform').submit();
+                layer.msg('添加成功！')
+            }
+            else {
+                layer.msg('添加失败，请填写正确信息!');
+                return false;
+            }
+        });
+ // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+
+{% endblock %}

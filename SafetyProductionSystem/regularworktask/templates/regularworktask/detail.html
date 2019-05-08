@@ -1,0 +1,63 @@
+{% extends "my_base.html" %}
+{% load i18n %}
+{% load lbutils %}
+{% load lbworkflow_tags %}
+{% block content %}
+{% block right_side %}
+  <section class="content-header">
+    {% include "incs/messages.html" %}
+    {% block right_side_header %}
+      <div class="right-btns">
+        {% include "lbworkflow/inc_wf_btns.html" %}
+          {% block flow_help %}
+            {% endblock %}
+
+        {% block right_side_header_ext_btns %}
+           <a class="" target="_blank" href="{% url 'wf_print_detail' process_instance.pk %}">Print</a>
+    <span>|</span>
+        {% endblock %}
+      </div>
+    {% endblock %}
+  </section>
+  <section class="content">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs" role="tablist" id="id-m-nav-tabs">
+        <li class="active">
+          <a href="##id-tb-base" role="tab" data-toggle="tab">基础信息</a>
+        </li>
+        {% block right_side_tab_nav_ext %}
+        {% endblock %}
+        <li>
+          <a href="#id-tb-wf-log" role="tab" data-toggle="tab">操作历史</a>
+        </li>
+        <li>
+          <a href="#id-tb-wf-graph" role="tab" data-toggle="tab">帮助</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        {% block right_side_tab_ctx_ext %}
+           {% include "regularwork/inc_detail_info.html" %}
+        {% endblock %}
+        <div class="tab-pane" id="id-tb-wf-log">
+          {% include "lbworkflow/inc_wf_history.html" %}
+        </div>
+        <div class="tab-pane" id="id-tb-wf-graph">
+
+          <a href="{% url 'wf_process_flowchart' wf_code %}" target="_blank">Open in new window</a>
+          <br/>
+            <img src="{% url 'wf_process_flowchart' wf_code %}"/>
+        </div>
+      </div>
+    </div>
+    {% block wf_detail_ext %}
+      {% with btn_css="1" %}
+        <div class="bottom-btns">
+          {% with is_btn="1" %}
+            {% include "lbworkflow/inc_wf_btns.html" %}
+          {% endwith %}
+        </div>
+      {% endwith %}
+    {% endblock %}
+  </section>
+{% endblock %}
+{% endblock %}

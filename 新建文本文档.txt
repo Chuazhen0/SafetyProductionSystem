@@ -1,0 +1,10 @@
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJ5MuUbSvkDYS6zr6LqN43lRbivQM3TebXZoKK+rO4mfUASIapBTr79VHAUtlK3agWXYVGzf/KwuKT+0wxSGXG9ikPiGOuAKkbXvUR0TiZEV8srmSxeK3+v3ZC4VT0kFAeevR2HYk6aNoJ95bMdMFt8aLZ2uU7oGwPPZQ0LYDa/muBG9Dag4MENHh4FhAnug8MjW00JPPyF6q9wqf2Ae8Jz3lrJz/Vax6ctqKqqkloqC0msWbJgIBRJW/+vCXhFSmsYS/gIq/tM81zxLo4W6w5x0NK5NmKNVxjZ/WSaQSTUk5TInqHq83YmGywCniVraRw5EN5BKUHu7BM8WMhiz4P Caohuazhenrn@163.com
+
+
+
+
+
+kkkkk
+
+
+cat id_rsa.pub| ssh root@192.168.136.129 sshcommand acl-add dokku my_win10

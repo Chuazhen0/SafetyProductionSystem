@@ -1,0 +1,54 @@
+{% include "lbworkflow/inc_wf_status.html" %}
+<table class="table table-bordered tb-detail no-margin">
+  
+  <tr>
+    <th>创建时间</th>
+    <td>{{ object.created_at }}</td>
+    <th>最后更新人</th>
+    <td>{{ object.last_updated_by }}</td>
+  </tr>
+  
+  <tr>
+    <th>最后更新时间</th>
+    <td>{{ object.last_updated_at }}</td>
+    <th>组织</th>
+    <td>{{ object.orgid }}</td>
+  </tr>
+  
+  <tr>
+    <th>地点</th>
+    <td>{{ object.place }}</td>
+    <th>是否激活</th>
+    <td>{{ object.is_activate }}</td>
+  </tr>
+  
+  <tr>
+    <th>描述</th>
+    <td>{{ object.desc }}</td>
+    <th>专业</th>
+    <td>{{ object.supervision }}</td>
+  </tr>
+  
+  <tr>
+    <th>编号</th>
+    <td>{{ object.number }}</td>
+    <th>备注</th>
+    <td>{{ object.remark }}</td>
+  </tr>
+  
+  <tr>
+    <th>状态</th>
+    <td>{{ object.state }}</td>
+    <th></th>
+    <td>{{ object. }}</td>
+  </tr>
+  
+  {% comment %}
+  <tr>
+    <th>Reason</th>
+    <td colspan="3">
+      {{ object.reason|linebreaks }}
+    </td>
+  </tr>
+  {% endcomment %}
+</table>

@@ -1,0 +1,394 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">角色管理</span>
+        <small>新建</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>系统设置</span></li>
+        <li><span>角色管理</span></li>
+        <li class="active">角色管理</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/systemsettings/role_list/?action=list&menuid=38"></a>
+{% endblock %}
+{% block save %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="document.getElementById('myform').submit();"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+{% endblock %}
+{% block content %}
+<form method="POST" id="myform" action="/systemsettings/role_add/?action=new&menuid=38" class="form-horizontal">
+    {% csrf_token %}
+    <div class="box-body">
+        <div class="form-group">
+            <label class="col-md-1 control-label">角色名称:</label>
+            <div class="col-md-5">
+                <input type="text" name="username" class="form-control" placeholder="角色名称"/>
+            </div>
+        </div>
+        <div class="form-group" >
+            <label class="col-md-1 control-label">是否启用:</label>
+            <div class="col-md-5">
+                <input type="radio"  name="is_select" value="1" checked>是
+                <input type="radio"  name="is_select" value="0">否
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-md-1 control-label">定义权限:</label>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <table class="table table-striped">
+                    <tr>
+                        <th></th>
+                        <th colspan="2" >菜单名称</th>
+                        <th colspan="5" >操作名称</th>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><input type="checkbox" name="fetall" value="0" id="one"/>全选</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <!--<td><input type="checkbox" name="fetalladd" value="a" id="two"/>全选</td>-->
+                        <!--<td><input type="checkbox" name="fetalldetail" value="b" id="three"/>全选</td>-->
+                        <!--<td><input type="checkbox" name="fetalldel" value="c" id="four"/>全选</td>-->
+                        <!--<td><input type="checkbox" name="fetalledit" value="d" id="five"/>全选</td>-->
+                    </tr>
+                    <tr>
+                        <th colspan="7" height="30"></th>
+                    </tr>
+                    {% for menu in mymenu_list %}
+                    <tr>
+                        <td><input type="checkbox" name="fetmenu" value="{{menu.id}}" class="fetmenu"/></td>
+                        <td colspan="2">{{menu.title}}</td>
+                        {% for operation in menu.operation_set.all %}
+                        {% if operation.key == '1' %}
+                        <td><input type="checkbox" name="fetadd" value="{{operation.id}}" class="fetadd"/>新建</td>
+                        {% elif operation.key == '2' %}
+                        <td><input type="checkbox" name="fetdetail" value="{{operation.id}}" class="fetdetail"/>{{operation.title}}</td>
+                        {% elif operation.key == '3' %}
+                        <td><input type="checkbox" name="fetdel" value="{{operation.id}}" class="fetdel"/>{{operation.title}}</td>
+                        {% elif operation.key == '5' %}
+                        <td><input type="checkbox" name="fetedit" value="{{operation.id}}" class="fetedit"/>{{operation.title}}</td>
+                        {% else %}
+                        {% endif  %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <h1>{{error}}</h1>
+    <div style="position:absolute;right: 15%;bottom: 3%;">
+    <a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="document.getElementById('myform').submit();">保存</a>
+</div>
+</form>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+	//  点击全选按钮,全选/全不选
+    $("#one").click(function(){
+		if(this.checked){
+			$("[name=fetalladd]:checkbox").remove('checked',false);
+			$("[name=fetalladd]:checkbox").prop('checked',true);
+			$("[name=fetalldetail]:checkbox").remove('checked',false);
+			$("[name=fetalldetail]:checkbox").prop('checked',true);
+			$("[name=fetalldel]:checkbox").remove('checked',false);
+			$("[name=fetalldel]:checkbox").prop('checked',true);
+			$("[name=fetalledit]:checkbox").remove('checked',false);
+			$("[name=fetalledit]:checkbox").prop('checked',true);
+			$("[name=fetadd]:checkbox").remove('checked',false);
+			$("[name=fetadd]:checkbox").prop('checked',true);
+			$("[name=fetdetail]:checkbox").remove('checked',false);
+			$("[name=fetdetail]:checkbox").prop('checked',true);
+			$("[name=fetdel]:checkbox").remove('checked',false);
+			$("[name=fetdel]:checkbox").prop('checked',true);
+			$("[name=fetedit]:checkbox").remove('checked',false);
+			$("[name=fetedit]:checkbox").prop('checked',true);
+			$("[name=fetmenu]:checkbox").remove('checked',false);
+			$("[name=fetmenu]:checkbox").prop('checked',true);
+
+		}else{
+			$("[name=fetalladd]:checkbox").remove('checked',true);
+			$("[name=fetalladd]:checkbox").prop('checked',false);
+			$("[name=fetalldetail]:checkbox").remove('checked',true);
+			$("[name=fetalldetail]:checkbox").prop('checked',false);
+			$("[name=fetalldel]:checkbox").remove('checked',true);
+			$("[name=fetalldel]:checkbox").prop('checked',false);
+			$("[name=fetalledit]:checkbox").remove('checked',true);
+			$("[name=fetalledit]:checkbox").prop('checked',false);
+			$("[name=fetadd]:checkbox").remove('checked',true);
+			$("[name=fetadd]:checkbox").prop('checked',false);
+			$("[name=fetdetail]:checkbox").remove('checked',true);
+			$("[name=fetdetail]:checkbox").prop('checked',false);
+			$("[name=fetdel]:checkbox").remove('checked',true);
+			$("[name=fetdel]:checkbox").prop('checked',false);
+			$("[name=fetedit]:checkbox").remove('checked',true);
+			$("[name=fetedit]:checkbox").prop('checked',false);
+			$("[name=fetmenu]:checkbox").remove('checked',true);
+			$("[name=fetmenu]:checkbox").prop('checked',false);
+
+		}
+	});
+//     //  点击新建上面全选按钮，新建全选/全不选，全选/不选
+//     $("#two").click(function(){
+// 		if(this.checked){
+// 			$("[name=fetadd]:checkbox").remove('checked',false);
+// 			$("[name=fetadd]:checkbox").prop('checked',true);
+// 			var menu_lt = $(this).siblings().not($("#one"));
+// 			var num=0;
+// 			for(var a=0;a < menu_lt.length;a++){
+// 			    if (!menu_lt[a].checkd){
+//                 num=1;
+//                 }
+//                 else{
+// 			        continue;
+//                 }
+// 			}
+// 			if(num==0){
+// 			    $("[name=fetall]:checkbox").remove('checked',false);
+//                 $("[name=fetall]:checkbox").prop('checked',true);
+//             }
+//
+// 		}else{
+// 			$("[name=fetadd]:checkbox").remove('checked',true);
+// 			$("[name=fetadd]:checkbox").prop('checked',false);
+// 			$("[name=fetall]:checkbox").remove('checked',true);
+// 			$("[name=fetall]:checkbox").prop('checked',false);
+// 		}
+// 	});
+// //  点击编辑上面全选按钮，编辑全选/全不选，全选/不选
+//     $("#five").click(function(){
+// 		if(this.checked){
+// 			$("[name=fetedit]:checkbox").remove('checked',false);
+// 			$("[name=fetedit]:checkbox").prop('checked',true);
+// 			var menu_lt = $(this).siblings().not($("#one"));
+// 			var num=0;
+// 			for(var a=0;a < menu_lt.length;a++){
+// 			    if (!menu_lt[a].checkd){
+//                 num=1;
+//                 }
+//                 else{
+// 			        continue;
+//                 }
+// 			}
+// 			if(num==0){
+// 			    $("[name=fetall]:checkbox").remove('checked',false);
+//                 $("[name=fetall]:checkbox").prop('checked',true);
+//             }
+//
+// 		}else{
+// 			$("[name=fetedit]:checkbox").remove('checked',true);
+// 			$("[name=fetedit]:checkbox").prop('checked',false);
+// 			$("[name=fetall]:checkbox").remove('checked',true);
+// 			$("[name=fetall]:checkbox").prop('checked',false);
+// 		}
+// 	});
+//     //  点击查看上面全选按钮，查询全选/全不选，全选/不选
+//     $("#three").click(function(){
+// 		if(this.checked){
+// 			$("[name=fetdetail]:checkbox").remove('checked',false);
+// 			$("[name=fetdetail]:checkbox").prop('checked',true);
+// 			var menu_lt = $(this).siblings().not($("#one"));
+// 			var num=0;
+// 			for(var a=0;a < menu_lt.length;a++){
+// 			    if (!menu_lt[a].checkd){
+//                 num=1;
+//                 }
+//                 else{
+// 			        continue;
+//                 }
+// 			}
+// 			if(num==0){
+// 			    $("[name=fetall]:checkbox").remove('checked',false);
+//                 $("[name=fetall]:checkbox").prop('checked',true);
+//             }
+//
+// 		}else{
+// 		    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+// 			$("[name=fetdetail]:checkbox").remove('checked',true);
+// 			$("[name=fetdetail]:checkbox").prop('checked',false);
+// 			$("[name=fetall]:checkbox").remove('checked',true);
+// 			$("[name=fetall]:checkbox").prop('checked',false);
+// 		}
+// 	});
+//     //  点击删除上面全选按钮，删除全选/全不选，全选/不选
+//     $("#four").click(function(){
+// 		if(this.checked){
+// 			$("[name=fetdel]:checkbox").remove('checked',false);
+// 			$("[name=fetdel]:checkbox").prop('checked',true);
+// 			var menu_lt = $(this).siblings().not($("#one"));
+// 			var num=0;
+// 			for(var a=0;a < menu_lt.length;a++){
+// 			    if (!menu_lt[a].checkd){
+//                 num=1;
+//                 }
+//                 else{
+// 			        continue;
+//                 }
+// 			}
+// 			if(num==0){
+// 			    $("[name=fetall]:checkbox").remove('checked',false);
+//                 $("[name=fetall]:checkbox").prop('checked',true);
+//             }
+// 		}else{
+// 			$("[name=fetdel]:checkbox").remove('checked',true);
+// 			$("[name=fetdel]:checkbox").prop('checked',false);
+// 			$("[name=fetall]:checkbox").remove('checked',true);
+// 			$("[name=fetall]:checkbox").prop('checked',false);
+// 		}
+// 	});
+     //  某行菜单点击，菜单操作全选/全不选
+    $(".fetmenu").click(function(){
+		if(this.checked){
+			$(this).parent().next().next().children().remove('checked',false);
+			$(this).parent().next().next().children().prop('checked',true);
+			$(this).parent().next().next().next().children().remove('checked',false);
+			$(this).parent().next().next().next().children().prop('checked',true);
+			$(this).parent().next().next().next().next().children().remove('checked',false);
+			$(this).parent().next().next().next().next().children().prop('checked',true);
+			$(this).parent().next().next().next().next().next().children().remove('checked',false);
+			$(this).parent().next().next().next().next().next().children().prop('checked',true);
+            var num = $(".fetmenu").length;
+            var checked_num = $("input[class=fetmenu]:checked").length;
+            if(num==checked_num){
+			    $("[name=fetall]:checkbox").remove('checked',false);
+                $("[name=fetall]:checkbox").prop('checked',true);
+            }
+
+		}else{
+			$(this).parent().next().next().children().remove('checked',true);
+			$(this).parent().next().next().children().prop('checked',false);
+			$(this).parent().next().next().next().children().remove('checked',true);
+			$(this).parent().next().next().next().children().prop('checked',false);
+			$(this).parent().next().next().next().next().children().remove('checked',true);
+			$(this).parent().next().next().next().next().children().prop('checked',false);
+			$(this).parent().next().next().next().next().next().children().remove('checked',true);
+			$(this).parent().next().next().next().next().next().children().prop('checked',false);
+			$("[name=fetall]:checkbox").remove('checked',true);
+			$("[name=fetall]:checkbox").prop('checked',false);
+		}
+
+	});
+        //  点击新建（某个），点击后，菜单（fetmenu为false，fetall为false），判断后全选
+    $(".fetadd").click(function(){
+		if(this.checked){
+			// 判断查询，删除，编辑，是否都已经被选中
+            var detail = $(this).parent().next().children().prop('checked');
+            var del = $(this).parent().next().next().children().prop('checked');
+            var edit = $(this).parent().next().next().next().children().prop('checked');
+            if(detail&&del&&edit){
+                $(this).parent().prev().prev().children().remove('checked',false);
+			    $(this).parent().prev().prev().children().prop('checked',true);
+			     var num = $(".fetmenu").length;
+                var checked_num = $("input[class=fetmenu]:checked").length;
+                if(num==checked_num){
+			    $("[name=fetall]:checkbox").remove('checked',false);
+                $("[name=fetall]:checkbox").prop('checked',true);
+            }
+            }
+		}else{
+			// $("[name=fetalladd]:checkbox").remove('checked',true);
+			// $("[name=fetalladd]:checkbox").prop('checked',false);
+			$("[name=fetall]:checkbox").prop('checked',false);
+			$("[name=fetall]:checkbox").prop('checked',false);
+			$(this).parent().prev().prev().children().remove('checked',true);
+			$(this).parent().prev().prev().children().prop('checked',false);
+		}
+	});
+
+    $(".fetdetail").click(function(){
+		if(this.checked){
+			// 判断查询，删除，编辑，是否都已经被选中
+            var add = $(this).parent().prev().children().prop('checked');
+            var del = $(this).parent().next().children().prop('checked');
+            var edit = $(this).parent().next().next().children().prop('checked');
+            if(add&&del&&edit){
+                $(this).parent().prev().prev().prev().children().remove('checked',false);
+			    $(this).parent().prev().prev().prev().children().prop('checked',true);
+			     var num = $(".fetmenu").length;
+                var checked_num = $("input[class=fetmenu]:checked").length;
+                if(num==checked_num){
+			    $("[name=fetall]:checkbox").remove('checked',false);
+                $("[name=fetall]:checkbox").prop('checked',true);
+            }
+            }
+		}else{
+			// $("[name=fetalladd]:checkbox").remove('checked',true);
+			// $("[name=fetalladd]:checkbox").prop('checked',false);
+			$("[name=fetall]:checkbox").prop('checked',false);
+			$("[name=fetall]:checkbox").prop('checked',false);
+			$(this).parent().prev().prev().prev().children().remove('checked',true);
+			$(this).parent().prev().prev().prev().children().prop('checked',false);
+		}
+	});
+
+    $(".fetdel").click(function(){
+		if(this.checked){
+			// 判断查询，删除，编辑，是否都已经被选中
+            var detail = $(this).parent().prev().children().prop('checked');
+            var add = $(this).parent().prev().prev().children().prop('checked');
+            var edit = $(this).parent().next().children().prop('checked');
+            console.log(add,detail,edit);
+            if(add&&detail&&edit){
+                $(this).parent().prev().prev().prev().prev().children().remove('checked',false);
+			    $(this).parent().prev().prev().prev().prev().children().prop('checked',true);
+			     var num = $(".fetmenu").length;
+                var checked_num = $("input[class=fetmenu]:checked").length;
+                if(num==checked_num){
+			    $("[name=fetall]:checkbox").remove('checked',false);
+                $("[name=fetall]:checkbox").prop('checked',true);
+            }
+            }
+		}else{
+			// $("[name=fetalladd]:checkbox").remove('checked',true);
+			// $("[name=fetalladd]:checkbox").prop('checked',false);
+			$("[name=fetall]:checkbox").prop('checked',false);
+			$("[name=fetall]:checkbox").prop('checked',false);
+			$(this).parent().prev().prev().prev().prev().children().remove('checked',true);
+			$(this).parent().prev().prev().prev().prev().children().prop('checked',false);
+		}
+	});
+      $(".fetedit").click(function(){
+		if(this.checked){
+			// 判断查询，删除，编辑，是否都已经被选中
+            var detail = $(this).parent().prev().children().prop('checked');
+            var add = $(this).parent().prev().prev().children().prop('checked');
+            var del = $(this).parent().prev().prev().prev().children().prop('checked');
+            console.log(add,del,detail);
+            if(add&&detail&&detail){
+                $(this).parent().prev().prev().prev().prev().prev().children().remove('checked',false);
+			    $(this).parent().prev().prev().prev().prev().prev().children().prop('checked',true);
+			     var num = $(".fetmenu").length;
+                var checked_num = $("input[class=fetmenu]:checked").length;
+                if(num==checked_num){
+			    $("[name=fetall]:checkbox").remove('checked',false);
+                $("[name=fetall]:checkbox").prop('checked',true);
+            }
+            }
+		}else{
+			// $("[name=fetalladd]:checkbox").remove('checked',true);
+			// $("[name=fetalladd]:checkbox").prop('checked',false);
+			$("[name=fetall]:checkbox").prop('checked',false);
+			$("[name=fetall]:checkbox").prop('checked',false);
+			$(this).parent().prev().prev().prev().prev().prev().children().remove('checked',true);
+			$(this).parent().prev().prev().prev().prev().prev().children().prop('checked',false);
+		}
+	});
+
+
+
+
+
+</script>
+{% endblock %}

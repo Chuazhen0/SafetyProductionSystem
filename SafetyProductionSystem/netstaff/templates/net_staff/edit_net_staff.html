@@ -1,0 +1,105 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">网络人员维护</span>
+        <small>编辑</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>监督网络管理</span></li>
+        <li class="active">网络人员维护</li>
+    </ol>
+{% endblock %}
+
+
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" data-toggle="tooltip" data-placement="top"   class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+
+{% block list_edit %}
+<a class="btn btn-primary glyphicon glyphicon-list" data-toggle="tooltip" data-placement="top"  title="返回列表" href="/netstaff/list/?action=list&menuid=4"></a>
+{% endblock %}
+
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save"  data-toggle="tooltip" data-placement="top"  title="保存" onclick="if(!checked()){return};document.getElementById('myform').submit();"></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" data-toggle="tooltip" data-placement="top"  class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+
+{% endblock %}
+{% block content %}
+   <form class="form-horizontal" method="post" id="myform" action="/netstaff/{{u_id}}/edit/?action=edit&menuid=4">
+          {% csrf_token %}
+          <div class="box-body" style="margin-top: 20px;">
+
+            <div class="form-group">
+              <label for="number" class="col-sm-2 control-label">编号</label>
+              <div class="col-sm-4">
+                <input type="text" name="number" class="form-control" id="number" value="{{staff.number}}" readonly>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="desc" class="col-sm-2 control-label"><span class="bt">*</span>职责说明</label>
+
+              <div class="col-sm-4">
+                <input type="text" name="desc" class="form-control" id="desc" placeholder="职责说明" value="{{staff.desc}}" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone" class="col-sm-2 control-label"><span class="bt">*</span>电话</label>
+
+              <div class="col-sm-4">
+                <input type="text" name="phone" class="form-control" id="phone" placeholder="电话" value="{{staff.phone}}" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="department" class="col-sm-2 control-label"><span class="bt">*</span>部门</label>
+
+              <div class="col-sm-4">
+                <input type="text" name="department" class="form-control" id="department" placeholder="部门" value="{{staff.department}}" required>
+              </div>
+            </div>
+
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">岗位</label>
+
+            <div class="col-sm-4">
+              <select class="form-control select2" style="width: 100%;" id="net_name" name="net_name" required>
+                <option>组长</option>
+                <option>成员</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+          <!-- /.box-footer -->
+   </form>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+function checked() {
+            var date1 = $("#desc").val();
+            var date2 = $("#phone").val();
+            var date3 = $("#department").val();
+            if(date1=='' | date2 =='' | date3==''){
+             alert('您还有未填写的选项');
+                return false;
+
+            }else{
+              return true;
+            }
+            console.log(checked());
+   }
+      // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+
+{% endblock %}

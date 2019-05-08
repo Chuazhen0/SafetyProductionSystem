@@ -1,0 +1,296 @@
+{% extends "my_base.html" %}
+
+{% load crispy_forms_tags %}
+{% load el_pagination_tags %}
+{% load lbworkflow_tags %}
+
+{% block nav_sel_node %}id-nav-todo{% endblock %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">我的待办</span>
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li>待办事项</li>
+        <li class="active">我的待办</li>
+    </ol>
+{% endblock %}
+
+{% block add %}
+{% endblock %}
+
+{% block update %}
+<!-- 因为使用 block search 不显示，所以此处使用 block update -->
+<a href="#" class="btn btn-primary btn-secondary glyphicon glyphicon-search" data-toggle="tooltip" onclick="prom()"
+   data-placement="top"
+   title="搜索流程" ></a>
+{% endblock %}
+
+
+{% block content %}
+
+
+{% load pagetag %}
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    搜索
+                </h4>
+                <div id="sb1">
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="myform" action="/wf/todo_search/" class="form-horizontal" enctype="multipart/form-data" method="get">
+                    <!--{% csrf_token %}-->
+                    <input type="hidden" name="action" value="list">
+                    <input type="hidden" name="menuid" value="42">
+
+                    <!--<div id="shujuzhanshi">-->
+                    <!--</div>-->
+                    <div class="box-body">
+                         <!--<div class="form-group">-->
+                            <!--<label class="col-md-2 control-label">创建人</label>-->
+                            <!--<div class="col-md-3">-->
+                               <!--<select class="form-control select2 "  name="creater" id="creater">-->
+                                   <!--<option value="">所有</option>-->
+                                <!--{% for company in company_list %}-->
+                                <!--<option value="{{company.id}}">-->
+                                    <!--{{ company.name}}-->
+                                <!--</option>-->
+                                <!--{% endfor %}-->
+                            <!--</select>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <!--<div class="form-group">-->
+                            <!--<label class="col-md-2 control-label">设备专业</label>-->
+                            <!--<div class="col-md-3">-->
+                               <!--<select class="form-control select2 "  name="equipment_major" id="equipment_major">-->
+                                   <!--<option value="">所有</option>-->
+                                <!--{% for equipment_major in equipment_major_list %}-->
+                                <!--<option value="{{equipment_major.id}}">-->
+                                <!--{{equipment_major.name}}-->
+                                <!--</option>-->
+                    <!--{% endfor %}-->
+                            <!--</select>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <!--<div class="form-group">-->
+                            <!--<label class="col-md-2 control-label">监督专业</label>-->
+                            <!--<div class="col-md-3">-->
+                               <!--<select class="form-control select2 "  name="supervision_major" id="supervision_major">-->
+                                   <!--<option value="">所有</option>-->
+                                <!--{% for supervision_major in supervision_major_list %}-->
+                                <!--<option value="{{supervision_major.id}}">-->
+                                <!--{{supervision_major.name}}-->
+                                <!--</option>-->
+                    <!--{% endfor %}-->
+                            <!--</select>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+
+                         <div class="form-group">
+                            <label class="col-md-2 control-label">描述</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="summary" id="summary">
+                            </div>
+                        </div>
+
+                         <div class="form-group">
+                            <!--<input type="submit"  class="btn btn-primary" value="搜索">-->
+                             <div class="btn_box" style="width: 20%;float: right">
+                                <input type="submit" class="btn btn-primary" value="搜索">
+                                <button type="button" id='btn' class="btn btn-primary" data-dismiss="modal"
+                                    onclick="closed()">关闭
+                            </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+            <!--<div class="modal-footer">-->
+                <!--<button type="button" class="btn btn-primary" data-dismiss="modal">关闭-->
+                <!--</button>-->
+            <!--</div>-->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+  <section class="content">
+
+      {% if search_form %}
+      <div class="box-header">
+        <div class="input-group">
+          {% crispy search_form %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="box-body table-responsive no-padding">
+        <form id="id-list-form" action="{% url 'wf_batch_agree' %}" method="post">
+          {% csrf_token %}
+          <table class="table table-hover">
+            <tbody>
+              <tr>
+                <th class="first">
+                  <input type="checkbox" onclick="$('[name=wi]').prop( 'checked', $(this).prop('checked'));"/>
+                </th>
+               <th class="first">编号</th>
+               <th class="third">流程名称</th>
+               <th class="fifth">描述</th>
+               <th class="fifth">完成情况</th>
+               <th class="second">创建时间</th>
+               <th class="second">创建人</th>
+               <th class="second">当前操作人</th>
+               <th class="third">节点</th>
+               <th class="third">操作</th>
+              </tr>
+              {% paginate object_list %}
+              {% for o in object_list %}{% with pi=o.instance %}
+                <tr>
+                  <td class="first">
+                    <input type="checkbox" name="wi" value="{{ o.pk }}"/>
+                  </td>
+                  <!--<td class="first"><a href="{% url 'wf_detail' pi.pk %}">{{ pi.no }}</a></td>-->
+                  <td class="first proins_id">{{ pi.id}}</td>
+                  <td class="third">{{ pi.process.myprocess.myprocess_name }}</td>
+                  <td class="award-name fifth" data-placement="bottom" title="{{ pi.summary }}">{{ pi.summary }}</td>
+                  <td class="complete_desc_{{ pi.id}}"></td>
+                  <td class="second">{{ pi.created_on|date:"Y-m-d H:i" }}</td>
+                  <td class="second">{{ pi.created_by }}</td>
+                  <td class="second user_num user_num_{{ pi.get_operators_display }}">{{ pi.get_operators_display }}</td>
+                  <td class="third">
+                    <span class="label label-{{ pi|flow_status_css_class }}">
+                      {{ pi.cur_node.name }}
+                    </span>
+                  </td>
+                  <td><a href="/wf/{{ o.pk }}/{{ pi.id}}/wf_approval/?action=edit&menuid=42" data-toggle="tooltip" data-placement="top" title="查看详情"><span
+                          class="btn btn-default glyphicon glyphicon-zoom-in" ></span></a>
+                  </td>
+                </tr>
+              {% endwith %}{% endfor %}
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="box-footer clearfix">
+          <div style="float:left">
+        <!--{% show_pages %}-->
+          <ul class="pagination pagination-sm no-margin pull-right">
+        {% if object_list.has_previous %}
+        <li>
+            <a href="?page={{ object_list.previous_page_number }}&action=list&menuid=42&summary={{ summary }}"
+               aria-label="Previous">
+                <span aria-label="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!--{% for pg in alluser.paginator.page_range %}-->
+            <!--{% circle_page menuid alluser.number pg %}-->
+        <!--{% endfor %}-->
+
+        {% for pg in page_range %}
+		{% if pg == page %}
+			<li class="active"><a href="#">{{ pg }}</a></li>
+		{% else %}
+			<li><a href="?page={{ pg }}&action=list&menuid=42&summary={{ summary }}">{{ pg }}</a></li>
+		{% endif %}
+	    {% endfor %}
+
+        {% if object_list.has_next %}
+        <li>
+            <a href="?page={{ object_list.next_page_number }}&action=list&menuid=42&summary={{ summary }}"
+               aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+          </div>
+
+
+
+          <!--<span>{{  object_list.0 }}</span>-->
+          <!-- 判断是否存在第一条数据，存在则显示同意与拒绝按钮，不存在则不显示 -->
+          {% if object_list.0  %}
+        <div style="float:right">
+          <button class="btn btn-sm btn-default"
+                  onclick="$('#id-list-form').attr('action', '{% url 'wf_batch_agree' %}');$('#id-list-form').submit()">
+            同意
+          </button>
+          <button class="btn btn-sm btn-danger"
+                  onclick="$('#id-list-form').attr('action', '{% url 'wf_batch_reject' %}');$('#id-list-form').submit()">
+           拒绝
+          </button>
+        </div>
+      </div>
+        {% else %}{% endif %}
+  </section>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+    // 根据流程id查询对应的任务完成情况描述信息
+    $(".proins_id").each(function(i){
+        //console.log($(this).text());
+        var proins_id = $(this).text();
+        $.ajax({
+            type: "POST",
+            url: "/wf/get_complete_desc/",
+            data: {proins_id:proins_id},
+            dataType: "json",
+            success: function(data){
+                //console.log(data);
+                $(".complete_desc_"+proins_id).text(data.complete_desc)
+            },
+            error:function () {
+                $(".complete_desc_"+proins_id).text('信息加载失败！')
+            }
+         });
+    });
+
+    // 根据用户帐号查询用户名
+    $(".user_num").each(function(i){
+        //console.log($(this).text());
+        var user_num = $(this).text();
+        $.ajax({
+            type: "POST",
+            url: "/wf/get_username/",
+            data: {user_num:user_num},
+            dataType: "json",
+            success: function(data){
+                console.log(user_num + '[' + data.username + ']');
+                $(".user_num_"+user_num).text(user_num + '[' + data.username + ']')
+            },
+            error:function () {
+                $(".user_num_"+user_num).text('信息加载失败！')
+            }
+         });
+    });
+
+    function prom() {
+
+        $('#myModal').modal('show');
+
+
+
+
+    }
+
+
+
+</script>
+{% endblock %}

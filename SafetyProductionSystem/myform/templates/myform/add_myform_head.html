@@ -1,0 +1,197 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">报表管理</span>
+        <small>新建</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span href="#">技术监督</span></li>
+        <li><span href="#">报表填报</span></li>
+        <li class="active">新建报表</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href=/myform/show_all_form/?action=list&menuid=16"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block save %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存"
+   id="create_btn" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+
+{% block list_new %}
+
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block content %}
+<form class="form-horizontal" method="post" id="myform"
+      action="/myform/form_attribute_add/?action=new&menuid=16" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="box-body" style="margin-top: 20px;">
+        <span style="color: red">{{msg}}</span>
+        <div class="row">
+            <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-sm-4 control-label"><span class="bt">*</span>集团名称</label>
+                <div class="col-sm-6">
+                    <input type="text" name="number" class="form-control" id="number" placeholder="集团名称" value="国家电投河南公司" required>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">状态</label>
+                <div class="col-sm-6">
+                    <input type="text" name="form_state" class="form-control" id="form_state" placeholder="状态" required value="草稿" readonly>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">创建日期</label>
+            <div class="col-md-3">
+                <input type="text" name="created_at" id="created_at" class="form-control" value="{{time_now}}" readonly>
+                <!-- <select class="form-control select2 " name="created_at" id="created_at"> -->
+                   <!--  <option value="{{time_pass}}">{{time_pass}}</option> -->
+                   <!--  <option selected value="{{time_now}}">{{time_now}}</option>-->
+                <!--</select>-->
+            </div>
+
+            <label class="col-md-2 control-label">月份</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="year_moon" id="year_moon">
+                    <option selected value="{{up_last | date:'Ym'}}">{{up_last | date:"Ym"}}</option>
+                    <option value="{{now_time | date:'Ym'}}">{{now_time | date:'Ym'}}</option>
+                </select>
+                <!--<input type="text" name="year_moon" class="form-control" id="year_moon" placeholder="月份" value="上月" >-->
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-12">
+            <div class="form-group">
+
+                <label class="col-md-2 control-label">填报人</label>
+                <div class="col-md-3">
+                    <input type="text" name="formname" class="form-control" id="create_person" placeholder="填报人" value="{{user.myuser.name}}" readonly>
+                </div>
+                <label class="col-md-2 control-label">监督类型</label>
+                <div class="col-md-3">
+                    <select class="form-control select2 " name="ptype" id="ptype">
+                        {% for jdata in supervision_data %}
+                        <option value="{{jdata.id}}">
+                            {{jdata.name}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+            <div class="form-group">
+            <label class="col-md-4 control-label">电厂名称</label>
+                <div class="col-md-6">
+                    <select style="width:100%" class="form-control js-example-basic-single" name="powerplants" id="powerplants" required>
+                    {% for power in power_plan %}
+                    <option value="{{power.id}}">{{power.pownumber}}--{{power.powname}}</option>
+                    {% endfor %}
+                </select>
+                </div>
+            </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.box-footer -->
+</form>
+
+{% endblock %}
+{% block javascript %}
+<!--<script>-->
+<!--function checked() {-->
+            <!--var date2 = $("#number").val();-->
+            <!--var date3 = $("#effect_time").val();-->
+
+            <!--if(date2=='' | date3 ==''){-->
+             <!--alert('您还有未填写的选项');-->
+                <!--return false;-->
+
+            <!--}else{-->
+              <!--return true;-->
+            <!--}-->
+            <!--console.log(checked());-->
+   <!--}-->
+   <!--// 按钮悬浮效果-->
+<!--$("[data-toggle='tooltip']").tooltip();-->
+<!--</script>-->
+<script type='application/javascript' src='/static/js/bootstrapValidator/bootstrapValidator.js'></script>
+<script>
+    $(function (){
+       $('#myform').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields:{
+            number:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入人员资质编码'
+                    },
+                    callback:{
+                        message:'人员资质编码错误'
+                    }
+                }
+            },
+             effect_time:{
+                validators:{
+                    notEmpty:{
+                        message:'请您选择有效日期'
+                    },
+                    callback:{
+                        message:'日期无效'
+                    }
+                }
+            },
+        }
+    })
+   });
+$('#myform').submit(function(ev){
+    ev.preventDefault();
+    });
+    $('#create_btn').on('click', function(){
+        var bootstrapValidator = $('#myform').data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if (bootstrapValidator.isValid()){
+            document.getElementById('myform').submit();
+            layer.msg('添加成功')
+        }
+        else {
+            document.getElementById('myform').submit();
+            layer.msg('添加失败');
+            return false
+        }
+    });
+
+    $(document).ready(function() {
+    $('.js-example-basic-single').select2();
+    });
+
+
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

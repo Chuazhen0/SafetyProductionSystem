@@ -1,0 +1,149 @@
+{% extends 'my_base.html' %}
+{% block title %}
+编辑组织机构
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block list_edit %}
+<!--<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/systemsettings/show_one_organization/?action=list&menuid=40" data-toggle="tooltip" data-placement="top" ></a>-->
+{% endblock %}
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top" ></a>
+<!--<a type="button" onClick="javascript :history.back(-1)" class="btn btn-primary">返回</a>-->
+{% endblock %}
+
+{% block content %}
+    <form action="/systemsettings/{{mid}}/{{tid}}/edit_organization/" class="form-horizontal"
+              method="post" enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+        {% csrf_token %}
+    <div class="box-body">
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>名&nbsp;称</label>
+            <div class="col-md-3">
+                {% if org_level == '1' %}
+                    <input type="text" class="form-control" name="name" value="{{data.comname}}">
+                {% elif org_level == '2' %}
+                    <input type="text" class="form-control" name="name" value="{{data.departname}}">
+                {% endif %}
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >简称</label>
+            <div class="col-md-3">
+                {% if org_level == '1' %}
+                    <input type="text" class="form-control" name="simplename" value="{{data.comsimplename}}">
+                {% elif org_level == '2' %}
+                    <input type="text" class="form-control" name="simplename" value="{{data.simple_name}}">
+                {% endif %}
+
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>上级目录</label>
+            <div class="col-md-3">
+                {% if org_level == '1' %}
+                    <input type="text" class="form-control" name="tage" value="无" readonly>
+                {% elif org_level == '2' %}
+                    <input type="text" class="form-control"  name="tage" value="{{data.company.comname}}" readonly>
+                {% endif %}
+                <!--<input type="text" class="form-control" id="tage" name="tage" value="{{data.parent.name}}" readonly>-->
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+        <label class="col-md-1 control-label"><span class="bt">*</span>级&nbsp;别</label>
+        <div class="col-md-3">
+            <select class="form-control select2 "  name="type" id="type">
+                {% if org_level == '1' %}
+                    <option value="0">公司</option>
+                {% elif org_level == '2' %}
+                    <option value="{{data.company.id}}">部门</option>
+                {% endif %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >代码编号</label>
+            <div class="col-md-3">
+                {% if org_level == '1' %}
+                    <input type="text" class="form-control" name="number" value="{{data.comnumber}}">
+                {% elif org_level == '2' %}
+                    <input type="text" class="form-control" name="number" value="{{data.departnumber}}">
+                {% endif %}
+
+            </div>
+    </div>
+    <h1>{{error}}</h1>
+    </div>
+    </form>
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+  $(function(){
+  $("#jump").click(function(){
+  var second = 3;
+
+   //获取显示秒数的元素，通过定时器来更改秒数。
+
+    var message = document.getElementById("countTime");
+
+    function clock()
+
+    {
+
+        if(second==0)
+
+        {
+
+            goTo();
+
+        }
+
+        else
+
+        {
+            document.getElementById('yes').setAttribute('style', 'display: block');
+            message.innerHTML = second-- + "秒后回到详情页";
+            window.setTimeout(clock,1000);
+
+        }
+
+    }
+
+    clock();
+
+   //通过window的location和history对象来控制网页的跳转。
+
+   function goTo()
+
+   {
+
+        window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";
+
+   }
+
+   function goBack()
+
+   {
+
+    //   window.history.Back();
+
+        window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";
+
+   }
+
+  })
+  })
+
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+
+
+
+</script>
+{% endblock %}

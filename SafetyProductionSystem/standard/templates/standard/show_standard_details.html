@@ -1,0 +1,103 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">指标定义</span>
+        <small>指标定义详情列表</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>指标管理</span></li>
+        <li class="active">指标定义</li>
+    </ol>
+{% endblock %}
+{% block add %}
+<!--<a href="/standard/{{sid}}/standard_detail_add/?action=new&menuid=20" class="btn btn-primary glyphicon glyphicon-plus" data-toggle="tooltip" data-placement="top" title="新建指标定义详情"></a>-->
+{% endblock %}
+{% block search %}
+<a href="#" class="btn btn-primary btn-secondary glyphicon glyphicon-search" data-toggle="tooltip" onclick="prom()"
+   data-placement="top" title="查询指标定义"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+{% endblock %}
+{% block content %}
+{% load pagetag %}
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>指标名称</th>
+        <th>指标类型</th>
+        <th>监督类型</th>
+        <th>标准值</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for warn in data %}
+    {% if warn.is_activate == 1 %}
+    <tr>
+        <td>{{warn.standard_name}}</td>
+        <td>{{warn.definition.describe}}</td>
+        <td>{{warn.definition.Supervision_type.supervision_major}}</td>
+        <td>{{warn.standard_value}}</td>
+        <td><a href="/standard/{{warn.id}}/{{sid}}/standard_detail_detail/?action=detail&menuid=20" title="查看指标定义详情" data-toggle="tooltip" data-placement="top"><span
+        class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>&nbsp;
+            <!--<a href="/standard/{{warn.id}}/{{sid}}/standard_detail_edit/?action=edit&menuid=20" title="编辑指标定义详情" data-toggle="tooltip" data-placement="top"><span-->
+        <!--class="btn btn-default glyphicon glyphicon-edit"></span></a>&nbsp;-->
+        <a href="javascript:;"
+        onclick="if(confirm('您确定删除这条记录？')){location.href='/standard/{{warn.id}}/{{sid}}/standard_detail_delete/?action=del&menuid=20';}"
+        title="删除指标定义详情" data-toggle="tooltip" data-placement="top"><span class="btn btn-default glyphicon glyphicon-trash"></span></a>
+        </td>
+    </tr>
+    {% endif %}
+    {% empty %}
+    <tr><td colspan="5">暂无</td></tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+<div class="box-footer clearfix">
+    <ul class="pagination pagination-sm no-margin pull-left">
+      {% if data.has_previous %}
+      <li>
+        <a href="?page={{ data.previous_page_number }}" aria-label="Previous">
+          <span aria-label="true">&laquo;</span>
+        </a>
+      </li>
+    {% endif %}
+
+    {% for pg in data.paginator.page_range %}
+        {% circle_page menuid data.number pg %}
+    {% endfor %}
+    {% if data.has_next %}
+      <li>
+        <a href="?page={{ data.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% endif %}
+    </ul>
+</div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+// 搜索框，点击放大镜后触发函数
+function prom(){
+    // 将搜索框和内容清空
+    $("#myform").val('');
+    $("#list").find("td").remove();
+		$('#myModal').modal('show');
+		$('#myModal').on('hide.bs.modal', function() {
+			 //$("#myform")[0].reset();
+			 $(this).find("shujuzhanshi").remove();
+		});
+		};
+
+// 点击隐藏
+function closed(){
+$('#myModal').hide();
+};
+// 点击搜索触发函数，获取输入的值
+// 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

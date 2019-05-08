@@ -1,0 +1,146 @@
+{% extends 'my_base.html' %}
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">个人中心</span>
+    <small>修改密码</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li class="active">个人中心</li>
+</ol>
+{% endblock %}
+{% block checkpower %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="top"   title="保存"  id="create_btn" ></a>
+<a class="btn btn-primary glyphicon glyphicon-home" data-toggle="tooltip" data-placement="top"  title="返回首页" href="/systemsettings/starter/"></a>
+{% endblock %}
+{% block content %}
+<form action="/systemsettings/{{ request.session.mylogin.myuser.id }}/self_detail/" class="form-horizontal" method="post"
+      enctype="multipart/form-data" id="myform">
+    <div class="box-body">
+        <div class="form-group" >
+            <label class="col-md-3  control-label">原始密码:</label>
+            <div class="col-md-5">
+                <input type="password" class="form-control select2 "  name="password" id="password" required>
+                <div class="col-md-5" id="result" style="color:red;">{{msg}}</div>
+            </div>
+        </div>
+        <div class="form-group" >
+            <label class="col-md-3  control-label">新的密码:</label>
+            <div class="col-md-5">
+                <input type="password" class="form-control select2 "  name="password1" id="password1" required>
+            </div>
+        </div>
+        <div class="form-group" >
+            <label class="col-md-3  control-label">确认密码:</label>
+            <div class="col-md-5">
+                <input type="password" class="form-control select2 "  name="password2" id="password2" required>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+{% block javascript %}
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+<script>
+    // 按钮悬浮效果
+    $("[data-toggle='tooltip']").tooltip();
+    $('#myform').bootstrapValidator({
+        message: '该值无效',
+        trigger: 'blur keyup',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            /*验证：规则*/
+            password: {
+                validators: {
+                    notEmpty: {
+                        message: '用户旧密码不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 19,
+                        message: '用户旧密码长度大于5小于20'
+                    },
+                    regexp: {
+                        regexp: /^[^ ]+$/,
+                        message: '用户旧密码不能有空格'
+                    },
+                }
+            },
+            password1: {
+                validators: {
+                    notEmpty: {
+                        message: '用户新密码不能为空'
+                    },
+                    identical: {
+                        field: 'password2',
+                        message: '用户新密码与确认密码不一致！'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 19,
+                        message: '用户新密码长度大于5小于20'
+                    },
+                    regexp: {
+                        regexp: /^[^ ]+$/,
+                        message: '用户新密码不能有空格'
+                    }
+
+                }
+            },
+            password2: {
+                validators: {
+                    identical: {
+                        field: 'password1',
+                        message: '用户新密码与确认密码不一致！'
+                    },
+                    notEmpty: {
+                        message: '用户确认密码不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 19,
+                        message: '用户确认密码长度大于5小于20'
+                    },
+
+                    regexp: {
+                        regexp: /^[^ ]+$/,
+                        message: '用户确认密码不能有空格'
+                    }
+                }
+            }
+        }
+    });
+
+    $("#myform").submit(function (ev) {
+        ev.preventDefault();
+    });
+    $("#create_btn").on("click", function () {
+        var bootstrapValidator = $("#myform").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if (bootstrapValidator.isValid()) {
+            document.getElementById('myform').submit();
+            layer.msg('添加成功！')
+        }
+        else {
+            layer.msg('添加失败，请填写正确信息!');
+            return false;
+        }
+    });
+
+    $("#password").blur(function(){
+        var num = $(this).val();
+        $.ajax({
+            url:'/systemsettings/check_password/',
+            'type':'POST',
+            'data':{'num':num},
+            success:function(data){
+                $("#result").text(data.msg);
+            },
+
+        })
+    })
+</script>
+{% endblock %}

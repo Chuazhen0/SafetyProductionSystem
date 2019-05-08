@@ -1,0 +1,60 @@
+{% extends "my_base.html" %}
+
+{% load crispy_forms_tags %}
+{% load el_pagination_tags %}
+{% load lbworkflow_tags %}
+{% block nav_sel_node %}id-nav-mywf{% endblock %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">与我相关</span>
+        <small>与我相关</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>工作流</span></li>
+        <li class="active">与我相关</li>
+    </ol>
+{% endblock %}
+{% block content %}
+<section class="content">
+      {% if search_form %}
+        <div class="box-header">
+          <div class="input-group">
+            {% crispy search_form %}
+          </div>
+        </div>
+      {% endif %}
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <tbody>
+            <tr>
+                <th class="first">编号</th>
+                <th class="fifth">流程名称</th>
+                <th class="fifth">描述</th>
+                <th class="second">创建时间</th>
+                <th class="second">当前操作人</th>
+                <th class="third">节点</th>
+            </tr>
+            {% paginate object_list %}
+            {% for pi in object_list %}
+              <tr>
+                <td class="first"><a href="{% url 'wf_detail' pi.pk %}">{{ pi.no }}</a></td>
+                <td class="fifth">{{ pi.process.myprocess.myprocess_name }}</td>
+                <td class="fifth">{{ pi.summary }}</td>
+                <td class="second">{{ pi.created_on|date:"Y-m-d H:i" }}</td>
+                <td class="second">{{ pi.get_operators_display }}</td>
+                <td class="third">
+                  <span class="label label-{{ pi|flow_status_css_class }}">
+                    {{ pi.cur_node.name }}
+                  </span>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="box-footer clearfix">
+        {% show_pages %}
+      </div>
+
+  </section>
+{% endblock %}

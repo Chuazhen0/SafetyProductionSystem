@@ -1,0 +1,159 @@
+{% extends 'my_base.html' %}
+{% block title %}
+人员信息列表
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+
+{% block content %}
+<!--<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
+     <!--aria-hidden="true">-->
+    <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+            <!--<div class="modal-header">-->
+                <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true"-->
+                        <!--onclick="closed()">-->
+                    <!--&times;-->
+                <!--</button>-->
+                <!--<h4 class="modal-title" id="myModalLabel">-->
+                    <!--人员信息展示-->
+                <!--</h4>-->
+                <!--<div id="sb">-->
+                    <!--<input type='text' placeholder='请输入关键词' id="word" class="form-control">-->
+                    <!--<a id="submit" href="#">搜索</a>-->
+                    <!--<table class="table table-striped table-bordered" id="list">-->
+                        <!--<tr>-->
+                            <!--<th>计划描述</th>-->
+                            <!--<th>年份</th>-->
+                            <!--<th>月份</th>-->
+                            <!--<th>状态</th>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="modal-footer">-->
+                <!--<button type="button" id='btn' class="btn btn-primary" data-dismiss="modal"-->
+                        <!--onclick="closed()">关闭-->
+                <!--</button>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash; /.modal-content &ndash;&gt;-->
+    <!--</div>-->
+    <!--&lt;!&ndash; /.modal &ndash;&gt;-->
+<!--</div>-->
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>员工姓名</th>
+        <th>员工工号</th>
+        <th>部门</th>
+        <th>电话</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for p in data %}
+    {% if p.is_activate == 1 %}
+    <tr>
+        <td>{{p.name}}</td>
+        <td>{{p.number}}</td>
+        <td>{{p.job}}</td>
+        <td>{{p.phone}}</td>
+        <td><a href="/systemsettings/{{p.id}}/staff_detail/?action=detail&menuid=39" title="查看人员" data-toggle="tooltip" data-placement="top" ><span
+        class="glyphicon glyphicon-zoom-in"></span></a>&nbsp;<a href="/systemsettings/{{p.id}}/staff_edit/?action=edit&menuid=39" title="编辑人员信息" data-toggle="tooltip" data-placement="top" ><span
+        class="glyphicon glyphicon-edit"></span></a>&nbsp;
+        <a href="javascript:;"
+        onclick="if(confirm('您确定删除这条记录？')){location.href='/systemsettings/{{p.id}}/staff_delete/?action=del&menuid=39';}"
+        title="删除人员" data-toggle="tooltip" data-placement="top" ><span class="glyphicon glyphicon-trash"></span></a>
+        </td>
+    </tr>
+    {% endif %}
+    {% empty %}
+    <tr><td colspan="5">暂无</td></tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+<div class="box-footer clearfix">
+    <ul class="pagination pagination-sm no-margin pull-left">
+      {% if data.has_previous %}
+      <li>
+        <a href="?page={{ data.previous_page_number }}" aria-label="Previous">
+          <span aria-label="true">&laquo;</span>
+        </a>
+      </li>
+    {% endif %}
+
+    {% for pg in data.paginator.page_range %}
+      {% if data.number == pg %}
+        <li class="active"><a href="?action=edit&menuid=39?page={{pg}}">{{pg}}</a></li>
+      {% else %}
+        <li><a href="?page={{pg}}">{{pg}}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if data.has_next %}
+      <li>
+        <a href="?page={{ data.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% endif %}
+    </ul>
+</div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+// 搜索框，点击放大镜后触发函数
+function prom(){
+    // 将搜索框和内容清空
+    $("#word").val('');
+    $("#list").find("td").remove();
+		$('#myModal').modal('show');
+		$('#myModal').on('hide.bs.modal', function() {
+			 //$("#myform")[0].reset();
+			 $(this).find("shujuzhanshi").remove();
+		});
+		};
+// 点击隐藏
+function closed(){
+$('#myModal').hide();
+};
+$(function(){
+    $("#word").val('');
+    $("#submit").click(function(){
+    // 点击提交，获取搜索框输入的值
+    $("#list").find("td").remove();
+    var $word = $("#word").val();
+    console.log($word);
+    // 发送ajax 请求
+    $.ajax({
+    url:'/supervision/global_search/',
+    mon_plan_sum_list:{'word':$word},
+    type:'POST',
+    success:function(mon_plan_sum_list){
+         console.log(mon_plan_sum_list['list']);
+        for(i=0;i<mon_plan_sum_list['num'];i++){
+         console.log(mon_plan_sum_list['list'][i]['fields']['desc']);
+         console.log(mon_plan_sum_list['list'][i]['pk']);
+          $("#list").append("<tr><a href="+"'/supervision/'"+mon_plan_sum_list['list'][i]['pk']+"'/mon_plan_sum_detail/'"+"><td>"+mon_plan_sum_list['list'][i]['fields']['desc']+"</td></a><td>"+mon_plan_sum_list['list'][i]['fields']['year']+"</td><td>"+mon_plan_sum_list['list'][i]['fields']['month']+"</td><td>"+mon_plan_sum_list['list'][i]['fields']['state']+"</td></tr>");
+
+
+                   }
+        // 接受数据并写入页面
+
+    },
+    })
+    })
+})
+
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+
+
+
+</script>
+{% endblock %}
+

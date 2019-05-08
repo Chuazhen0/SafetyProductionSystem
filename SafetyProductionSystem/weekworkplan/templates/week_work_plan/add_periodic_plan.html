@@ -1,0 +1,283 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">周期检测计划</span>
+        <small>新建</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>25项反措</span></li>
+        <li><span>周期检测</span></li>
+        <li class="active">周期检测计划</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/weekworkplan/list/?action=list&menuid=34" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+
+{% block save %}
+<!--<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" -->
+   <!--onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top" ></a>-->
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存"
+   id="create_btn" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+{% endblock %}
+{% block content %}
+<form method="POST" action="/weekworkplan/add/" class="form-horizontal"
+          enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+        {% csrf_token %}
+    <div class="box-body">
+         <div class="form-group" >
+            <label class="col-md-2 control-label">策划人:</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="planner" name="planner" value="{{request.session.mylogin.myuser.name}}" readonly>
+            </div>
+
+
+       <label class="col-md-2 control-label" >状&nbsp;态:</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="state" name="state" value="拟定"
+                       readonly>
+            </div>
+    </div>
+
+
+    <div class="form-group" >
+            <label class="col-md-2 control-label">执行人:</label>
+            <div class="col-md-3">
+            <select class="form-control select2 "  name="execute_user" id="execute_user">
+                {% for nid in data %}
+                <option value="{{nid.id}}">
+                    {{nid.name}}
+                </option>
+                {% endfor %}
+            </select>
+            </div>
+
+            <label class="col-md-2 control-label" >第三方机构:</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="third_org" name="third_org">
+            </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+        <div class="form-group">
+             <label class="col-md-4 control-label" ><span class="bt">*</span>策划时间:</label>
+             <div class="col-md-6">
+                <input type="date" class="form-control" id="plan_time" name="plan_time">
+             </div>
+        </div>
+        </div>
+
+        <div class="col-md-6">
+        <div class="form-group">
+             <label class="col-md-2 control-label" ><span class="bt">*</span>完成时限:</label>
+             <div class="col-md-6">
+                <input type="text" class="form-control" id="time_limit" name="time_limit">
+             </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="form-group" style="margin-left:-12px">
+        <label class="col-md-2 control-label"><span class="bt">*</span>频率描述:</label>
+        <div class="col-md-3">
+            <!--<input type="text" class="form-control col-md-1" name="rate_desc" id="rate_desc" onblur="check_num()">-->
+            <input type="text" class="form-control col-md-1" name="rate_desc" id="rate_desc" >
+            <input type="radio" class="weekend_desc" name="rate_code" value="小时"/>小时
+            <input type="radio" class="weekend_desc" name="rate_code" value="天"/>天
+            <input type="radio" class="weekend_desc" name="rate_code" value="周"/>周
+            <input type="radio" class="weekend_desc" name="rate_code" value="月"/>月
+            <!--<span class="glyphicon glyphicon-remove-sign error" id="one">请输入正确数字（非零正整数)！</span>-->
+        </div>
+    </div>
+    </div>
+
+    <div class="form-group" >
+                <label class="col-md-2 control-label" ><span class="bt">*</span>监督专业:</label>
+               <div class="col-md-3">
+                    <select class="form-control select2" name="supervision_major">
+                        {% for supervision_major in supervision_major_list %}
+                        <option value="{{supervision_major.id }}">{{supervision_major.name}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+    </div>
+
+
+
+
+    <div class="form-group" >
+            <label class="col-md-2 control-label" ><span class="bt">*</span>计划内容:</label>
+            <div class="col-md-8">
+                <textarea type="text" class="form-control" id="plan" name="plan"></textarea>
+            </div>
+    </div>
+
+    <div class="form-group" >
+        <label class="col-md-2 control-label">附&nbsp;件:</label>
+            <div class="col-md-3">
+                <input type="file" id="enclosure" name="enclosure">
+            </div>
+    </div>
+    </div>
+</form>
+{% endblock %}
+{% block javascript %}
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+
+<!--$(function(){-->
+  <!--$("#jump").click(function(){-->
+  <!--var second = 3;-->
+   <!--//获取显示秒数的元素，通过定时器来更改秒数。-->
+    <!--var message = document.getElementById("countTime");-->
+    <!--function clock()-->
+    <!--{-->
+        <!--if(second==0)-->
+        <!--{-->
+            <!--goTo();-->
+        <!--}-->
+        <!--else-->
+        <!--{-->
+            <!--document.getElementById('yes').setAttribute('style', 'display: block');-->
+            <!--message.innerHTML = second&#45;&#45; + "秒后回到详情页";-->
+            <!--window.setTimeout(clock,1000);-->
+        <!--}-->
+    <!--}-->
+    <!--clock();-->
+   <!--//通过window的location和history对象来控制网页的跳转。-->
+   <!--function goTo()-->
+   <!--{-->
+        <!--window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";-->
+   <!--}-->
+   <!--function goBack()-->
+   <!--{-->
+    <!--//   window.history.Back();-->
+        <!--window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";-->
+   <!--}-->
+  <!--})-->
+  <!--});-->
+
+<!--function checked() {-->
+            <!--var date1 = $("#plan_time").val();-->
+            <!--var date2 = $("#plan").val();-->
+            <!--var date3 = $("#execute_user").val();-->
+            <!--var date4 = $("#time_limit").val();-->
+            <!--var date5 = $("#rate_desc").val();-->
+            <!--var date6 = $("#rate_code").val();-->
+            <!--if(date1==''|date2==''|date3==''|date4==''|date5==''|date5==''){-->
+             <!--alert('请完成所有必填项！');-->
+                <!--return false;-->
+            <!--}else{-->
+                <!--return true;-->
+            <!--}-->
+            <!--console.log(checked());-->
+	<!--}-->
+<!--//周期描述，数字验证-->
+        <!--function check_num(){-->
+        <!--$("#one").hide();-->
+            <!--var num = $("#rate_desc").val();-->
+            <!--var reg=/^[1-9]\d*$/;-->
+            <!--data = reg.test(num);-->
+            <!--console.log(data);-->
+               <!--if (!data){-->
+               <!--//请填写数字-->
+                <!--$("#one").show();-->
+                <!--}-->
+            <!--}-->
+<script>
+    $(function (){
+       $('#myform').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields:{
+            plan_time:{
+                validators:{
+                    notEmpty:{
+                        message:'请您选择时间'
+                    },
+                    callback:{
+                        message:'选择时间错误'
+                    },
+                }
+            },
+            time_limit:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入完成时限'
+                    },
+                    callback:{
+                        message:'完成时限错误'
+                    },
+                    regexp: {//正则验证
+                        regexp: /^[0-9]+$/,
+                        message: '所输入的字符不符要求'
+                    },plan
+
+                }
+            },
+            rate_desc:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入正确的频率描述'
+                    },
+                    callback:{
+                        message:'频率描述错误'
+                    },
+                    regexp: {//正则验证
+                        regexp: /^[0-9]+$/,
+                        message: '请输入正确数字（非零正整数)！'
+                    },
+                }
+            },
+            plan:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入计划内容'
+                    },
+                    callback:{
+                        message:'计划内容错误'
+                    },
+                    stringLength: {//检测长度
+                        min: 1,
+                        max: 20,
+                        message: '长度必须在1-20之间'
+                    },
+                }
+            },
+
+        }
+    })
+   });
+
+$("#myform").submit(function (ev) {
+            ev.preventDefault();
+        });
+        $("#create_btn").on("click", function () {
+            var bootstrapValidator = $("#myform").data('bootstrapValidator');
+            bootstrapValidator.validate();
+            if (bootstrapValidator.isValid()) {
+                document.getElementById('myform').submit();
+                layer.msg('添加成功！')
+            }
+            else {
+                layer.msg('添加失败，请填写正确信息!');
+                return false;
+            }
+        });
+ // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+</script>
+{% endblock %}

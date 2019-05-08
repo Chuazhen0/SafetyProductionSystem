@@ -1,0 +1,161 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">月度工作执行</span>
+    <small>详情</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span>技术监督</span></li>
+    <li><span>计划与总结</span></li>
+    <li class="active">月度工作执行</li>
+</ol>
+{% endblock %}
+{% block beiyong  %}
+<a href="/monworkexe/list/?action=list&menuid=8" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_detail %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/monworkexe/list/?action=list&menuid=8" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block modify %}
+<a href="/monworkexe/{{mon_work.id}}/edit/?action=edit&menuid=8" class="btn btn-primary glyphicon glyphicon-edit"
+   title="编辑月度工作" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/monworkexe/{{mon_work.id}}/delete/?action=del&menuid=8';}"
+   title="删除月度工作" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+
+
+<!--<a href="/monworkexe/{{mon_work.id}}/delete/?action=del&menuid=20" class="btn btn-danger delete" >{{power.title}}</a>-->
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" data-toggle="tooltip" data-placement="top" class="css3 btn btn-primary glyphicon glyphicon-refresh"
+   title="刷新"></a>
+{% endblock %}
+{% block content %}
+{% block right_side %}
+<section class="content-header">
+    {% include "incs/messages.html" %}
+    {% block right_side_header %}
+    <div class="right-btns">
+        {% include "lbworkflow/inc_wf_btns.html" %}
+        {% block flow_help %}
+        {% endblock %}
+
+        {% block right_side_header_ext_btns %}
+        {% if processinstance %}
+        <a class="" target="_blank" href="{% url 'wf_print_detail' processinstance.pk %}">打印</a>
+        {% endif %}
+        <span>|</span>
+        {% endblock %}
+    </div>
+    {% endblock %}
+</section>
+<section class="content">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs" role="tablist" id="id-m-nav-tabs">
+            <li class="active">
+                <a href="#id-tb-base" role="tab" data-toggle="tab">基础信息</a>
+            </li>
+            {% block right_side_tab_nav_ext %}
+            {% endblock %}
+            <li>
+                <a href="#id-tb-wf-log" role="tab" data-toggle="tab">操作历史</a>
+            </li>
+            <!--<li>-->
+            <!--<a href="#id-tb-wf-graph" role="tab" data-toggle="tab">流程图</a>-->
+            <!--</li>-->
+        </ul>
+        <div class="tab-content">
+            {% block right_side_tab_ctx_ext %}
+            <div class="tab-pane active"  id="id-tb-base">
+                <table class="table table-bordered tb-detail no-margin">
+
+                    <tr>
+                        <th>公司名称</th>
+                        <td>{{ mon_work.place }}</td>
+                        <th>月度工作执行编码</th>
+                        <td>{{ mon_work.number }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ mon_work.created_at }}</td>
+                        <th>最后更新时间</th>
+                        <td>{{ mon_work.last_updated_at }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>月度计划编码</th>
+                        <td>{{ mon_work.plan_number }}</td>
+                        <th>月度计划记录号</th>
+                        <td>{{ mon_work.plan_smallnumber }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>计划工作内容</th>
+                        <td>{{ mon_work.plan_content }}</td>
+                        <th>计划完成时间</th>
+                        <td>{{ mon_work.finish_time }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>执行人</th>
+                        <td>{{ mon_work.execute_user }}</td>
+                        <th>执行情况</th>
+                        <td>{{ mon_work.execute_desc }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>存在问题</th>
+                        <td>{{ mon_work.problem_desc }}</td>
+                        <th>备注</th>
+                        <td>{{ mon_work.remarks }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>是否激活</th>
+                        <td>{{ mon_work.is_activate }}</td>
+                        <th>状态</th>
+                        <td>{{ mon_work.pinstance.cur_node.mynode.node_name }}</td>
+                    </tr>
+                    {% comment %}
+                    <tr>
+                        <th>Reason</th>
+                        <td colspan="3">
+                            {{ mon_work.reason|linebreaks }}
+                        </td>
+                    </tr>
+                    {% endcomment %}
+                </table>
+            </div>
+            {% endblock %}
+            <div class="tab-pane" id="id-tb-wf-log">
+                {% include "lbworkflow/inc_wf_history.html" %}
+            </div>
+            <div class="tab-pane" id="id-tb-wf-graph">
+                <a href="{% url 'wf_process_flowchart' 'monworkexe' %}" target="_blank">Open in new window</a>
+                <br/>
+                <img src="{% url 'wf_process_flowchart' 'monworkexe' %}"/>
+            </div>
+        </div>
+    </div>
+    {% block wf_detail_ext %}
+    {% with btn_css="1" %}
+    <div class="bottom-btns">
+        {% with is_btn="1" %}
+        {% include "lbworkflow/inc_wf_btns.html" %}
+        {% endwith %}
+    </div>
+    {% endwith %}
+    {% endblock %}
+</section>
+{% endblock %}
+{% endblock %}
+{% block javascript %}
+<script>
+    // 按钮悬浮效果
+    $("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

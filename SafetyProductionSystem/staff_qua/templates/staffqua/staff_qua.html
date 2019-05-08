@@ -1,0 +1,253 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">人员资质管理</span>
+        <small>详情</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><a href="#">技术监督</a></li>
+        <li><a href="#">监督网络管理</a></li>
+        <li class="active">人员资质管理</li>
+    </ol>
+{% endblock %}
+{% block add %}
+ <!--<a class="btn btn-primary glyphicon glyphicon-plus" title="添加资质" href="/staff_qua/{{u.id}}/add/?action=new&menuid=18/"  data-toggle="tooltip" data-placement="top"></a>-->
+{% endblock %}
+<!--{% block search %}
+<!--<a href="#" class="btn btn-primary glyphicon glyphicon-search" data-toggle="tooltip" onclick="prom()"-->
+   <!--data-placement="top" title="查询人员资质"></a>-->
+<!--{% endblock %}-->
+
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+
+
+<!--{% block list_new %}-->
+<!--<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/staff_qua/list/?action=list&menuid=5"-->
+   <!--data-toggle="tooltip" data-placement="top"></a>-->
+<!--{% endblock %}-->
+
+{% block update %}
+<a href="/staff_qua/{{u_id}}/add/?action=new&menuid=5" class="btn btn-primary glyphicon glyphicon-plus" title="添加人员资质"
+   data-toggle="tooltip" data-placement="top"></a>
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+
+{% block box_title %}
+列表
+{% endblock %}
+
+{% block content %}
+{% load pagetag %}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        onclick="closed()">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    网络结构搜索
+                </h4>
+                <form action="/staff_qua/search/?action=list&menuid=5" class="form-horizontal"
+                      method="post"
+                      enctype="multipart/form-data" id="myform">
+                    {% csrf_token %}
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">资质类型</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="qua_type" id="qua_type">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">证书编号</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="number" id="number">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id='btn' class="btn btn-primary" data-dismiss="modal"
+                                onclick="closed()">关闭
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+<!-------------  END搜索框 ------------------->
+
+<form action="#" class="form-horizontal" method="post" style="margin-top:20px;white-space:nowrap;">
+    <div class="box-body">
+        <div class="form-group">
+            <label class="col-md-1 control-label">公司</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="place" id="place" value="{{data.company.comname}}"
+                       readonly>
+            </div>
+            <label class="col-md-1 control-label">姓名</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" name="name" id="name"
+                       value="{{data.name}}" readonly>
+            </div>
+            <label class="col-md-1 control-label">工号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="number" id="people_number"
+                       value="{{data.number}}" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-1 control-label">岗位</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="jobname" id="jobname" value="{{data.jobname.jobname}}"
+                       readonly>
+            </div>
+            <label class="col-md-1 control-label">联系方式</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" name="phone" id="phone"
+                       value="{{data.phone}}" readonly>
+            </div>
+            <label class="col-md-1 control-label">邮箱</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="email" id="email"
+                       value="{{data.email}}" readonly>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<table class="table table-striped table-borderd">
+    <tr>
+        <th>公司</th>
+        <th>资质编码</th>
+        <th>资质名称</th>
+        <th>监督类型</th>
+        <th>有效日期</th>
+        <th>附件</th>
+    </tr>
+
+    {% for qua in staff_list %}
+       {% if qua.is_activate == 1 %}
+    <tr>
+
+        <td>{{qua.place}}</td>
+        <td>{{qua.number}}</td>
+        <td>{{qua.qua.name}}</td>
+        <td>{{qua.supervision_major.name}}</td>
+        <td>{{qua.effect_time}}</td>
+        <td><a href="/media/{{qua.qua_enclosure}}" title="下载附件">{{qua.qua_enclosure}}</a></td>
+        <td>
+            <a href="/staff_qua/{{qua.id}}/edit/?action=edit&menuid=5" title="编辑" data-toggle="tooltip"
+               data-placement="top"><span
+                    class="btn btn-default glyphicon glyphicon-edit"></span></a>&nbsp;&nbsp;&nbsp;
+            <a href="javascript:;"
+               onclick="if(confirm('您确定删除这条记录？')){location.href='/staff_qua/{{qua.id}}/delete/?action=detail&menuid=5';}"
+               title="删除人员资质" data-toggle="tooltip" data-placement="top"><span class="btn btn-default glyphicon glyphicon-trash"></span></a>
+        </td>
+        {% endif %}
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6">暂时还没有人员资质</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="box-footer clearfix">
+    <ul class="pagination pagination-sm no-margin pull-left">
+        {% if staff_list.has_previous %}
+        <li>
+            <a href="?page={{ staff_list.previous_page_number }}" aria-label="Previous">
+                <span aria-label="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+        {% for pg in staff_list.paginator.page_range %}
+        {% circle_page menuid staff_list.number pg %}
+        {% endfor %}
+        {% if staff_list.has_next %}
+        <li>
+            <a href="?page={{ staff_list.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="box-footer clearfix">
+    <ul class="pagination pagination-sm no-margin pull-left">
+        {% if staff_qua.has_previous %}
+        <li>
+            <a href="?page={{ staff_qua.previous_page_number }}" aria-label="Previous">
+                <span aria-label="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% for pg in staff_qua.paginator.page_range %}
+        {% circle_page menuid staff_qua.number pg %}
+        {% endfor %}
+
+
+        {% if staff_list.has_next %}
+        <li>
+            <a href="?page={{ staff_qua.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+// 搜索框，点击放大镜后触发函数
+function prom(){
+    // 将搜索框和内容清空
+    $("#myform").val('');
+    $("#list").find("td").remove();
+		$('#myModal').modal('show');
+		$('#myModal').on('hide.bs.modal', function() {
+			 //$("#myform")[0].reset();
+			 $(this).find("shujuzhanshi").remove();
+		});
+		};
+
+// 点击隐藏
+function closed(){
+$('#myModal').hide();
+};
+
+// 点击搜索触发函数，获取输入的值
+//重置表单数据
+ $(function() {
+       $("#myModal").on('hide.bs.modal',function() {
+          //关闭后重置表单数据
+          $("#myform")[0].reset();
+       });
+       $("#myModal").on('show.bs.modal',function() {
+          //打开前重置表单数据
+          document.getElementById("myform").reset();
+       });
+   });
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+</script>
+{% endblock %}

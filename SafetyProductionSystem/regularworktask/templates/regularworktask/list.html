@@ -1,0 +1,165 @@
+{% extends "base_ext.html" %}
+
+{% load crispy_forms_tags %}
+{% load el_pagination_tags %}
+{% load lbworkflow_tags %}
+
+{% block nav_sel_node %}id-nav-regularwork{% endblock %}
+
+{% block right_side %}
+  <section class="content-header">
+    {% include "incs/messages.html" %}
+    <div class="right-btns">
+    </div>
+    <h1>
+      定期工作策划主信息表
+    </h1>
+  </section>
+  <section class="content">
+    <div class="box">
+      {% if search_form %}
+      <div class="box-header">
+        <div class="input-group show-label-form">
+          {% crispy search_form %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <tbody>
+            <tr>
+              <th>NO.</th>
+              <th>Created by</th>
+              
+              <th>公司名称</th>
+              
+              <th>定期工作编码</th>
+              
+              <th>KKS编码</th>
+              
+              <th>KKS编码名称</th>
+              
+              <th>台账编号</th>
+              
+              <th>台账名称</th>
+              
+              <th>工作区域</th>
+              
+              <th>责任人</th>
+              
+              <th>设备专业</th>
+              
+              <th>监督专业</th>
+              
+              <th>性质</th>
+              
+              <th>定期工作类型</th>
+              
+              <th>标准分值</th>
+              
+              <th>工作项目</th>
+              
+              <th>周期描述</th>
+              
+              <th>提前提醒时间</th>
+              
+              <th>状态</th>
+              
+              <th>超期一级预警</th>
+              
+              <th>超期二级预警</th>
+              
+              <th>超期三级预警</th>
+              
+              <th>业务来源</th>
+              
+              <th>开始时间</th>
+              
+              <th>结束时间</th>
+              
+              <th>是否激活</th>
+              
+              <th>标准编码</th>
+              
+              <th>标准号</th>
+              
+              <th>Created on</th>
+              <th>Current operator</th>
+              <th>Activity</th>
+            </tr>
+            {% paginate object_list %}
+            {% for o in object_list %}{% with pi=o.pinstance %}
+              <tr>
+                <td><a href="{% url 'wf_detail' pi.pk %}">{{ pi.no }}</a></td>
+                <td>{{ pi.created_by }}</td>
+                
+                <td>{{ o.place }}</td>
+                
+                <td>{{ o.number }}</td>
+                
+                <td>{{ o.KKS_code }}</td>
+                
+                <td>{{ o.KKS_codename }}</td>
+                
+                <td>{{ o.count_number }}</td>
+                
+                <td>{{ o.count_name }}</td>
+                
+                <td>{{ o.work_area }}</td>
+                
+                <td>{{ o.exe_user }}</td>
+                
+                <td>{{ o.equipment_major }}</td>
+                
+                <td>{{ o.supervision_major }}</td>
+                
+                <td>{{ o.nature }}</td>
+                
+                <td>{{ o.type }}</td>
+                
+                <td>{{ o.score }}</td>
+                
+                <td>{{ o.work_content }}</td>
+                
+                <td>{{ o.weekend_desc }}</td>
+                
+                <td>{{ o.warinig_time }}</td>
+                
+                <td>{{ o.state }}</td>
+                
+                <td>{{ o.overdue_1 }}</td>
+                
+                <td>{{ o.overdue_2 }}</td>
+                
+                <td>{{ o.overdue_3 }}</td>
+                
+                <td>{{ o.resource }}</td>
+                
+                <td>{{ o.start_time }}</td>
+                
+                <td>{{ o.end_time }}</td>
+                
+                <td>{{ o.is_activate }}</td>
+                
+                <td>{{ o.stard }}</td>
+                
+                <td>{{ o.stard_smallnumber }}</td>
+                
+                <td>{{ pi.created_on|date:"Y-m-d H:i" }}</td>
+                <td>{{ pi.get_operators_display }}</td>
+                <td>
+                  <span class="label label-{{ pi|flow_status_css_class }}">
+                    {{ pi.cur_node.name }}
+                  </span>
+                </td>
+              </tr>
+            {% endwith %}{% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="box-footer clearfix">
+        {% show_pages %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

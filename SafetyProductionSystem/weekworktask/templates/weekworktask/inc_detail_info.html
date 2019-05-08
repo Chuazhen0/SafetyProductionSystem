@@ -1,0 +1,61 @@
+{% include "lbworkflow/inc_wf_status.html" %}
+<table class="table table-bordered tb-detail no-margin">
+  
+  <tr>
+    <th>创建时间</th>
+    <td>{{ object.created_at }}</td>
+    <th>最后更新人</th>
+    <td>{{ object.last_updated_by }}</td>
+  </tr>
+  
+  <tr>
+    <th>最后更新时间</th>
+    <td>{{ object.last_updated_at }}</td>
+    <th>附件</th>
+    <td>{{ object.enclosure }}</td>
+  </tr>
+  
+  <tr>
+    <th>组织</th>
+    <td>{{ object.orgid }}</td>
+    <th>地点</th>
+    <td>{{ object.place }}</td>
+  </tr>
+  
+  <tr>
+    <th>是否激活</th>
+    <td>{{ object.is_activate }}</td>
+    <th>状态</th>
+    <td>{{ object.state }}</td>
+  </tr>
+  
+  <tr>
+    <th>任务编号</th>
+    <td>{{ object.number }}</td>
+    <th>任务名称</th>
+    <td>{{ object.task_name }}</td>
+  </tr>
+  
+  <tr>
+    <th>计划编号</th>
+    <td>{{ object.plan_number }}</td>
+    <th>计划开始时间</th>
+    <td>{{ object.task_start_time }}</td>
+  </tr>
+  
+  <tr>
+    <th>完成时限</th>
+    <td>{{ object.time_limit }}</td>
+    <th></th>
+    <td>{{ object. }}</td>
+  </tr>
+  
+  {% comment %}
+  <tr>
+    <th>Reason</th>
+    <td colspan="3">
+      {{ object.reason|linebreaks }}
+    </td>
+  </tr>
+  {% endcomment %}
+</table>

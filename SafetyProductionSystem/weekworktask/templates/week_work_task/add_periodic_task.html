@@ -1,0 +1,181 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">周期检测任务</span>
+        <small>新建</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>25项反措</span></li>
+        <li><span>周期检测</span></li>
+        <li class="active">周期检测任务</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/weekworktask/list/?action=list&menuid=35" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block save %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block content %}
+    <form method="POST" action="/weekworktask/add/?action=new" class="form-horizontal"
+              enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+            {% csrf_token %}
+    <div class="box-body">
+    <div class="form-group" style="margin-left:-12px">
+      <label class="col-md-1 control-label">组&nbsp;织</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="orgid" id="orgid" required>
+                    <option selected value="{{request.session.mylogin.profile.Department.name}}">
+                        {{request.session.mylogin.profile.Department.name}}
+                    </option>
+                    {% for or in orgid %}
+                    <option value="{{or.name}}">{{or.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+       <label class="col-md-1 control-label" >状&nbsp;态</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" id="state" name="state" value="新建"
+                       readonly>
+            </div>
+       <label class="col-md-1 control-label">地&nbsp;点</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="place" id="place" value="{{place}}"
+                       readonly>
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >任务编号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="number" name="number"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>任务名称</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="task_name" name="task_name"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>完成时限</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="time_limit" name="time_limit"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>开始时间</label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="task_start_time" name="task_start_time"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+        <label class="col-md-1 control-label"><span class="bt">*</span>任务编号</label>
+        <div class="col-md-3">
+            <select class="form-control select2 "  name="plan_number" id="plan_number" >
+                {% for nid in data %}
+                <option value="{{nid.number}}">
+                    {{nid.plan}}--{{nid.number}}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    </div>
+    </form>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+  $(function(){
+  $("#jump").click(function(){
+  var second = 3;
+
+   //获取显示秒数的元素，通过定时器来更改秒数。
+
+    var message = document.getElementById("countTime");
+
+    function clock()
+
+    {
+
+        if(second==0)
+
+        {
+
+            goTo();
+
+        }
+
+        else
+
+        {
+            document.getElementById('yes').setAttribute('style', 'display: block');
+            message.innerHTML = second-- + "秒后回到详情页";
+            window.setTimeout(clock,1000);
+
+
+        }
+
+    }
+
+    clock();
+
+   //通过window的location和history对象来控制网页的跳转。
+
+   function goTo()
+
+   {
+
+        window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";
+
+   }
+
+   function goBack()
+
+   {
+
+    //   window.history.Back();
+
+        window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";
+
+   }
+
+  })
+  })
+
+function checked() {
+            var date1 = $("#task_start_time").val();
+            if(date1==''){
+             alert('您还未选择日期');
+                return false;
+
+            }else{
+                return true;
+
+
+            }
+            console.log(checked());
+	}
+
+
+
+
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+
+
+
+
+</script>
+{% endblock %}

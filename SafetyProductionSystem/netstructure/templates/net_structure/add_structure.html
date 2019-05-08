@@ -1,0 +1,150 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">网络结构</span>
+        <small>新建</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>监督网络管理</span></li>
+        <li class="active">网络结构</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+<{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/netstructure/list/?action=list&menuid=3" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+
+{% block save %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存"
+   id="create_btn" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block content %}
+<form class="form-horizontal" method="post" id="myform" action="/netstructure/add/">
+    {% csrf_token %}
+    <div class="box-body">
+        <div class="form-group">
+            <label for="number" class="col-sm-2 control-label">编号</label>
+            <div class="col-sm-3" >
+                <input type="text" name="number" class="form-control" id="number" placeholder="编号" value="{{number}}" readonly>
+            </div>
+
+            <label for="state" class="col-sm-2 control-label">状态</label>
+            <div class="col-sm-3">
+                <input type="text" name="state" class="form-control" id="state" value="拟定" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">类别</label>
+            <div class="col-sm-3">
+                <select class="form-control select2" id="classify" name="classify">
+                    <option>九大监督</option>
+                    <option>五大管理</option>
+                </select>
+            </div>
+
+            <label class="col-sm-2 control-label">所属上级</label>
+            <div class="col-sm-3">
+                <select class="form-control select2"  id="structure_list_id" name="structure_list_id"
+                        >
+                    <option value="null" selected=selected>---无上级---</option>
+                    {% for structure in structure_list %}
+                    <option value="{{structure.id}}">{{structure.number}}--{{structure.desc}}</option>
+                    {% empty %}
+                    <option>null</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">监督网络级别</label>
+            <div class="col-sm-3">
+            <select class="form-control select2 "  id="level" name="level"
+                    >
+                <option value="1">-- 为生技部主任 --</option>
+                <option value="2">-- 监督专责 --</option>
+                <option value="3">-- 执行人 --</option>
+            </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="desc" class="col-sm-2 control-label"><span class="bt">*</span>描述</label>
+            <div class="col-sm-8">
+                <textarea type="text" name="desc" class="form-control" id="desc"  required>
+                </textarea>
+            </div>
+        </div>
+        </div>
+
+
+
+
+
+
+    <!-- /.box-footer -->
+</form>
+{% endblock %}
+{% block javascript %}
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+<script>
+   $(function (){
+       $('#myform').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields:{
+            desc:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入描述信息'
+                    },
+                    callback:{
+                        message:'描述错误'
+                    },
+                    stringLength: {//检测长度
+                        min: 1,
+                        max: 50,
+                        message: '长度必须在1-50之间'
+                    },
+                }
+            },
+        }
+    })
+   });
+
+$("#myform").submit(function (ev) {
+            ev.preventDefault();
+        });
+        $("#create_btn").on("click", function () {
+            var bootstrapValidator = $("#myform").data('bootstrapValidator');
+            bootstrapValidator.validate();
+            if (bootstrapValidator.isValid()) {
+                document.getElementById('myform').submit();
+                layer.msg('添加成功！')
+            }
+            else {
+                layer.msg('添加失败，请填写正确信息!');
+                return false;
+            }
+        });
+ // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+
+{% endblock %}
+
+

@@ -1,0 +1,68 @@
+{% include "lbworkflow/inc_wf_status.html" %}
+<table class="table table-bordered tb-detail no-margin">
+  
+  <tr>
+    <th>公司名称</th>
+    <td>{{ object.place }}</td>
+    <th>月度工作执行编码</th>
+    <td>{{ object.number }}</td>
+  </tr>
+  
+  <tr>
+    <th>创建时间</th>
+    <td>{{ object.created_at }}</td>
+    <th>最后更新时间</th>
+    <td>{{ object.last_updated_at }}</td>
+  </tr>
+  
+  <tr>
+    <th>月度计划编码</th>
+    <td>{{ object.plan_number }}</td>
+    <th>月度计划记录号</th>
+    <td>{{ object.plan_smallnumber }}</td>
+  </tr>
+  
+  <tr>
+    <th>计划工作内容</th>
+    <td>{{ object.plan_content }}</td>
+    <th>计划完成时间</th>
+    <td>{{ object.finish_time }}</td>
+  </tr>
+  
+  <tr>
+    <th>执行人</th>
+    <td>{{ object.execute_user }}</td>
+    <th>执行情况</th>
+    <td>{{ object.execute_desc }}</td>
+  </tr>
+  
+  <tr>
+    <th>存在问题</th>
+    <td>{{ object.problem_desc }}</td>
+    <th>备注</th>
+    <td>{{ object.remarks }}</td>
+  </tr>
+  
+  <tr>
+    <th>是否激活</th>
+    <td>{{ object.is_activate }}</td>
+    <th>状态</th>
+    <td>{{ object.state }}</td>
+  </tr>
+  
+  <tr>
+    <th>工单类型</th>
+    <td>{{ object.work_type }}</td>
+    <th></th>
+    <td>{{ object. }}</td>
+  </tr>
+  
+  {% comment %}
+  <tr>
+    <th>Reason</th>
+    <td colspan="3">
+      {{ object.reason|linebreaks }}
+    </td>
+  </tr>
+  {% endcomment %}
+</table>

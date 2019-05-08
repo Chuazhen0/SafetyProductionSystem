@@ -1,0 +1,120 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">报表管理</span>
+        <small>指标展示</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>报表管理</span></li>
+        <li class="active">指标展示</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+{% if add_list_num == '1' %}
+<a onClick="javascript :window.location.href='/myform/show_all_form/?action=list&menuid=16'" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% else %}
+<a onClick="javascript :window.location.href='/myform/watch_form/?action=list&menuid=16'" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endif %}
+{% endblock %}
+{% block list_new %}
+<!--<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/myform/show_all_form/?action=list&menuid=16"-->
+   <!--data-toggle="tooltip" data-placement="top"></a>-->
+{% endblock %}
+{% block save %}
+<!--<a id="sb" class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="go()" data-toggle="tooltip"-->
+   <!--data-placement="top"></a>-->
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+{% endblock %}
+{% block content %}
+{% load pagetag %}
+<body>
+<div class="col-md-12">
+          <!-- Custom Tabs -->
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="true" id="tab_first">监督仪表信息</a></li>
+              <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">本月完成工作</a></li>
+              <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">下月计划完成工作</a></li>
+              <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">存在问题</a></li>
+              <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">其它需要说明的问题</a></li>
+              <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane" id="tab_1">
+                <iframe id="report_iframe1" src="http://192.168.104.232:8800/reportmis/gezEntry.url?patternID=SR&resID=32329&point_type_id={{type_id}}&point_plan_id={{power_id}}&power_plan_id={{power_id}}&p_type_id={{type_id}}&text_type_id={{type_id}}&text_plan_id={{power_id}}&date_time={{time_is}}&time_is={{time_is}}" width='1000' height='1000'></iframe>
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_2">
+                <iframe id="report_iframe2" src="http://192.168.104.232:8800/reportmis/gezEntry.url?patternID=SR&resID=32305&point_type_id={{type_id}}&point_plan_id={{power_id}}&power_plan_id={{power_id}}&p_type_id={{type_id}}&text_type_id={{type_id}}&text_plan_id={{power_id}}&date_time={{time_is}}&time_is={{time_is}}" width='1000' height='1000'></iframe>
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_3">
+                <iframe id="report_iframe3" src="http://192.168.104.232:8800/reportmis/gezEntry.url?patternID=SR&resID=32306&point_type_id={{type_id}}&point_plan_id={{power_id}}&power_plan_id={{power_id}}&p_type_id={{type_id}}&text_type_id={{type_id}}&text_plan_id={{power_id}}&date_time={{time_is}}&time_is={{time_is}}" width='1000' height='1000'></iframe>
+              </div>
+
+              <div class="tab-pane" id="tab_4">
+                <iframe id="report_iframe4" src="http://192.168.104.232:8800/reportmis/gezEntry.url?patternID=SR&resID=32307&point_type_id={{type_id}}&point_plan_id={{power_id}}&power_plan_id={{power_id}}&p_type_id={{type_id}}&text_type_id={{type_id}}&text_plan_id={{power_id}}&date_time={{time_is}}&time_is={{time_is}}" width='1000' height='1000'></iframe>
+              </div>
+
+              <div class="tab-pane" id="tab_5">
+                <iframe id="report_iframe5" src="http://192.168.104.232:8800/reportmis/gezEntry.url?patternID=SR&resID=32389&point_type_id={{type_id}}&point_plan_id={{power_id}}&power_plan_id={{power_id}}&p_type_id={{type_id}}&text_type_id={{type_id}}&text_plan_id={{power_id}}&date_time={{time_is}}&time_is={{time_is}}" width='1000' height='1000'></iframe>
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- nav-tabs-custom -->
+        </div>
+{% endblock %}
+{% block javascript %}
+</body>
+<script type="text/javascript">
+    document.getElementById('tab_first').click();
+
+    var sb = document.getElementById('sb');
+
+
+    function  go() {
+
+       var demo =  $("#report_iframe1").contents().find(".vrSubmitReport").click();
+       //console.log(demo)
+    }
+
+    //
+    // function xxx(patternID , resID){
+    //     $.ajax({
+    //         type: 'GET',
+    //         url:"http://192.168.104.228:8800/reportmis/gezEntry.url?patternID="+patternID+"&resID="+resID+"",
+    //         success: function( result ) {
+    //         console.log(result)
+    //         }
+    //     });
+    // }
+// 搜索框，点击放大镜后触发函数
+function prom(){
+    // 将搜索框和内容清空
+    $("#myform").val('');
+    $("#list").find("td").remove();
+		$('#myModal').modal('show');
+		$('#myModal').on('hide.bs.modal', function() {
+			 //$("#myform")[0].reset();
+			 $(this).find("shujuzhanshi").remove();
+		});
+		};
+
+// 点击隐藏
+function closed(){
+$('#myModal').hide();
+};
+// 点击搜索触发函数，获取输入的值
+// 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+// function submited() {
+//
+// }
+</script>
+{% endblock %}

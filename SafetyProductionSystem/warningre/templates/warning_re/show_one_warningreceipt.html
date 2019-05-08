@@ -1,0 +1,199 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">告警回执单</span>
+        <small>详情</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>告警管理</span></li>
+        <li class="active">告警回执单</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_detail %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/warningre/list/?action=list&menuid=14"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block modify %}
+<a href="/warningre/{{data.id}}/edit/?action=edit&menuid=14" class="btn btn-primary glyphicon glyphicon-edit" title="编辑告警回执单"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/warningre/{{data.id}}/delete/?action=del&menuid=14';}"
+   title="删除告警回执单" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block content %}
+{% block right_side %}
+<section class="content-header">
+    {% include "incs/messages.html" %}
+    {% block right_side_header %}
+    <div class="right-btns">
+        {% include "lbworkflow/inc_wf_btns.html" %}
+        {% block flow_help %}
+        {% endblock %}
+
+        {% block right_side_header_ext_btns %}
+        {% if processinstance %}
+        <a class="" target="_blank" href="{% url 'wf_print_detail' processinstance.pk %}">打印</a>
+        {% endif %}
+        <span>|</span>
+        {% endblock %}
+    </div>
+    {% endblock %}
+</section>
+<section class="content">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs" role="tablist" id="id-m-nav-tabs">
+            <li class="active">
+                <a href="#id-tb-base" role="tab" data-toggle="tab">基础信息</a>
+            </li>
+            {% block right_side_tab_nav_ext %}
+            {% endblock %}
+            <li>
+                <a href="#id-tb-wf-log" role="tab" data-toggle="tab">操作历史</a>
+            </li>
+            <!--<li>-->
+            <!--<a href="#id-tb-wf-graph" role="tab" data-toggle="tab">流程图</a>-->
+            <!--</li>-->
+        </ul>
+        <div class="tab-content">
+            {% block right_side_tab_ctx_ext %}
+            <div class="tab-pane active"  id="id-tb-base">
+                <table class="table table-bordered tb-detail wf-act-history">
+                    <tr>
+                        <th class="w-mid">流程编号</th>
+                        <td class="process-no">
+                            {{ processinstance.no }}
+                        </td>
+                        <th class="w-mid">创建人</th>
+                        <td>{{ processinstance.created_by }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ processinstance.created_on|date:"Y-m-d H:i" }}</td>
+                        <th>当前节点</th>
+                        <td>
+                            {{ processinstance.cur_node.name }}
+                            {% if task.is_hold %}
+                            (hold)
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>流程名称</th>
+                        <td>{{ processinstance.process.myprocess.myprocess_name }}</td>
+                        <th>当前操作</th>
+                        <td>
+                            {{ operators_display }}
+                            {% if not processinstance.has_received %}
+                            [unreceived]
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+                <table class="table table-bordered tb-detail no-margin">
+
+                    <tr>
+                        <th>公司名称</th>
+                        <td>{{ data.place }}</td>
+                        <th>状态</th>
+                        <td>{{ data.pinstance.cur_node.mynode.node_name }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>告警通知单编码</th>
+                        <td>{{ data.number }}</td>
+                        <th>来源</th>
+                        <td>{{ data.resource }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>附件</th>
+                        <td><a href="/media/{{ data.enclosure }}" title="下载附件">{{ file_name }}</a></td>
+                        <th>告警通知单名称</th>
+                        <td>{{ data.title }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>监督类型</th>
+                        <td>{{ data.supervise_major }}</td>
+                        <th>关联设备</th>
+                        <td>{{ data.equipment }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>关联问题</th>
+                        <td>{{ data.problem }}</td>
+                        <th>责任人</th>
+                        <td>{{ data.exetuct_user }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>异常情况</th>
+                        <td>{{ data.abnormal }}</td>
+                        <th>可能或已经造成的后果</th>
+                        <td>{{ data.result }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>整改建议</th>
+                        <td>{{ data.suggest }}</td>
+                        <th>整改时间要求</th>
+                        <td>{{ data.time_require }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>是否激活</th>
+                        <td>{{ data.is_activate }}</td>
+                        <th>最后更新时间</th>
+                        <td>{{ data.last_updated_at }}</td>
+                    </tr>
+                    {% comment %}
+                    <tr>
+                        <th>Reason</th>
+                        <td colspan="3">
+                            {{ data.reason|linebreaks }}
+                        </td>
+                    </tr>
+                    {% endcomment %}
+                </table>
+            </div>
+
+            {% endblock %}
+            <div class="tab-pane" id="id-tb-wf-log">
+                {% include "lbworkflow/inc_wf_history.html" %}
+            </div>
+            <div class="tab-pane" id="id-tb-wf-graph">
+                <a href="{% url 'wf_process_flowchart' 'warningre' %}" target="_blank">Open in new window</a>
+                <br/>
+                <img src="{% url 'wf_process_flowchart' 'warningre' %}"/>
+            </div>
+        </div>
+    </div>
+    {% block wf_detail_ext %}
+    {% with btn_css="1" %}
+    <div class="bottom-btns">
+        {% with is_btn="1" %}
+        {% include "lbworkflow/inc_wf_btns.html" %}
+        {% endwith %}
+    </div>
+    {% endwith %}
+    {% endblock %}
+</section>
+{% endblock %}
+{% endblock %}
+{% block javascript %}
+<script>
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

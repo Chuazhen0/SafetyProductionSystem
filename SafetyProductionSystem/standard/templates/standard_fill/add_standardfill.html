@@ -1,0 +1,281 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">指标管理</span>
+        <small>新建测点填报</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>测点录入</span></li>
+        <li class="active">新建测点填报</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left"  title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/standard/standard_fill/?action=list&menuid=21"
+   data-toggle="tooltip"  data-placement="top"></a>
+{% endblock %}
+
+{% block save %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" id="create_btn" onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip"
+   data-placement="top"></a>
+
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block content %}
+<form method="POST" action="/standard/standard_fill_add/?action=new" class="form-horizontal"
+      enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+    {% csrf_token %}
+    <div class="box-body">
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">编&nbsp;号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="number" name="number" value="{{number}}"
+                >
+            </div>
+
+            <label class="col-md-2 control-label">状态</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="state" name="state" value="拟定"
+                >
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">监督类型</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="Supervision_type" id="Supervision_type" onchange="change()">
+                    {% for emp in supervise_list %}
+                    <option value="{{emp.id}}">
+                        {{emp.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <label class="col-md-2 control-label">测点类型</label>
+            <div class="col-md-3" id="definition_version">
+                <!--<select class="form-control select2 " name="definition" id="definition">-->
+                    <!--{% for emp in definition %}-->
+                    <!--<option value="{{emp.id}}">-->
+                        <!-- {{emp.number}}&nbsp;{{emp.describe}}-->
+                    <!--</option>-->
+                    <!--{% endfor %}-->
+                <!--</select>-->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+            <div class="form-group" style="margin-left:-12px">
+                <label class="col-md-4 control-label"><span class="bt">*</span>填报日期</label>
+                <div class="col-md-6">
+                    <input type="date" class="form-control" id="fill_time" name="fill_time" onblur="check_start_current()"
+                    >
+                    <span class="glyphicon glyphicon-remove-sign error" id="six">填报时间必须大于当前时间</span>
+                </div>
+            </div>
+            </div>
+
+            <div class="col-md-6">
+            <div class="form-group" style="margin-left:-12px">
+                <label class="col-md-2 control-label">地&nbsp;点</label>
+                <div class="col-md-6">
+                 <input readonly type="text" class="form-control" id="place" name="place" value="{{ request.session.mylogin.myuser.company }}"/>
+
+                    <!--<select class="form-control select2 " name="place" id="place">-->
+                        <!--{% for emp in place %}-->
+                        <!--<option value="{{emp.comname}}">-->
+                            <!--{{emp.comname}}-->
+                        <!--</option>-->
+                        <!--{% endfor %}-->
+                    <!--</select>-->
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">填报描述</label>
+            <div class="col-md-8">
+                <textarea type="text" class="form-control" id="describe" name="describe" value="{{describe}}"
+                ></textarea>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+{% endblock %}
+{% block javascript %}
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+<script type="text/javascript">
+     $(document).ready(function(){
+         var Supervision_type = document.getElementById("Supervision_type").value;
+         // alert(Supervision_type);
+         $.ajax({
+            type:'GET',
+            url:'/standard/change_station/',
+            data:{"super_version":Supervision_type},
+            success:function (result) {
+            // alert(result.dict_version);
+            render(result)
+
+            }
+        });
+     });
+    function change(){
+        var Supervision_type = document.getElementById("Supervision_type").value;
+        // alert(Supervision_type);
+        $.ajax({
+            type:'GET',
+            url:'/standard/change_station/',
+            data:{"super_version":Supervision_type},
+            success:function (result) {
+                // alert(result.dict_version[0][1]);
+                render(result)
+
+            }
+        });
+
+    }
+    function render(result){
+        var html = '<select class="form-control select2 " name="definition" id="definition">';
+        // alert(result['length']);
+        for(var i=0;i<result['length'];i++){
+            var record = result['dict_version'][i];
+            html += '<option value="'+record['id']+'">';
+            html += record['number']+record['describe'];
+            html += '<option>'
+        }
+        $("#definition_version").html(html);
+    }
+  // $(function(){
+  // $("#jump").click(function(){
+  // var second = 3;
+  //  //获取显示秒数的元素，通过定时器来更改秒数。
+  //   var message = document.getElementById("countTime");
+  //   function clock()
+  //   {
+  //       if(second==0)
+  //       {
+  //           goTo();
+  //       }
+  //       else
+  //       {
+  //           document.getElementById('yes').setAttribute('style', 'display: block');
+  //           message.innerHTML = second-- + "秒后回到详情页";
+  //           window.setTimeout(clock,1000);
+  //       }
+  //   }
+  //   clock();
+  //  //通过window的location和history对象来控制网页的跳转。
+  //     function goTo()
+  //
+  //  {
+  //       window.location.href = "http://localhost:8000/standard/mon_plan_sum/?action=list";
+  //  }
+  //  function goBack()
+  //  {
+  //
+  //   //   window.history.Back();
+  //
+  //       window.location.href = "http://localhost:8000/standard/mon_plan_sum/?action=list";
+  //  }
+  // })
+  // })
+
+// function checked() {
+//             var date1 = $("#fill_time").val();
+//             if(date1==''){
+//              alert('您还未填写日期');
+//                 return false;
+//
+//             }else{
+//                 return true;
+//
+//
+//             }
+//             console.log(checked());
+// 	}
+// function check_start_current(){
+//         $("#six").hide();
+//         var start_time = $("#fill_time").val();
+//         var d=new Date(Date.parse(start_time.replace(/-/g,"/")));
+//         var curDate=new Date();
+//         if (d<curDate){
+//                 $("#six").show();
+//                 }
+//         }
+   $(function (){
+       $('#myform').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields:{
+            describe:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入填报描述'
+                    },
+                    callback:{
+                        message:'填报描述错误'
+                    },
+                },
+            },
+            fill_time:{
+                validators:{
+                    notEmpty:{
+                        message:'请您选择填报日期'
+                    },
+                    callback:{
+                        message:'填报日期必须大于当前时间',
+                        callback: function (value, validator, $fill_time) {
+                            let other = validator.getFieldElements('fill_time').val();//获得开始时间的值
+
+                            let start = new Date(other.replace("-", "/").replace("-", "/"));
+                            let d = new Date();// 当前时间
+
+                            if (start >= d) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    },
+                },
+            }
+
+        }
+    })
+   });
+
+
+$("#myform").submit(function (ev) {
+            ev.preventDefault();
+        });
+        $("#create_btn").on("click", function () {
+            var bootstrapValidator = $("#myform").data('bootstrapValidator');
+            bootstrapValidator.validate();
+            if (bootstrapValidator.isValid()) {
+                document.getElementById('myform').submit();
+                layer.msg('添加成功！')
+            }
+            else {
+                layer.msg('添加失败，请填写正确信息!');
+                return false;
+            }
+        });
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

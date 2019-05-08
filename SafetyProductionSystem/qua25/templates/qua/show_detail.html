@@ -1,0 +1,79 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">资质管理</span>
+        <small>详情</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>25项反措</span></li>
+        <li><span>资质管理</span></li>
+        <li class="active">资质管理</li>
+    </ol>
+{% endblock %}
+
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+
+{% block list_detail %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/qua25/list/?action=list&menuid=31" ></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/qua25/{{u_id}}/delete/?action=del&menuid=31';}"
+   title="删除资质类型" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+<!--<a href="/supervision/{{mon_plan_sum.id}}/mon_plan_sum_delete/?action=del&menuid=20" class="btn btn-danger delete" >{{power.title}}</a>-->
+{% endblock %}
+
+{% block content %}
+<form action="#" class="form-horizontal" method="post" enctype="multipart/form-data">
+    <div class="box-body">
+        <div class="form-group">
+            <label for="number" class="col-sm-2 control-label">资质编码</label>
+            <div class="col-sm-3">
+                <input type="text" name="number" class="form-control" id="number" value="{{data.number}}" readonly>
+            </div>
+
+             <label for="number" class="col-sm-2 control-label">资质名称</label>
+            <div class="col-sm-3">
+              <input type="text" name="name" class="form-control" id="name" value="{{data.name}}" readonly>
+            </div>
+        </div>
+
+
+      <div class="form-group">
+        <label for="number" class="col-sm-2 control-label">资质类型</label>
+        <div class="col-sm-3">
+          <input name="qua_type" class="form-control" id="qua_type" value="{{data.qua_type.desc}}" readonly>
+        </div>
+
+        <label for="number" class="col-sm-2 control-label">提前提醒天数</label>
+        <div class="col-sm-3">
+          <input type="text" name="warining_time" class="form-control" id="warining_time" value="{{data.warining_time}}" readonly>
+        </div>
+      </div>
+
+    </div>
+</form>
+
+{% endblock %}
+{% block javascript %}
+<script>
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+</script>
+{% endblock %}
+
+
+
+
+

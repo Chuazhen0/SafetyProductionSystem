@@ -1,0 +1,153 @@
+{% extends 'my_base.html' %}
+{% block title %}
+添加人员
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/systemsettings/staff/?action=list&menuid=39" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block save %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存"  id="save" onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block content %}
+<form method="POST" action="/systemsettings/staff_add/?action=new&menuid=39" class="form-horizontal"
+      enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;" >
+    {% csrf_token %}
+    <div class="box-body">
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label"><span class="bt">*</span>姓&nbsp;名</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="name" name="name" value="{{name}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label"><span class="bt">*</span>工&nbsp;号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="number" name="number" value="{{number}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">电&nbsp;话</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="phone" name="phone" value="{{phone}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">邮&nbsp;箱</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="email" name="email" value="{{email}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">城&nbsp;市</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="city" name="city" value="{{city}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">地&nbsp;址</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="address" name="address" value="{{address}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">邮政编码</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="postalcode" name="postalcode" value="{{postalcode}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label"><span class="bt">*</span>出生日期</label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="birthday" name="birthday" value="{{birthday}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label"><span class="bt">*</span>聘用日期</label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="startdate" name="startdate" value="{{startdate}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label"><span class="bt">*</span>结束日期</label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="enddate" name="enddate" value="{{enddate}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">头&nbsp;衔</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="title" name="title" value="{{title}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label"><span class="bt">*</span>主管人</label>
+            <div class="col-md-3">
+                <input type="radio" id="is_management1" name="is_management" value="1"/>主管人&nbsp;&nbsp;
+                <input type="radio" checked="checked" id="is_management2" name="is_management" value="0"/>非主管人
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label"><span class="bt">*</span>组织机构</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="job" id="job">
+                    {% for nid in data %}
+                    <option value="{{nid.id}}">
+                        {{nid.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-47px;">
+            <label class="col-md-1 control-label">照&nbsp;片</label>
+            <div class="col-md-3">
+                <input type="file" id="headimage" name="headimage">
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-47px;">
+            <label class="col-md-1 control-label">附&nbsp;件</label>
+            <div class="col-md-3">
+                <input type="file" id="addex" name="addex">
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+function checked() {
+            var date1 = $("#birthday").val();
+            var date2 = $("#startdate").val();
+            var date3 = $("#enddate").val();
+            if(date1=='' | date2 =='' | date3==''){
+             alert('您还未选择日期');
+                return false;
+
+            }else{
+                return true;
+
+
+            }
+            console.log(checked());
+	}
+	   // 按钮悬浮效果
+z</script>
+{% endblock %}

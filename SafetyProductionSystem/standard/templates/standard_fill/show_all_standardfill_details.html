@@ -1,0 +1,129 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">指标管理</span>
+        <small>测点录入详情</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>测点管理</span></li>
+        <li class="active">测点录入详情</li>
+    </ol>
+{% endblock %}
+{% block add %}
+
+{% endblock %}
+{% block update %}
+<a href="/standard/{{sid}}/standard_detail_fill_add/?action=new&menuid=22" class="btn btn-primary glyphicon glyphicon-plus" data-toggle="tooltip" data-placement="top" title="新建测点值"></a>
+{% endblock %}
+{% block content %}
+<form action="#" class="form-horizontal" method="post" style="margin-top:20px;white-space:nowrap;">
+    <div class="box-body">
+        <div class="form-group">
+            <label class="col-md-1 control-label">编&nbsp;号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="number" id="number" value="{{data.number}}"
+                       readonly>
+            </div>
+            <label class="col-md-2 control-label">填报描述</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="describe" id="describe"
+                       value="{{data.describe}}" readonly>
+            </div>
+            <label class="col-md-1 control-label">监督类型</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" name="Supervision_type" id="Supervision_type"
+                       value="{{data.Supervision_type.name}}" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-1 control-label">状&nbsp;态</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="state" id="state" value="{{data.state}}"
+                       readonly>
+            </div>
+            <label class="col-md-2 control-label">测点定义描述</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="definition" id="definition"
+                       value="{{data.definition.describe}}" readonly>
+            </div>
+            <label class="col-md-1 control-label">填报时间</label>
+            <div class="col-md-2">
+                <input type="text" class="form-control" name="fill_time" id="fill_time"
+                       value="{{data.fill_time}}" readonly>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">地&nbsp;点</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="place" name="place" value="{{data.place}}"
+                readonly>
+            </div>
+        </div>
+    </div>
+</form>
+{% block search %}
+<!--<a href="#" class="btn btn-primary btn-secondary glyphicon glyphicon-search" data-toggle="tooltip" onclick="prom()"-->
+   <!--data-placement="top"-->
+   <!--title="查询指标定义"></a>-->
+{% endblock %}
+{% load pagetag %}
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>测点录入名称</th>
+        <th>维护人员</th>
+        <th>测量值</th>
+        <th>标准值</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for warn in standardfill_details %}
+    {% if warn.is_activate == 1 %}
+    <tr>
+        <td>{{warn.name}}</td>
+        <td>{{warn.maintenance_staff.name}}</td>
+        <td>{{warn.measured_value}}</td>
+        <td>{{warn.standard_value}}</td>
+        <td><a href="/standard/{{warn.id}}/{{sid}}/standard_detail_fill_detail/?action=detail&menuid=22" title="查看测点值详情" data-toggle="tooltip" data-placement="top"><span
+        class="glyphicon glyphicon-zoom-in"></span></a>&nbsp;
+            <!--<a href="/standard/{{warn.id}}/{{sid}}/standard_detail_fill_edit/?action=edit&menuid=22" title="编辑测点值详情" data-toggle="tooltip" data-placement="top"><span-->
+        <!--class="glyphicon glyphicon-edit"></span></a>&nbsp;-->
+        <a href="javascript:;"
+        onclick="if(confirm('您确定删除这条记录？')){location.href='/standard/{{warn.id}}/{{sid}}/standard_detail_fill_delete/?action=del&menuid=22';}"
+        title="删除测点值详情" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-trash"></span></a>
+        </td>
+    </tr>
+    {% endif %}
+    {% empty %}
+    <tr><td colspan="5">暂无</td></tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+// 搜索框，点击放大镜后触发函数
+function prom(){
+    // 将搜索框和内容清空
+    $("#myform").val('');
+    $("#list").find("td").remove();
+		$('#myModal').modal('show');
+		$('#myModal').on('hide.bs.modal', function() {
+			 //$("#myform")[0].reset();
+			 $(this).find("shujuzhanshi").remove();
+		});
+		};
+
+// 点击隐藏
+function closed(){
+$('#myModal').hide();
+};
+// 点击搜索触发函数，获取输入的值
+// 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'my_base.html' %}
+{% block title %}
+添加组织机构
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block list_new %}
+<!--<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/systemsettings/organization/?action=list&menuid=40" data-toggle="tooltip" data-placement="top" ></a>-->
+{% endblock %}
+{% block save %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block content %}
+<form method="POST" action="/systemsettings/{{mid}}/{{tid}}/add_organization/" class="form-horizontal"
+          enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+        {% csrf_token %}
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>名&nbsp;称</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="name" name="name" value=""
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >简称</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="simplename" name="simplename">
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>上级目录</label>
+            <div class="col-md-3">
+                {% if org_level == '1' %}
+                    <input type="text" class="form-control"  name="tage" value="无" readonly>
+                {% elif org_level == '2' %}
+                    <input type="text" class="form-control"  name="tage" value="{{data.comname}}" readonly>
+                {% endif %}
+
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+        <label class="col-md-1 control-label"><span class="bt">*</span>级&nbsp;别</label>
+        <div class="col-md-3">
+            <select class="form-control select2 "  name="type" id="type">
+                {% if org_level == '1' %}
+                    <option value="0">公司</option>
+                {% elif org_level == '2' %}
+                    <option value="{{data.id}}">部门</option>
+                {% endif %}
+
+            </select>
+        </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >代码编号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="number" name="number" value="">
+            </div>
+    </div>
+
+    <h1>{{error}}</h1>
+</form>
+{% endblock %}
+{% block javascript %}
+<script>
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

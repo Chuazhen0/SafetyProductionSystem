@@ -1,0 +1,580 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">定期工作任务</span>
+        <small>编辑</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>定期工作管理</span></li>
+        <li class="active">定期工作任务</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" data-toggle="tooltip" data-placement="top"
+   class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+{% block list_edit %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表"
+   href="/equipmentplan/list/?action=list&menuid=49"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存"
+   onclick="if(!checked()){return};document.getElementById('myform').submit();"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block content %}
+<form action="/equipmentplan/{{equipment_plan.id}}/edit/" class="form-horizontal" method="post"
+      enctype="multipart/form-data" id="myform">
+    <div class="box-body">
+        <div class="form-group">
+            <label class="col-md-2 control-label">组&nbsp;织</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="orgid" id="orgid">
+                    <option selected value="{{equipment_plan.orgid}}">
+                        {{equipment_plan.orgid}}
+                    </option>
+                    {% for org in orgid %}
+                    {% if org.name == equipment_plan.orgid %}
+                    {% else %}
+                    <option value="{{org.name}}">{{org.name}}
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">地&nbsp;点</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="place" id="place" value="{{equipment_plan.place}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">编&nbsp;号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="number" name="number" value="{{equipment_plan.number}}"
+                       readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">台账编号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="count_number" id="count_number"
+                       value="{{equipment_plan.count_number}}" readonly>
+            </div>
+            <span class="glyphicon glyphicon-search" style="cursor:pointer;" data-toggle="modal"
+                  data-target="#countkks"></span>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">台账名称</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="count_name" id="count_name"
+                       value="{{equipment_plan.count_name}}" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">KKS编码</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="KKS_code" id="KKS_code"
+                       value="{{equipment_plan.KKS_code}}" readonly>
+            </div>
+            <span class="glyphicon glyphicon-search" style="cursor:pointer;" data-toggle="modal"
+                  data-target="#countkks"></span>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">KKS编码名称</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="KKS_codename" id="KKS_codename"
+                       value="{{equipment_plan.KKS_codename}}" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">工作区域</label>
+            <div class="col-md-3">
+                <input class="form-control" name="work_area" id="work_area" value="{{equipment_plan.work_area.area}}"
+                       readonly>
+            </div>
+            <span class="glyphicon glyphicon-search" style="cursor:pointer;" data-toggle="modal"
+                  data-target="#workarea"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">性&nbsp;质</label>
+            <div class="col-md-3">
+                <select class="form-control" name="type" id="type">
+                    <option selected value="{{equipment_plan.type}}">{{equipment_plan.type}}</option>
+                    {% if equipment_plan.type == '运行' %}
+                    <option value="检修">检修</option>
+                    {% else %}
+                    <option value="运行">运行</option>
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">标准分值</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="score" id="score" value="{{equipment_plan.score}}"
+                       onblur="check_score()">
+                <span class="glyphicon glyphicon-remove-sign error" id="nine">请输入正确数字（非零正数）！</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">业务来源</label>
+            <div class="col-md-3">
+                <input type="text" id="resource" name="resource" class="form-control"
+                       value="{{equipment_plan.resource}}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">状态</label>
+            <div class="col-md-3">
+                <input type="text" id="state" name="state" class="form-control" value="{{equipment_plan.state}}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>设备专业</label>
+            <div class="col-md-3">
+                <select class="form-control select2  " name="equipment_major">
+                    <option selected value="{{equipment_plan.equipment_major.id}}">
+                        {{equipment_plan.equipment_major.name}}
+                    </option>
+                    {% for equipment_major in equipment_major_list %}
+                    {% if equipment_major.name == equipment_plan.equipment_major.name %}
+                    {% else %}
+                    <option value="{{equipment_major.id}}">{{equipment_major.name}}
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>工作项目</label>
+            <div class="col-md-3">
+                <textarea id="work_content" name="work_content"
+                          class="form-control">{{equipment_plan.work_content}}</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>周期描述</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control col-md-1" name="num" value="{{num}}" onblur="check_num()"
+                       id="num">
+                {% if desc == '小时' %}
+                <input type="radio" name="weekend_desc" value="小时" class="weekend_desc" checked/>小时
+                <input type="radio" name="weekend_desc" value="天" class="weekend_desc"/>天
+                <input type="radio" name="weekend_desc" value="周" class="weekend_desc"/>周
+                <input type="radio" name="weekend_desc" value="月" class="weekend_desc"/>月
+                {% elif desc == '天' %}
+                <input type="radio" name="weekend_desc" value="小时" class="weekend_desc"/>小时
+                <input type="radio" name="weekend_desc" value="天" class="weekend_desc" checked/>天
+                <input type="radio" name="weekend_desc" value="周" class="weekend_desc"/>周
+                <input type="radio" name="weekend_desc" value="月" class="weekend_desc"/>月
+                {% elif desc == '周' %}
+                <input type="radio" name="weekend_desc" value="小时" class="weekend_desc"/>小时
+                <input type="radio" name="weekend_desc" value="天" class="weekend_desc"/>天
+                <input type="radio" name="weekend_desc" value="周" class="weekend_desc" checked/>周
+                <input type="radio" name="weekend_desc" value="月" class="weekend_desc"/>月
+                {% elif desc == '月' %}
+                <input type="radio" name="weekend_desc" value="小时" class="weekend_desc"/>小时
+                <input type="radio" name="weekend_desc" value="天" class="weekend_desc"/>天
+                <input type="radio" name="weekend_desc" value="周" class="weekend_desc"/>周
+                <input type="radio" name="weekend_desc" checked class="weekend_desc"/>月
+                {% else %}
+                <input type="radio" name="weekend_desc" value="小时" class="weekend_desc"/>小时
+                <input type="radio" name="weekend_desc" value="天" class="weekend_desc"/>天
+                <input type="radio" name="weekend_desc" value="周" class="weekend_desc"/>周
+                <input type="radio" name="weekend_desc" value="月" class="weekend_desc"/>月
+                {% endif %}
+                <span class="glyphicon glyphicon-remove-sign error" id="one">请输入正确数字（非零正整数)！</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>责任人</label>
+            <div class="col-md-3">
+                <input type="text" id="exe_user" name="exe_user" class="form-control"
+                       value="{{equipment_plan.exe_user.username}}" readonly/>
+            </div>
+            <span class="glyphicon glyphicon-search" style="cursor:pointer;" data-toggle="modal"
+                  data-target="#user"></span>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>责任组</label>
+            <div class="col-md-3">
+                <input type="text" id="exe_group" name="exe_group" class="form-control"
+                       value="{{equipment_plan.exe_group}}" readonly/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>提前提醒时间（天）</label>
+            <div class="col-md-3">
+                <input type="text" id="warinig_time" name="warinig_time" class="form-control"
+                       value="{{equipment_plan.warinig_time}}" onblur="check_warinig_time()">
+                <span class="glyphicon glyphicon-remove-sign error" id="two">请输入正确数字（非零正整数)！</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>超期专业专工预警（小时）</label>
+            <div class="col-md-3">
+                <input type="text" id="overdue_major" name="overdue_major" class="form-control"
+                       value="{{equipment_plan.overdue_major}}" onblur="check_overdue_major()"/>
+                <span class="glyphicon glyphicon-remove-sign error" id="three">请输入正确数字（非零正整数)！</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>超期部门领导预警（小时）</label>
+            <div class="col-md-3">
+                <input type="text" id="overdue_dept" name="overdue_dept" class="form-control"
+                       value="{{equipment_plan.overdue_dept}}" onblur="check_overdue_dept()"/>
+                <span class="glyphicon glyphicon-remove-sign error" id="four">请输入正确数字（非零正整数)！</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>超期分管领导预警（小时）</label>
+            <div class="col-md-3">
+                <input type="text" id="overdue_leader" name="overdue_leader" class="form-control"
+                       value="{{equipment_plan.overdue_leader}}" onblur="check_overdue_leader()"/>
+                <span class="glyphicon glyphicon-remove-sign error" id="five">请输入正确数字（非零正整数)！</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>监督专业</label>
+            <div class="col-md-3">
+                <select class="form-control select2" name="supervision_major">
+                    <option selected value="{{equipment_plan.supervision_major.id}}">
+                        {{equipment_plan.supervision_major.supervision_major}}
+                    </option>
+                    {% for supervision_major in supervision_major_list %}
+                    {% if supervision_major == equipment_plan.supervision_major %}
+                    {% else %}
+                    <option value="{{supervision_major.id}}">{{supervision_major.supervision_major}}
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>开始时间</label>
+            <div class="col-md-3">
+                <input type="date" id="start_time" name="start_time" class="form-control"
+                       onblur="check_start_current()"/>
+                <span class="glyphicon glyphicon-remove-sign error" id="six">开始时间必须大于当前时间</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>结束时间</label>
+            <div class="col-md-3">
+                <input type="date" id="end_time" name="end_time" class="form-control" onblur="check_start_end()"/>
+                <span class="glyphicon glyphicon-remove-sign error" id="seven">结束时间必须大于开始时间</span>
+            </div>
+        </div>
+    </div>
+</form>
+<!---------------------台账和KKS编码模态框------------------------->
+<div class="modal fade" id="countkks" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">设备台账列表</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>设备台账编号</th>
+                        <th>设备台账名称</th>
+                        <th>KKS编码</th>
+                        <th>KKS编码名称</th>
+                    </tr>
+                    {% for count in count_list %}
+                    <tr class="check_count">
+                        <td>{{count.number}}</td>
+                        <td>{{count.name}}</td>
+                        <td>{{count.KKS_code}}</td>
+                        <td>{{count.KKS_codename}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">无设备台账可选择</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn" data-dismiss="modal" aria-hidden="true">确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!---------------------工作区域模态框------------------------->
+<div class="modal fade" id="workarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabe">工作区域列表</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>工作区域编号</th>
+                        <th>工作区域名称</th>
+                    </tr>
+                    {% for workarea in workarea_list %}
+                    <tr class="check_workarea">
+                        <td>{{forloop.counter}}</td>
+                        <td>{{workarea.area}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2">无工作区域可选择</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn2" data-dismiss="modal" aria-hidden="true">确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!---------------------责任人模态框------------------------->
+<div class="modal fade" id="user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLa">设备台账列表</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>责任人编号</th>
+                        <th>姓名</th>
+                        <th>组织机构</th>
+                    </tr>
+                    {% for user in user_list %}
+                    <tr class="check_user">
+                        <td>{{user.staff.number}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.Department.name}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">无责任人可选择</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn3" data-dismiss="modal" aria-hidden="true">确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+//设备台账
+   $(".check_count").click(function(){
+            // 选中某条数据，变为蓝色
+            $(this).css("background-color","skyblue");
+            //  其他同级元素为白色
+            $(this).siblings().css("background-color","white");
+            // 获取选中的td的值
+            var $number = $(this).children("td:first").text();
+            var $name = $(this).children("td:first").next().text();
+            var $KKS_code = $(this).children("td:first").next().next().text();
+            var $KKS_codename = $(this).children("td:first").next().next().next().text();
+            $("#btn").click(function(){
+                    // 接受数据并写入页面
+                    $("#count_number").val($number);
+                     $("#count_name").val($name);
+                    $("#KKS_code").val($KKS_code);
+                    $("#KKS_codename").val($KKS_codename);
+                    });
+
+    })
+
+
+
+    //工作区域
+   $(".check_workarea").click(function(){
+            // 选中某条数据，变为蓝色
+            $(this).css("background-color","skyblue");
+            //  其他同级元素为白色
+            $(this).siblings().css("background-color","white");
+            // 获取选中的td的值
+            var $number = $(this).children("td:first").text();
+            var $name = $(this).children("td:first").next().text();
+            $("#btn2").click(function(){
+                    // 接受数据并写入页面
+                     $("#work_area").val($name);
+                    });
+
+    })
+
+
+//责任人
+   $(".check_user").click(function(){
+            // 选中某条数据，变为蓝色
+            $(this).css("background-color","skyblue");
+            //  其他同级元素为白色
+            $(this).siblings().css("background-color","white");
+            // 获取选中的td的值
+            var $number = $(this).children("td:first").text();
+            var $name = $(this).children("td:first").next().text();
+            var $Department = $(this).children("td:first").next().next().text();
+
+            $("#btn3").click(function(){
+                    // 接受数据并写入页面
+                    $("#exe_user").val($name);
+                    $("#exe_group").val($Department);
+                    });
+
+    })
+   // form表单不能为空的验证
+function checked() {
+            var date = $("#warinig_time").val();
+            var user = $("#exe_user").val();
+            var dept = $("#exe_dept").val();
+            var dept2 = $("#work_content").val();
+            var dept3 = $("#equipment_major").val();
+            var dept4 = $(".weekend_desc").val();
+            var overdue_major = $("#overdue_major").val();
+            var overdue_dept = $("#overdue_dept").val();
+            var overdue_leader = $("#overdue_leader").val();
+            var supervision_major = $("#supervision_major").val();
+            var start_time = $("#start_time").val();
+            var end_time = $("#end_time").val();
+            var d=new Date(Date.parse(start_time.replace(/-/g,"/")));
+            var curDate=new Date();
+            var e = new Date(Date.parse(end_time.replace(/-/g,"/")));
+            var num = $("#num").val();
+            if(date==''|user==''|dept==''|dept2==''|dept3==''|dept4==''|overdue_leader==''|overdue_dept==''|overdue_major==''|supervision_major==''|start_time==''|end_time==''|num==''){
+             alert('请完成所有必填项！');
+                return false;
+            }
+            else{
+                return true;
+            }
+
+   };
+
+        //周期描述，数字验证
+        function check_num(){
+         $("#one").hide();
+            var num = $("#num").val();
+            console.log(num);
+            var reg=/^[1-9]\d*$/;
+            data = reg.test(num);
+            console.log(data);
+                if (!data){
+                //请填写数字
+                $("#one").show();
+                }
+            }
+        //提前提醒时间，数字验证
+        function check_warinig_time(){
+         $("#two").hide();
+        var warinig_time = $("#warinig_time").val();
+        var reg=/^[1-9]\d*$/;
+        data = reg.test(warinig_time);
+        if (!data){
+                //请填写数字
+                $("#two").show();
+                }
+            }
+
+
+        // 超期专工提醒，数字验证
+        function check_overdue_major(){
+        $("#three").hide();
+        var overdue_major = $("#overdue_major").val();
+        var reg=/^[1-9]\d*$/;
+        data = reg.test(overdue_major);
+        if (!data){
+                //请填写数字
+                $("#three").show();
+                }
+            }
+
+
+        // 超期部门提醒，数字验证
+        function check_overdue_dept(){
+        $("#four").hide();
+        var overdue_dept = $("#overdue_dept").val();
+        var reg=/^[1-9]\d*$/;
+        data = reg.test(overdue_dept);
+        if (!data){
+                //请填写数字
+                $("#four").show();
+                }
+            }
+
+
+        //超期分管领导提醒，数字验证
+        function check_overdue_leader(){
+        $("#five").hide();
+        var overdue_leader = $("#overdue_leader").val();
+        var reg=/^[1-9]\d*$/;
+        data = reg.test(overdue_leader);
+        if (!data){
+                //请填写数字
+                $("#five").show();
+                }
+        }
+        //  开始时间与当前时间的验证
+        function check_start_current(){
+        $("#six").hide();
+        var start_time = $("#start_time").val();
+        var d=new Date(Date.parse(start_time.replace(/-/g,"/")));
+        var curDate=new Date();
+        if (d<curDate){
+                $("#six").show();
+                }
+        }
+        //开始时间与结束时间的验证
+        function check_start_end(){
+        $("#seven").hide();
+         var start_time = $("#start_time").val();
+        var d=new Date(Date.parse(start_time.replace(/-/g,"/")));
+        var end_time = $("#end_time").val();
+        var e = new Date(Date.parse(end_time.replace(/-/g,"/")));
+        if (e<d){
+                $("#seven").show();
+                }
+        }
+
+// 验证标准分值必须为数字
+function check_score(){
+    $("#nine").hide();
+      var score =  $("#score").val();
+      console.log(score);
+      console.log(/^\d+$/.test(score));
+    if (score != ''&!/^\d+$/.test(score)){
+        $("#nine").show();
+    }
+}
+
+
+
+</script>
+{% endblock %}
+

@@ -1,0 +1,225 @@
+{% extends 'my_base.html' %}
+{% block css %}
+<link rel="stylesheet" href="../../../static/user/css/starter.css">
+<link href="/static/public/zTreeStyle.min.css" rel="stylesheet">
+{% endblock %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">组织机构</span>
+        <small>管理</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>系统设置</span></li>
+        <li><span>组织机构</span></li>
+        <li class="active">管理</li>
+    </ol>
+{% endblock %}
+
+
+{% block content %}
+
+<!--<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
+    <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+            <!--<div class="modal-header">-->
+                <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">-->
+                    <!--&times;-->
+                <!--</button>-->
+                <!--<h4 class="modal-title" id="myModalLabel">-->
+                    <!--添加总公司-->
+                <!--</h4>-->
+                <!--<div id="sb1"></div>-->
+            <!--</div>-->
+            <!--<div class="modal-body">-->
+                <!--<form id="myform" action="/organization/add/" enctype="multipart/form-data" method="post">{% csrf_token-->
+                    <!--%}-->
+                    <!--<div style="padding-top:20px">-->
+                        <!--<label for="">公司名称：</label><input type="text" name="name" id="organization_name">-->
+                    <!--</div>-->
+                    <!--<div style="padding-top:20px">-->
+                        <!--<label for="">公司编号：</label><input type="text" name="number" id="organization_number">-->
+                    <!--</div>-->
+                    <!--<div style="padding-top:20px">-->
+                        <!--<input type="hidden" name="type" id="organization_type" value="1">-->
+                    <!--</div>-->
+
+                    <!--<div class="modal-footer">-->
+
+                        <!--<button type="submit" class="btn btn-default" style="float:left">提交</button>-->
+
+                        <!--<button type="button" class="btn btn-default" data-dismiss="modal">关闭-->
+                        <!--</button>-->
+                    <!--</div>-->
+
+                <!--</form>-->
+
+            <!--</div>-->
+
+        <!--</div>-->
+        <!--&lt;!&ndash; /.modal-content &ndash;&gt;-->
+    <!--</div>-->
+    <!--&lt;!&ndash; /.modal &ndash;&gt;-->
+<!--</div>-->
+<!--<div class="row">-->
+
+<!-- /.box-header -->
+<div class="box-body table-responsive no-padding" style="width: 100%">
+    <div class="layer">
+        <div id="tableMain">
+            <ul id="dataTree" class="ztree">
+            </ul>
+        </div>
+    </div>
+</div>
+<!--</div>-->
+<!-- /.box-body -->
+
+<div id="div1"></div>
+
+{% endblock %}
+{% block javascript %}
+<!--<script src="/static/jquery-2.1.4/jquery-2.1.4/jquery.myjs"></script>-->
+<script src="/static/public/jquery.min.js"></script>
+<script src="/static/public/jquery.ztree.all.min.js"></script>
+<script src="/static/user/js/starter.js"></script>
+<!--<script src = "/static/jquery-2.1.4/"></script>-->
+<!--<script type="text/javascript" src="/static/bootstrap-treeview-1.2.0/dist/bootstrap-treeview.min.myjs"></script>-->
+<!--<script type="text/javascript" src="/static/TreeGrid/jquery-1.3.2.min.myjs"></script>-->
+<!--<script type="text/javascript" src="/static/TreeGrid/TreeGrid.myjs"></script>-->
+
+<script type="text/javascript">
+	var zTreeNodes;
+    var setting = {
+        view: {
+            showLine: false,
+            showIcon: false,
+            addDiyDom: addDiyDom
+        },
+        data: {
+            simpleData: {
+                enable: true,
+				idKey: "id",
+				pIdKey: "parent_id",
+            }
+        }
+    };
+    /**
+     * 自定义DOM节点
+     */
+    function addDiyDom(treeId, treeNode) {
+        console.log(treeNode)
+        var spaceWidth = 15;
+        var liObj = $("#" + treeNode.tId);
+        var aObj = $("#" + treeNode.tId + "_a");
+        var switchObj = $("#" + treeNode.tId + "_switch");
+        var icoObj = $("#" + treeNode.tId + "_ico");
+        var spanObj = $("#" + treeNode.tId + "_span");
+        aObj.attr('title', '');
+        aObj.append('<div class="diy swich"></div>');
+        var div = $(liObj).find('div').eq(0);
+        switchObj.remove();
+        spanObj.remove();
+        icoObj.remove();
+        div.append(switchObj);
+        div.append(spanObj);
+        var spaceStr = "<span style='height:1px;display: inline-block;width:" + (spaceWidth * treeNode.level) + "px'></span>";
+        switchObj.before(spaceStr);
+        var editStr = '';
+        editStr += '<div class="diy">' + (treeNode.number == null ? '&nbsp;' : treeNode.number) + '</div>';
+        // editStr += '<div class="diy">' + (treeNode.type == null ? '&nbsp;' : treeNode.type ) + '</div>';
+        editStr += '<div class="diy">' + (treeNode.simplename == null ? '&nbsp;' : treeNode.simplename ) + '</div>';
+        editStr += '<div class="diy">' + formatHandle(treeNode) + '</div>';
+        aObj.append(editStr);
+    }
+    /**
+     * 查询数据
+     */
+    function query(){$.ajax({
+			url: '/systemsettings/all_organiza/',
+			//			type:'json',
+			success:function(data){
+                //var all = data['data']
+                console.log(data['data']);
+                data1 = data['data']
+        //初始化列表
+        zTreeNodes = data1;
+        //初始化树
+        $.fn.zTree.init($("#dataTree"), setting, zTreeNodes);
+        //添加表头
+        // var li_head = ' <li class="head"><a><div class="diy">组织结构名称</div><div class="diy">组织结构编码</div><div class="diy">组织结构类型</div><div class="diy">操作</div></a></li>';
+        var li_head = ' <li class="head"><a><div class="diy">组织机构名称</div><div class="diy">组织机构编码</div><div class="diy">组织机构简称</div><div class="diy">操作</div></a></li>';
+        var rows = $("#dataTree").find('li');
+        if (rows.length > 0) {
+            rows.eq(0).before(li_head)
+        } else {
+            $("#dataTree").append(li_head);
+            $("#dataTree").append('<li ><div style="text-align: center;line-height: 30px;" >无符合条件数据</div></li>')
+        }
+			}
+		}
+	)}
+    /**
+     * 根据权限展示功能按钮
+     * @param treeNode
+     * @returns {string}
+     */
+    function formatHandle(treeNode) {
+        console.log(treeNode);
+        var htmlStr = '';
+        var add_power = {{ add_power | safe }}
+        var del_power = {{ del_power | safe }}
+        var edit_power = {{ edit_power | safe }}
+        var detail_power = {{ detail_power | safe }}
+        if (detail_power == '1'){
+            htmlStr += '<div class="icon_div"><a class="" title="查看详情"  href="/systemsettings/' + treeNode.real_id +'/'+ treeNode.tree_level + '/org_detail/?action=detail&menuid=56"></a></div>';
+        }
+        if (edit_power == '1'){
+            htmlStr += '<div class="icon_edit"><a class="" title="修改" href="/systemsettings/' + treeNode.real_id +'/'+ treeNode.tree_level + '/edit_organization/?action=edit&menuid=56"></a></div>';
+        }
+        if (del_power == '1'){
+            htmlStr += '<div class="icon_del"><a class="" title="删除" href="/systemsettings/' + treeNode.real_id +'/'+ treeNode.tree_level + '/delete_origaniza/?action=del&menuid=56"></a></div>';
+        }
+        if (treeNode.tree_level == '1') {
+            if (add_power == '1') {
+                htmlStr += '<div class="icon_add"><a class="" title="添加下级" href="/systemsettings/' + treeNode.real_id +'/2/add_organization/?action=new&menuid=56"></a></div>';
+            }
+        }
+        return htmlStr;
+    }
+
+    $(function () {
+        //初始化数据
+        query();
+    })
+
+	function prom() {
+		$('#myModal').modal('show');
+		$('#myModal').on('hide.bs.modal', function() {
+
+			$('#myform')[0].reset();
+
+		});
+	}
+
+	      $(function () {
+	          $.ajaxSetup({
+	              data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+
+	          });
+	          var tree = $.getJSON("{% url 'systemsettings:dept_tree' %}", '', function (data) {
+	          	console.log(data);
+	              $('#tree').treeview({
+	                  data: data,
+	                  level: 0,
+	                  showTags: false,
+	                  enableLinks : true,
+	                  backcolor: 'white',
+	                  color:'white',
+	              });
+
+	      });
+	      })
+
+
+</script>
+{% endblock %}

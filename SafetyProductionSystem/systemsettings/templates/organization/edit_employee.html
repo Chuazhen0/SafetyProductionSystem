@@ -1,0 +1,237 @@
+{% extends 'my_base.html' %}
+{% block title %}
+编辑人员信息
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block list_edit %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/systemsettings/staff/?action=list&menuid=39" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top" ></a>
+<!--<a type="button" onClick="javascript :history.back(-1)" class="btn btn-primary">返回</a>-->
+{% endblock %}
+{% block content %}
+<form method="POST" action="/systemsettings/{{data.id}}/staff_edit/?action=edit&menuid=39" class="form-horizontal"
+          enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+    {% csrf_token %}
+    <div class="box-body">
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>姓&nbsp;名</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="name" name="name" value="{{data.name}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>工&nbsp;号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="number" name="number" value="{{data.number}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >电&nbsp;话</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="phone" name="phone" value="{{data.phone}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >邮&nbsp;箱</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="email" name="email" value="{{data.email}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >城&nbsp;市</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="city" name="city" value="{{data.city}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >地&nbsp;址</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="address" name="address" value="{{data.address}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >邮政编码</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="postalcode" name="postalcode" value="{{data.postalcode}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>出生日期</label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="birthday" name="birthday" value="{{data.birthday}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>聘用日期</label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="startdate" name="startdate" value="{{data.startdate}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>结束日期</label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="enddate" name="enddate" value="{{data.enddate}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >头&nbsp;衔</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="title" name="title" value="{{data.title}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" ><span class="bt">*</span>是否主管</label>
+            <div class="col-md-3">
+            {% if data.is_management == 1 %}
+                <input type="radio" checked="checked" id="is_management1" name="is_management" value="1"/>主管人&nbsp;&nbsp;
+                <input type="radio" id="is_management2" name="is_management" value="0"/>非主管人
+            {% else %}
+                <input type="radio" id="is_management3" name="is_management" value="1"/>主管人&nbsp;&nbsp;
+                <input type="radio" checked="checked" id="is_management4" name="is_management" value="0"/>非主管人
+            </div>
+            {% endif %}
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+        <label class="col-md-1 control-label"><span class="bt">*</span>组织机构</label>
+        <div class="col-md-3">
+            <select class="form-control select2 "  name="job" id="job">
+                <option selected="selected" value="{{data.job.id}}">{{data.job.name}}</option>
+                {% for emp in job %}
+                {% if emp.id == data.job.id %}
+                {% else %}
+                <option value="{{emp.id}}">
+                    {{emp.name}}
+                </option>
+                {% endif %}
+                {% empty %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group" style="margin-left:-47px;">
+        <label class="col-md-1 control-label">头&nbsp;像</label>
+        <div class="col-md-3">
+            <input type="file" id="headimage" name="headimage" value="{{data.headimage}}">
+        </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >附&nbsp;件</label>
+            <div class="col-md-3">
+                {% if data.addex %}
+                  {{data.addex}}
+                  <a href="{% url 'supervision:down_file' %}?data={{data.addex}}">##下载查看附件</a>
+                {% endif %}
+            </div>
+    </div>
+    </div>
+</form>
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+  $(function(){
+  $("#jump").click(function(){
+  var second = 3;
+
+   //获取显示秒数的元素，通过定时器来更改秒数。
+
+    var message = document.getElementById("countTime");
+
+    function clock()
+
+    {
+
+        if(second==0)
+
+        {
+
+            goTo();
+
+        }
+
+        else
+
+        {
+            document.getElementById('yes').setAttribute('style', 'display: block');
+            message.innerHTML = second-- + "秒后回到详情页";
+            window.setTimeout(clock,1000);
+
+
+        }
+
+    }
+
+    clock();
+
+   //通过window的location和history对象来控制网页的跳转。
+
+   function goTo()
+
+   {
+
+        window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";
+
+   }
+
+   function goBack()
+
+   {
+
+    //   window.history.Back();
+
+        window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";
+
+   }
+
+  })
+  })
+
+function checked() {
+            var date1 = $("#birthday").val();
+            var date2 = $("#startdate").val();
+            var date3 = $("#enddate").val();
+            if(date1=='' | date2 =='' | date3==''){
+             alert('您还未选择日期');
+                return false;
+
+            }else{
+                return true;
+
+
+            }
+            console.log(checked());
+	}
+
+
+
+
+
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+
+
+
+
+
+
+</script>
+{% endblock %}

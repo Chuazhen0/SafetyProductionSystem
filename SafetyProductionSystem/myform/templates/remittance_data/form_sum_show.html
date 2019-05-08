@@ -1,0 +1,340 @@
+{% extends 'my_base.html' %}
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">报表管理</span>
+    <small>汇总表</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span>技术监督</span></li>
+    <li><span>报表管理</span></li>
+    <li class="active">汇总表</li>
+</ol>
+{% endblock %}
+{% block css %}
+<style>
+    .table-bordered thead tr th {
+        border: 1px solid #333;
+        text-align: center;
+    }
+    .table-bordered tbody tr td {
+        border: 1px solid #333;
+    }
+
+</style>
+{% endblock %}
+{% block list_new %}
+<!--<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/myform/show_all_form/?action=list&menuid=16"-->
+<!--data-toggle="tooltip" data-placement="top"></a>-->
+{% endblock %}
+{% block save %}
+<a id="sb" class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="go()" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :window.location.href='/myform/all_remittance_show/?action=new&menuid=17'" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+<a href="#" onclick="method5('example2')" data-toggle="tooltip" data-placement="top"
+   class="css3 btn btn-primary glyphicon glyphicon glyphicon-export"
+   title="导出"></a>
+{% endblock %}
+{% block update %}
+<!--<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh"
+   title="刷新"></a>-->
+{% endblock %}
+{% block content %}
+{% load pagetag %}
+<body>
+<div class="col-md-12">
+    <!-- Custom Tabs -->
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="true" id="tab_first">中国电力投资集团公司技术监督数据报表</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane" id="tab_1">
+                <div class="box" style="border-top: none">
+                    <div class="container-fluid" style="overflow-x: scroll"><br>
+                        <table id="example2" class="table table-striped table-bordered table-hover" style="font-size: 12px;min-width: 1500px;border: black;">
+                            <thead>
+                            <tr style="border-top: solid 1px black">
+                                <th rowspan="2" width="10%">单位名称</th>
+                                <th rowspan="2">周期</th>
+                                <th colspan="2">绝缘监督</th>
+                                <th colspan="3">金属监督</th>
+                                <th colspan="3">热工监督</th>
+                                <th colspan="10">化学监督</th>
+                                <th colspan="3">继电保护监督</th>
+                                <th colspan="4">电测监督</th>
+                                <th colspan="4">环保监督</th>
+                            </tr>
+                            <tr>
+                                <th>预试完成率</th>
+                                <th>缺陷消除率</th>
+                                <th>监督设备部件检验率</th>
+                                <th>缺陷消除率</th>
+                                <th>焊口检验率</th>
+                                <th>保护投入率</th>
+                                <th>自动投入率</th>
+                                <th>自动完好率</th>
+                                <th>给水合格率</th>
+                                <th>凝结水合格率</th>
+                                <th>炉水合格率</th>
+                                <th>蒸汽合格率</th>
+                                <th>补给水合格率</th>
+                                <th>循环水合格率</th>
+                                <th>水汽水质平均合格率</th>
+                                <th>汽轮机油油质合格率</th>
+                                <th>抗燃油油质合格率</th>
+                                <th>氢气质量合格率</th>
+                                <th>保护投入率</th>
+                                <th>保护检验率</th>
+                                <th>保护正确动作率</th>
+                                <th>标准器具检验率</th>
+                                <th>主要仪表检验率</th>
+                                <th>主要仪表调前合格率</th>
+                                <th>关口表检验合格率</th>
+                                <th>脱硫设备投运率</th>
+                                <th>烟尘排放达标率</th>
+                                <th>电除尘设施投运率</th>
+                                <th>工业废水排放达标率</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for value in list_data %}
+                                <tr>
+                                    <td>{{ value.29 }}</td>
+                                    <td>{{ quarter }}</td>
+                                    <td>{{ value.0  }}</td>
+                                    <td>{{ value.1 | default:'0.0' }}</td>
+                                    <td>{{ value.2 | default:'0.0' }}</td>
+                                    <td>{{ value.3 | default:'0.0' }}</td>
+                                    <td>{{ value.4 | default:'0.0' }}</td>
+                                    <td>{{ value.5 | default:'0.0' }}</td>
+                                    <td>{{ value.6 | default:'0.0' }}</td>
+                                    <td>{{ value.7 | default:'0.0' }}</td>
+                                    <td>{{ value.8 | default:'0.0' }}</td>
+                                    <td>{{ value.9 | default:'0.0' }}</td>
+                                    <td>{{ value.10 | default:'0.0' }}</td>
+                                    <td>{{ value.11 | default:'0.0' }}</td>
+                                    <td>{{ value.12 | default:'0.0' }}</td>
+                                    <td>{{ value.13 | default:'0.0' }}</td>
+                                    <td>{{ value.14 | default:'0.0' }}</td>
+                                    <td>{{ value.15 | default:'0.0' }}</td>
+                                    <td>{{ value.16 | default:'0.0' }}</td>
+                                    <td>{{ value.17 | default:'0.0' }}</td>
+                                    <td>{{ value.18 | default:'0.0' }}</td>
+                                    <td>{{ value.19 | default:'0.0' }}</td>
+                                    <td>{{ value.20 | default:'0.0' }}</td>
+                                    <td>{{ value.21 | default:'0.0' }}</td>
+                                    <td>{{ value.22 | default:'0.0' }}</td>
+                                    <td>{{ value.23 | default:'0.0' }}</td>
+                                    <td>{{ value.24 | default:'0.0' }}</td>
+                                    <td>{{ value.25 | default:'0.0' }}</td>
+                                    <td>{{ value.26 | default:'0.0' }}</td>
+                                    <td>{{ value.27 | default:'0.0' }}</td>
+                                    <td>{{ value.28 | default:'0.0' }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- /.tab-pane -->
+        </div>
+        <!-- /.tab-content -->
+    </div>
+    <!-- nav-tabs-custom -->
+</div>
+{% endblock %}
+{% block javascript %}
+</body>
+<script type="text/javascript">
+    document.getElementById('tab_first').click();
+
+    var sb = document.getElementById('sb');
+
+
+    function go() {
+
+        var demo = $("#report_iframe1").contents().find(".vrSubmitReport").click();
+        //console.log(demo)
+    }
+
+    //
+    // function xxx(patternID , resID){
+    //     $.ajax({
+    //         type: 'GET',
+    //         url:"http://192.168.104.228:8800/reportmis/gezEntry.url?patternID="+patternID+"&resID="+resID+"",
+    //         success: function( result ) {
+    //         console.log(result)
+    //         }
+    //     });
+    // }
+    // 搜索框，点击放大镜后触发函数
+    function prom() {
+        // 将搜索框和内容清空
+        $("#myform").val('');
+        $("#list").find("td").remove();
+        $('#myModal').modal('show');
+        $('#myModal').on('hide.bs.modal', function () {
+            //$("#myform")[0].reset();
+            $(this).find("shujuzhanshi").remove();
+        });
+    };
+
+    // 点击隐藏
+    function closed() {
+        $('#myModal').hide();
+    };
+    // 点击搜索触发函数，获取输入的值
+    // 按钮悬浮效果
+    $("[data-toggle='tooltip']").tooltip();
+
+    // function submited() {
+    //
+    // 月度报表
+    $(document).ready(function () {
+        //点击链接的时候调用
+        $("#linkToCart").click(function () {
+
+            //得到input的值
+            var years = $("#particular_year").val();
+            var month = $("#particular_month").val();
+
+            //设置linkToCart的href的值
+            $("#linkToCart").attr("href", "/myform/one_remittance_show/?years=" + years + "&month=" + month);
+        });
+    });
+    //   季度报表
+    $(document).ready(function () {
+        //点击链接的时候调用
+        $("#linkToCart2").click(function () {
+
+            //得到input的值
+            var years = $("#particular_year2").val();
+            var quarter = $("#quarter_data").val();
+
+            //设置linkToCart的href的值
+            $("#linkToCart2").attr("href", "/myform/one_remittance_show/?years=" + years + "&month=" + quarter);
+        });
+    });
+    //   半年度报表
+    $(document).ready(function () {
+        //点击链接的时候调用
+        $("#linkToCart3").click(function () {
+
+            //得到input的值
+            var years = $("#particular_year3").val();
+            var quarter = $("#quarter_data2").val();
+
+            //设置linkToCart的href的值
+            $("#linkToCart3").attr("href", "/myform/one_remittance_show/?years=" + years + "&month=" + quarter);
+        });
+    });
+    //   年度报表
+    $(document).ready(function () {
+        //点击链接的时候调用
+        $("#linkToCart3").click(function () {
+
+            //得到input的值
+            var years = $("#particular_year4").val();
+            var quarter = $("#quarter_data3").val();
+
+            //设置linkToCart的href的值
+            $("#linkToCart4").attr("href", "/myform/one_remittance_show/?years=" + years + "&month=" + quarter);
+        });
+    });
+</script>
+
+
+    <script>
+        //打印表格
+        var idTmr;
+
+        function getExplorer() {
+            var explorer = window.navigator.userAgent;
+            //ie
+            if(explorer.indexOf("MSIE") >= 0) {
+                return 'ie';
+            }
+            //firefox
+            else if(explorer.indexOf("Firefox") >= 0) {
+                return 'Firefox';
+            }
+            //Chrome
+            else if(explorer.indexOf("Chrome") >= 0) {
+                return 'Chrome';
+            }
+            //Opera
+            else if(explorer.indexOf("Opera") >= 0) {
+                return 'Opera';
+            }
+            //Safari
+            else if(explorer.indexOf("Safari") >= 0) {
+                return 'Safari';
+            }
+        }
+
+        function method5(tableid) {
+            if(getExplorer() == 'ie') {
+                var curTbl = document.getElementById(tableid);
+                var oXL = new ActiveXObject("Excel.Application");
+                var oWB = oXL.Workbooks.Add();
+                var xlsheet = oWB.Worksheets(1);
+                var sel = document.body.createTextRange();
+                sel.moveToElementText(curTbl);
+                sel.select();
+                sel.execCommand("Copy");
+                xlsheet.Paste();
+                oXL.Visible = true;
+
+                try {
+                    var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");
+                } catch(e) {
+                    console.log("Nested catch caught " + e);
+                } finally {
+                    oWB.SaveAs(fname);
+                    oWB.Close(savechanges = false);
+                    oXL.Quit();
+                    oXL = null;
+                    idTmr = window.setInterval("Cleanup();", 1);
+                }
+
+            } else {
+                tableToExcel(tableid)
+            }
+        }
+
+        function Cleanup() {
+            window.clearInterval(idTmr);
+            CollectGarbage();
+        }
+        var tableToExcel = (function() {
+            var uri = 'data:application/vnd.ms-excel;base64,',
+                template = '<html><head><meta charset="UTF-8"></head><body><table  border="1">{table}</table></body></html>',
+                base64 = function(
+                    s) {
+                    return window.btoa(unescape(encodeURIComponent(s)))
+                },
+                format = function(s, c) {
+                    return s.replace(/{(\w+)}/g, function(m, p) {
+                        return c[p];
+                    })
+                }
+            return function(table, name) {
+                if(!table.nodeType)
+                    table = document.getElementById(table)
+                var ctx = {
+                    worksheet: name || 'Worksheet',
+                    table: table.innerHTML
+                }
+                window.location.href = uri + base64(format(template, ctx))
+            }
+        })()
+    </script>
+
+
+{% endblock %}

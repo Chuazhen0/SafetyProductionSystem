@@ -1,0 +1,95 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">指标定义</span>
+        <small>指标定义详情</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>指标管理</span></li>
+        <li class="active">指标定义</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_detail %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/standard/{{sid}}/standard_one_detail/?action=list&menuid=20"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block modify %}
+<a href="/standard/{{data.id}}/{{sid}}/standard_detail_edit/?action=edit&menuid=20" class="btn btn-primary glyphicon glyphicon-edit" title="编辑指标定义详情"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/standard/{{data.id}}/{{sid}}/standard_detail_delete/?action=del&menuid=20';}"
+   title="删除指标定义详情" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+<!--<a href="/standard/{{mon_plan_sum.id}}/mon_plan_sum_delete/?action=del&menuid=20" class="btn btn-danger delete" >{{power.title}}</a>-->
+{% endblock %}
+{% block box_title %}详情{% endblock %}
+{% block content %}
+<form action="#" class="form-horizontal" method="post" style="margin-top:20px;white-space:nowrap;">
+    <div class="box-body">
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">测&nbsp;点</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="sis_text" name="sis_text" value="{{data.sis_text}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">指标名称</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="standard_name" name="standard_name" value="{{data.standard_name}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">维护人员</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="maintenance_staff" name="maintenance_staff" value="{{data.maintenance_staff.username}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">指标类型描述</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="definition" name="definition" value="{{data.definition.describe}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">标准值</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="standard_value" name="standard_value" value="{{data.standard_value}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">上限值</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="upper_limit_value" name="upper_limit_value" value="{{data.upper_limit_value}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">下限值</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="lower_limit_value" name="lower_limit_value" value="{{data.lower_limit_value}}"
+                >
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+{% block javascript %}
+<script>
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

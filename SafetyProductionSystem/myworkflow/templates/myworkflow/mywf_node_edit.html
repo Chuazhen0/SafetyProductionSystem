@@ -1,0 +1,332 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">流程配置</span>
+    <small>节点编辑</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span>工作流</span></li>
+    <li class="active">流程配置</li>
+    <li class="active">节点编辑</li>
+</ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" data-toggle="tooltip" data-placement="top"  class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" data-toggle="tooltip" data-placement="top"  title="返回列表" href="/wf/mywf_list/?action=list&menuid=47"></a>
+{% endblock %}
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="top"   title="保存" onclick="document.getElementById('myform').submit();"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" data-toggle="tooltip" data-placement="top"  class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="tab-pane active"  id="id-tb-base">
+        <form action="" class="form-horizontal" method="post" enctype="multipart/form-data" id="myform">
+            <div class="box-body">
+                <div id="one" style="border:1px grey solid;padding:20px;width:75%;margin-left:12%;border-radius:15px;">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">公司名称:</label>
+                        <div class="col-md-5">
+                            <input class='form-control companyname'  value="{{myprocess.company}}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label class="col-md-3  control-label">流程名称:</label>
+                        <div class="col-md-5">
+                            <input class="form-control select2 process_name"  name="myprocess_name"  value="{{myprocess.myprocess_name}}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">流程对应表单:</label>
+                        <div class="col-md-5">
+                            <input value="{{myprocess.app_name}}" class='form-control'  readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">监督专业:</label>
+                        <div class="col-md-5">
+                            {% if myprocess.supervision_major == None %}
+                            <input value="全部" class='form-control'  readonly>
+                            {% else %}
+                            <input value="{{myprocess.supervision_major}}" class='form-control'  readonly>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label class="col-md-3  control-label">节点名称:</label>
+                        <div class="col-md-8 ">
+                            <input class="form-control select2 node_name"  name="node_name"  value="{{mynode_obj.node_name}}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-md-3 control-label">流程流转类型:</label>
+                        <div class="col-md-8">
+                            <input type="radio" value="0" name="choice" class="netstructure" checked/>监督网络
+                            <input type="radio" value="1" name="choice" class="organization"/>行政部门
+                            <input type="radio" value="2" name="choice" class="myuser"/>审批人
+                            <input type="radio" value="3" name="choice" class="duty_group"/>责任组
+                        </div>
+                    </div>
+                    <div class="form-group" id="net_staff_box">
+                        <label class="col-md-3  control-label">所属监督网:</label>
+                        <div class="col-md-8 ">
+                            <select class="form-control js-example-basic-single net_name" id="net_name"  name="net_name" onchange="get_user()" style="width: 300px"  required>
+                                <option value="0">暂无</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="department_box">
+                        <label class="col-md-3  control-label">部门/岗位:</label>
+                        <div class="col-md-8 ">
+                            <select class="form-control js-example-basic-single job_name"  name="job_name" onchange="get_user()" style="width: 300px"  required>
+                                <option value="0">暂无</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="person_box">
+                        <label class="col-md-3  control-label">审批人:</label>
+                        <div class="col-md-8 ">
+                            <select class="form-control js-example-basic-single person_name"  name="person_name" style="width: 300px"  required>
+                                <option value="{{node_person.number}}">{{node_person.name | default:'暂无'}}({{node_person.number}})</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="duty_group_box" style="display: none">
+                                <label class="col-md-3  control-label">责任组:</label>
+                        <div class="col-md-8 ">
+                            <select class="form-control js-example-basic-single duty_group_name"  name="duty_group_name" style="width: 160px"  >
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input name="mynum" id='mynum'  value="0" style="display:none;">
+        </form>
+
+
+    </div>
+
+
+{% endblock %}
+
+
+
+{% block javascript %}
+<script src="/static/js/Sortable.js"></script>
+<script src="/static/js/st/app.js"></script>
+<style>
+    .tomorrow-comment, pre .comment, pre .title {
+        color: #8e908c;
+    }
+
+    .tomorrow-red, pre .variable, pre .attribute, pre .tag, pre .regexp, pre .ruby .constant, pre .xml .tag .title, pre .xml .pi, pre .xml .doctype, pre .html .doctype, pre .css .id, pre .css .class, pre .css .pseudo {
+        color: #c82829;
+    }
+
+    .tomorrow-orange, pre .number, pre .preprocessor, pre .built_in, pre .literal, pre .params, pre .constant {
+        color: #f5871f;
+    }
+
+    .tomorrow-yellow, pre .class, pre .ruby .class .title, pre .css .rules .attribute {
+        color: #eab700;
+    }
+
+    .tomorrow-green, pre .string, pre .value, pre .inheritance, pre .header, pre .ruby .symbol, pre .xml .cdata {
+        color: #718c00;
+    }
+
+    .tomorrow-aqua, pre .css .hexcolor {
+        color: #3e999f;
+    }
+
+    .tomorrow-blue, pre .function, pre .python .decorator, pre .python .title, pre .ruby .function .title, pre .ruby .title .keyword, pre .perl .sub, pre .javascript .title, pre .coffeescript .title {
+        color: #4271ae;
+    }
+
+    .tomorrow-purple, pre .keyword, pre .javascript .function {
+        color: #8959a8;
+    }
+
+    pre {
+        border: 0;
+        background-color: #fff;
+    }
+
+    pre code {
+        display: block;
+        color: #4d4d4c;
+        font-size: 15px;
+        font-family: Menlo, Monaco, Consolas, monospace;
+        line-height: 1.5;
+        padding: 30px;
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+    });
+
+    // 监督网络,展示岗位名称
+    $(document).on("click",".netstructure",function(){
+        get_net_msg()
+    });
+    function get_net_msg(){
+        document.getElementById('department_box').style.display="block";
+        document.getElementById('net_staff_box').style.display="block";
+        document.getElementById('duty_group_box').style.display="none";
+        document.getElementById('person_box').style.display="block";
+        var num = $(".netstructure").val();
+        var company = $(".companyname").val();
+        console.log(num,company);
+        $.ajax({
+            'url':'/wf/mywf_checkjob/',
+            'type':'POST',
+            'data':{'num':num,'company':company},
+            'success':function(data){
+                //console.log(data);
+                // 岗位
+                var $text='';
+                for(var i=0;i<data['re_msg'][1].length;i++){
+                    $text +='<option value="'+data["re_msg"][1][i]["job_num"]+'">'+data["re_msg"][1][i]["job_name"]+'</option>' ;
+                }
+                // document.getElementById("jobs").innerHTML=$text;
+                $('.job_name').html($text);
+                // 监督专业
+                var $text2='';
+                for(var j=0;j<data['re_msg'][0].length;j++){
+                    $text2 +='<option value="'+data["re_msg"][0][j]["net_num"]+'">'+data["re_msg"][0][j]["net_desc"]+'</option>' ;
+                }
+                $('.net_name').html($text2);
+            }
+        });
+        get_user()
+    }
+    //  组织机构，展示岗位名称
+    $(document).on("click",".organization",function(){
+        document.getElementById('department_box').style.display="block";
+        document.getElementById('net_staff_box').style.display="none";
+        document.getElementById('duty_group_box').style.display="none";
+        document.getElementById('person_box').style.display="block";
+        var num = $(".organization").val();
+        var company = $(".companyname").val();
+        console.log(num,company);
+        $.ajax({
+            'url':'/wf/mywf_checkjob/',
+            'type':'POST',
+            'data':{'num':num,'company':company},
+            'success':function(data){
+                var $text='';
+                for(var i=0;i<data['job_list'].length;i++){
+                    $text +='<option value="'+data["job_list"][i]+'">'+data["job_list"][i]+'</option>' ;
+                }
+                // document.getElementById("jobs").innerHTML=$text;  这是dom方法
+                $('.job_name').html($text);
+            }
+        });
+        get_user()
+    });
+    //  点击审批人，展示用户名
+    $(document).on("click",".myuser",function(){
+        document.getElementById('department_box').style.display="none";
+        document.getElementById('net_staff_box').style.display="none";
+        document.getElementById('person_box').style.display="block";
+        document.getElementById('duty_group_box').style.display="none";
+        var num1 = $(".myuser").val();
+        var company = $(".companyname").val();
+        // console.log(num1,company);
+        $.ajax({
+            'url':'/wf/mywf_checkjob/',
+            'type':'POST',
+            'data':{'num':num1,'company':company},
+            'success':function(data){
+                var $text='';
+                for(var i=0;i<data['user_list'].length;i++){
+                    $text +='<option value="'+data["user_list"][i]['user_num']+'">'+data["user_list"][i]['user_name']+'('+data["user_list"][i]["user_num"]+')'+'</option>' ;
+                }
+                // document.getElementById("jobs").innerHTML=$text;  这是dom方法
+                $('.person_name').html($text);
+            }
+        })
+    });
+
+    //  点击责任组，展示责任组名
+    $(document).on("click",".duty_group",function(){
+        document.getElementById('department_box').style.display="none";
+        document.getElementById('net_staff_box').style.display="none";
+        document.getElementById('person_box').style.display="none";
+        document.getElementById('duty_group_box').style.display="block";
+        var num1 = $(".duty_group").val();
+        var company = $(".companyname").val();
+        $.ajax({
+            'url':'/wf/mywf_checkjob/',
+            'type':'POST',
+            'data':{'num':num1,'company':company},
+            'success':function(data){
+                var $text='';
+                for(var i=0;i<data['duty_group_list'].length;i++){
+                    $text +='<option value="'+data["duty_group_list"][i]["duty_group_id"]+'">'+data["duty_group_list"][i]["duty_group_name"]+'</option>' ;
+                }
+                // document.getElementById("jobs").innerHTML=$text;  这是dom方法
+               $('.duty_group_name').html($text);
+            }
+        })
+    });
+
+    //  选择部门/岗位，查询对用的用户列表
+    function get_user(){
+        // 获取select框选中的内容
+        var vs = $('.job_name option:selected').val();
+        var vs2 = $('#net_name option:selected').val();
+        var company = $(".companyname").val();
+        //  organization
+        $.ajax({
+            'url':'/wf/mywf_get_user_list/',
+            'type':'POST',
+            'data':{'department':vs,'company':company,'net_num':vs2},
+            'success':function(data){
+                var $text='';
+                for(var i=0;i<data['user_list'].length;i++){
+                    $text +='<option value="'+data["user_list"][i]["user_num"]+'">'+data["user_list"][i]["user_name"]+'('+data["user_list"][i]["user_num"]+')'+'</option>' ;
+                }
+                // document.getElementById("jobs").innerHTML=$text;  这是dom方法
+                $('.person_name').html($text);
+            }
+        })
+    }
+
+
+
+
+    $(function(){
+        $("#addNode").click(function(){
+            $("#one").toggle();
+            var $num = $('#mynum').val();
+            if($num==0){
+                $("#mynum").val(1);
+            }
+            else{
+                $("mynum").val(0);
+            }
+            get_net_msg()
+        });
+
+    });
+    //  可编辑的列表
+    var editableList = Sortable.create(editable, {
+        filter: '.js-remove',
+        onFilter: function (evt) {
+            var el = editableList.closest(evt.item); // get dragged item
+            el && el.parentNode.removeChild(el);
+        }
+    });
+
+</script>
+{% endblock %}

@@ -1,0 +1,1011 @@
+{% extends "my_base.html" %}
+
+{% load lbworkflow_tags %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load i18n %}
+{% load lbutils %}
+{% block content_nav_l %}
+    {{ transition.name }}
+{% endblock %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">待办事项</span>
+        <small>详情</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li>我的待办</li>
+        <li>待办事项</li>
+        <li class="active">详情</li>
+    </ol>
+{% endblock %}
+{% block save2 %}
+{% endblock %}
+{% block list %}
+{% endblock %}
+
+{% block css %}
+  <style>
+    #id_comment {
+      height: 100px;
+    }
+    #div_id_attachments{
+      display: none;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <!--<script type="text/javascript">-->
+    <!--$("#div_id_attachments").hide();-->
+  <!--</script>-->
+  <section class="content-header">
+    <h1>工作内容</h1>
+  </section>
+
+  {% if process_type_code == '1' %}
+  <!-- 月度工作执行 -->
+  <table class="table table-bordered tb-detail wf-act-history">
+                    <tr>
+                        <th class="w-mid">流程编号</th>
+                        <td class="process-no">
+                            {{ processinstance.no }}
+                        </td>
+                        <th class="w-mid">创建人</th>
+                        <td>{{ processinstance.created_by }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ processinstance.created_on|date:"Y-m-d H:i" }}</td>
+                        <th>当前节点</th>
+                        <td>
+                            {{ processinstance.cur_node.name }}
+                            {% if task.is_hold %}
+                            (hold)
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>流程名称</th>
+                        <td>{{ processinstance.process.myprocess.myprocess_name }}</td>
+                        <th>当前操作</th>
+                        <td>
+                            {{ operators_display }}
+                            {% if not processinstance.has_received %}
+                            [unreceived]
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+  <table class="table table-bordered tb-detail no-margin">
+
+    <tr>
+        <th>公司名称</th>
+        <td>{{ mon_work.place }}</td>
+        <th>月度工作执行编码</th>
+        <td>{{ mon_work.number }}</td>
+    </tr>
+
+    <tr>
+        <th>创建时间</th>
+        <td>{{ mon_work.created_at }}</td>
+        <th>最后更新时间</th>
+        <td>{{ mon_work.last_updated_at }}</td>
+    </tr>
+
+    <tr>
+        <th>月度计划编码</th>
+        <td>{{ mon_work.plan_number }}</td>
+        <th>月度计划记录号</th>
+        <td>{{ mon_work.plan_smallnumber }}</td>
+    </tr>
+
+    <tr>
+        <th>计划工作内容</th>
+        <td>{{ mon_work.plan_content }}</td>
+        <th>计划完成时间</th>
+        <td>{{ mon_work.finish_time }}</td>
+    </tr>
+
+    <tr>
+        <th>执行人</th>
+        <td>{{ mon_work.execute_user }}</td>
+        <th>执行情况</th>
+        <td>{{ mon_work.execute_desc }}</td>
+    </tr>
+
+    <tr>
+        <th>存在问题</th>
+        <td>{{ mon_work.problem_desc }}</td>
+        <th>备注</th>
+        <td>{{ mon_work.remarks }}</td>
+    </tr>
+
+    <tr>
+        <th>是否激活</th>
+        <td>{{ mon_work.is_activate }}</td>
+        <th>状态</th>
+        <td>{{ mon_work.pinstance.cur_node.mynode.node_name }}</td>
+    </tr>
+    {% comment %}
+    <tr>
+        <th>Reason</th>
+        <td colspan="3">
+            {{ mon_work.reason|linebreaks }}
+        </td>
+    </tr>
+    {% endcomment %}
+</table>
+  {% elif process_type_code == '2' %}
+  <!-- 月度计划 -->
+  <table class="table table-bordered tb-detail wf-act-history">
+                    <tr>
+                        <th class="w-mid">流程编号</th>
+                        <td class="process-no">
+                            {{ processinstance.no }}
+                        </td>
+                        <th class="w-mid">创建人</th>
+                        <td>{{ processinstance.created_by }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ processinstance.created_on|date:"Y-m-d H:i" }}</td>
+                        <th>当前节点</th>
+                        <td>
+                            {{ processinstance.cur_node.name }}
+                            {% if task.is_hold %}
+                            (hold)
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>流程名称</th>
+                        <td>{{ processinstance.process.myprocess.myprocess_name }}</td>
+                        <th>当前操作</th>
+                        <td>
+                            {{ operators_display }}
+                            {% if not processinstance.has_received %}
+                            [unreceived]
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+  <table class="table table-bordered tb-detail no-margin">
+    <tr>
+        <th>公司名称</th>
+        <td>{{ mon_plan_sum.place }}</td>
+        <th>计划描述</th>
+        <td>{{ mon_plan_sum.desc }}</td>
+    </tr>
+
+    <tr>
+        <th>计划编码</th>
+        <td>{{ mon_plan_sum.number }}</td>
+        <th>监督类型</th>
+        <td>{{ mon_plan_sum.supervision_major }}</td>
+    </tr>
+
+    <tr>
+        <th>年份</th>
+        <td>{{ mon_plan_sum.year }}</td>
+        <th>月份</th>
+        <td>{{ mon_plan_sum.month }}</td>
+    </tr>
+
+    <tr>
+        <th>状态</th>
+        <td>{{mon_plan_sum.pinstance.cur_node.mynode.node_name}}</td>
+        <th>创建时间</th>
+        <td>{{ mon_plan_sum.created_at }}</td>
+    </tr>
+
+    <tr>
+        <th>最后更新人</th>
+        <td>{{ mon_plan_sum.last_updated_by }}</td>
+        <th>最后更新时间</th>
+        <td>{{ mon_plan_sum.last_updated_at }}</td>
+    </tr>
+
+    <tr>
+        <th>附件</th>
+        <td><a href="/media/{{ mon_plan_sum.enclosure }}" target="_blank" title="下载附件">{{ file_name }}</a></td>
+        <th>是否激活</th>
+        <td>{{ mon_plan_sum.is_activate }}</td>
+    </tr>
+</table>
+  <!-- 告警通知 -->
+  {% elif process_type_code == '3' %}
+  <table class="table table-bordered tb-detail wf-act-history">
+                    <tr>
+                        <th class="w-mid">流程编号</th>
+                        <td class="process-no">
+                            {{ processinstance.no }}
+                        </td>
+                        <th class="w-mid">创建人</th>
+                        <td>{{ processinstance.created_by }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ processinstance.created_on|date:"Y-m-d H:i" }}</td>
+                        <th>当前节点</th>
+                        <td>
+                            {{ processinstance.cur_node.name }}
+                            {% if task.is_hold %}
+                            (hold)
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>流程名称</th>
+                        <td>{{ processinstance.process.myprocess.myprocess_name }}</td>
+                        <th>当前操作</th>
+                        <td>
+                            {{ operators_display }}
+                            {% if not processinstance.has_received %}
+                            [unreceived]
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+  <table class="table table-bordered tb-detail no-margin">
+
+        <tr>
+            <th>公司名称</th>
+            <td>{{ data.place }}</td>
+            <th>状态</th>
+            <td>{{ data.pinstance.cur_node.mynode.node_name }}</td>
+        </tr>
+
+        <tr>
+            <th>告警通知单编码</th>
+            <td>{{ data.number }}</td>
+            <th>来源</th>
+            <td>{{ data.resource.name }}</td>
+        </tr>
+
+        <tr>
+            <th>附件</th>
+            <td><a href="/media/{{ data.enclosure }}" target="_blank"title="下载附件">{{ file_name }}</a></td>
+            <th>告警通知单名称</th>
+            <td>{{ data.title }}</td>
+        </tr>
+
+        <tr>
+            <th>监督类型</th>
+            <td>{{ data.supervise_major }}</td>
+            <th>关联设备</th>
+            <td>{{ data.equipment }}</td>
+        </tr>
+
+        <tr>
+            <th>关联问题</th>
+            <td>{{ data.problem }}</td>
+            <th>责任人</th>
+            <td>{{ data.exetuct_user }}</td>
+        </tr>
+
+        <tr>
+            <th>异常情况</th>
+            <td>{{ data.abnormal }}</td>
+            <th>可能或已经造成的后果</th>
+            <td>{{ data.result }}</td>
+        </tr>
+
+        <tr>
+            <th>整改建议</th>
+            <td>{{ data.suggest }}</td>
+            <th>整改时间要求</th>
+            <td>{{ data.time_require }}</td>
+        </tr>
+
+        <tr>
+            <th>是否激活</th>
+            <td>{{ data.is_activate }}</td>
+            <th>最后更新时间</th>
+            <td>{{ data.last_updated_at }}</td>
+        </tr>
+        {% comment %}
+        <tr>
+            <th>Reason</th>
+            <td colspan="3">
+                {{ data.reason|linebreaks }}
+            </td>
+        </tr>
+        {% endcomment %}
+    </table>
+  <!-- 告警回执 -->
+  {% elif process_type_code == '4' %}
+  <table class="table table-bordered tb-detail wf-act-history">
+                    <tr>
+                        <th class="w-mid">流程编号</th>
+                        <td class="process-no">
+                            {{ processinstance.no }}
+                        </td>
+                        <th class="w-mid">创建人</th>
+                        <td>{{ processinstance.created_by }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ processinstance.created_on|date:"Y-m-d H:i" }}</td>
+                        <th>当前节点</th>
+                        <td>
+                            {{ processinstance.cur_node.name }}
+                            {% if task.is_hold %}
+                            (hold)
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>流程名称</th>
+                        <td>{{ processinstance.process.myprocess.myprocess_name }}</td>
+                        <th>当前操作</th>
+                        <td>
+                            {{ operators_display }}
+                            {% if not processinstance.has_received %}
+                            [unreceived]
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+  <table class="table table-bordered tb-detail no-margin">
+
+    <tr>
+        <th>公司名称</th>
+        <td>{{ data.place }}</td>
+        <th>状态</th>
+        <td>{{ data.pinstance.cur_node.mynode.node_name }}</td>
+    </tr>
+
+    <tr>
+        <th>告警通知单编码</th>
+        <td>{{ data.number }}</td>
+        <th>来源</th>
+        <td>{{ data.resource }}</td>
+    </tr>
+
+    <tr>
+        <th>附件</th>
+        <td><a href="/media/{{ data.enclosure }}" target="_blank"title="下载附件">{{ file_name }}</a></td>
+        <th>告警通知单名称</th>
+        <td>{{ data.title }}</td>
+    </tr>
+
+    <tr>
+        <th>监督类型</th>
+        <td>{{ data.supervise_major }}</td>
+        <th>关联设备</th>
+        <td>{{ data.equipment }}</td>
+    </tr>
+
+    <tr>
+        <th>关联问题</th>
+        <td>{{ data.problem }}</td>
+        <th>责任人</th>
+        <td>{{ data.exetuct_user }}</td>
+    </tr>
+
+    <tr>
+        <th>异常情况</th>
+        <td>{{ data.abnormal }}</td>
+        <th>可能或已经造成的后果</th>
+        <td>{{ data.result }}</td>
+    </tr>
+
+    <tr>
+        <th>整改建议</th>
+        <td>{{ data.suggest }}</td>
+        <th>整改时间要求</th>
+        <td>{{ data.time_require }}</td>
+    </tr>
+
+    <tr>
+        <th>是否激活</th>
+        <td>{{ data.is_activate }}</td>
+        <th>最后更新时间</th>
+        <td>{{ data.last_updated_at }}</td>
+    </tr>
+    {% comment %}
+    <tr>
+        <th>Reason</th>
+        <td colspan="3">
+            {{ data.reason|linebreaks }}
+        </td>
+    </tr>
+    {% endcomment %}
+</table>
+  <!-- 年度总结 -->
+  {% elif process_type_code == '5' %}
+  <table class="table table-bordered tb-detail wf-act-history">
+                    <tr>
+                        <th class="w-mid">流程编号</th>
+                        <td class="process-no">
+                            {{ processinstance.no }}
+                        </td>
+                        <th class="w-mid">创建人</th>
+                        <td>{{ processinstance.created_by }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ processinstance.created_on|date:"Y-m-d H:i" }}</td>
+                        <th>当前节点</th>
+                        <td>
+                            {{ processinstance.cur_node.name }}
+                            {% if task.is_hold %}
+                            (hold)
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>流程名称</th>
+                        <td>{{ processinstance.process.myprocess.myprocess_name }}</td>
+                        <th>当前操作</th>
+                        <td>
+                            {{ operators_display }}
+                            {% if not processinstance.has_received %}
+                            [unreceived]
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+  <table class="table table-bordered tb-detail no-margin">
+    <tr>
+        <th>公司名称</th>
+        <td>{{ year_sum.place }}</td>
+        <th>总结描述</th>
+        <td>{{ year_sum.sum_desc }}</td>
+    </tr>
+
+    <tr>
+        <th>总结类型</th>
+        <td>{{ year_sum.sum_type }}</td>
+        <th>年份</th>
+        <td>{{ year_sum.year }}</td>
+    </tr>
+
+    <tr>
+        <th>状态</th>
+        <td>{{ year_sum.pinstance.cur_node.mynode.node_name }}</td>
+        <th>创建时间</th>
+        <td>{{ year_sum.created_at }}</td>
+    </tr>
+
+    <tr>
+        <th>最后更新人</th>
+        <td>{{ year_sum.last_updated_by }}</td>
+        <th>最后更新时间</th>
+        <td>{{ year_sum.last_updated_at }}</td>
+    </tr>
+
+    <tr>
+        <th>附件</th>
+        <td><a href="/media/{{ year_sum.enclosure }}" target="_blank"title="下载附件">{{ file_name }}</a></td>
+        <th>是否激活</th>
+        <td>{{ year_sum.is_activate }}</td>
+    </tr>
+
+
+    {% comment %}
+    <tr>
+        <th>Reason</th>
+        <td colspan="3">
+            {{ year_sum.reason|linebreaks }}
+        </td>
+    </tr>
+    {% endcomment %}
+</table>
+  <!-- 年度计划 -->
+  {% elif process_type_code == '6' %}
+  <table class="table table-bordered tb-detail wf-act-history">
+    <tr>
+        <th class="w-mid">流程编号</th>
+        <td class="process-no">
+            {{ processinstance.no }}
+        </td>
+        <th class="w-mid">创建人</th>
+        <td>{{ processinstance.created_by }}</td>
+    </tr>
+    <tr>
+        <th>创建时间</th>
+        <td>{{ processinstance.created_on|date:"Y-m-d H:i" }}</td>
+        <th>当前节点</th>
+        <td>
+            {{ processinstance.cur_node.name }}
+            {% if task.is_hold %}
+            (hold)
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>流程名称</th>
+        <td>{{ processinstance.process.myprocess.myprocess_name }}</td>
+        <th>当前操作</th>
+        <td>
+            {{ operators_display }}
+            {% if not processinstance.has_received %}
+            [unreceived]
+            {% endif %}
+        </td>
+    </tr>
+</table>
+  <table class="table table-bordered tb-detail no-margin">
+
+    <tr>
+        <th>计划描述</th>
+        <td>{{ year_plan.desc }}</td>
+        <th>年度计划编码</th>
+        <td>{{ year_plan.number }}</td>
+    </tr>
+
+    <tr>
+        <th>年份</th>
+        <td>{{ year_plan.year }}</td>
+        <th>公司名称</th>
+        <td>{{ year_plan.place }}</td>
+    </tr>
+
+    <tr>
+        <th>创建时间</th>
+        <td>{{ year_plan.created_at }}</td>
+        <th>最后更新人</th>
+        <td>{{ year_plan.last_updated_by }}</td>
+    </tr>
+
+    <tr>
+        <th>最后更新时间</th>
+        <td>{{ year_plan.last_updated_at }}</td>
+        <th>是否激活</th>
+        <td>{{ year_plan.is_activate }}</td>
+    </tr>
+
+    <tr>
+        <th>附件</th>
+        <td><a href="/media/{{ year_plan.enclosure }}" target="_blank"title="下载附件">{{ file_name }}</a></td>
+        <th>状态</th>
+        <td>{{ year_plan.pinstance.cur_node.mynode.node_name }}</td>
+    </tr>
+
+    {% comment %}
+    <tr>
+        <th>Reason</th>
+        <td colspan="3">
+            {{ year_plan.reason|linebreaks }}
+        </td>
+    </tr>
+    {% endcomment %}
+</table>
+  {% elif process_type_code == '7' %}
+  <table class="table table-bordered tb-detail wf-act-history">
+    <tr>
+        <th class="w-mid">流程编号</th>
+        <td class="process-no">
+            {{ processinstance.no }}
+        </td>
+        <th class="w-mid">创建人</th>
+        <td>{{ processinstance.created_by }}</td>
+    </tr>
+    <tr>
+        <th>创建时间</th>
+        <td>{{ processinstance.created_on|date:"Y-m-d H:i" }}</td>
+        <th>当前节点</th>
+        <td>
+            {{ processinstance.cur_node.name }}
+            {% if task.is_hold %}
+            (hold)
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>流程名称</th>
+        <td>{{ processinstance.process.myprocess.myprocess_name }}</td>
+        <th>当前操作</th>
+        <td>
+            {{ operators_display }}
+            {% if not processinstance.has_received %}
+            [unreceived]
+            {% endif %}
+        </td>
+    </tr>
+</table>
+  <table class="table table-bordered tb-detail no-margin">
+
+        <tr>
+            <th>公司名称</th>
+            <td>{{ weekworktask_obj.plan.place }}</td>
+            <th>策划人</th>
+            <td>{{ weekworktask_obj.plan.planner.name }}</td>
+        </tr>
+
+        <tr>
+            <th>周期检测计划编码</th>
+            <td>{{ weekworktask_obj.plan.number }}</td>
+            <th>执行人</th>
+            <td>{{ weekworktask_obj.plan.execute_user.name }}</td>
+        </tr>
+
+        <tr>
+            <th>完成时限</th>
+            <td>{{ weekworktask_obj.plan.time_limit }}</td>
+             <!--<th>工作区域</th>-->
+            <!--<td>{{ weekworktask_obj.plan.work_area }}</td>-->
+             <th>频率描述</th>
+            <td>{{ weekworktask_obj.plan.rate_code }}</td>
+        </tr>
+
+        <tr>
+            <th>第三方机构</th>
+            <td>{{ weekworktask_obj.plan.third_org }}</td>
+            <th>计划内容</th>
+            <td>{{ weekworktask_obj.plan.plan }}</td>
+        </tr>
+
+        <tr>
+            <th>策划时间</th>
+            <td>{{ weekworktask_obj.plan.plan_time }}</td>
+            <th>监督专业</th>
+            <td>{{ weekworktask_obj.plan.supervision_major.name }}</td>
+        </tr>
+
+        <tr>
+            <th>周期检测计划附件</th>
+            <td><a href="/media/{{ weekworktask_obj.plan.enclosure }}" title="下载附件">{{ week_plan_file_name }}</a></td>
+            <th>状&nbsp;态</th>
+            <td>{{ weekworktask_obj.plan.state }}</td>
+        </tr>
+
+        <tr>
+            <th>完成情况</th>
+            <td>{{ weekworktask_obj.result }}</td>
+            <th>完成情况附件</th>
+            <td><a href="/media/{{ weekworktask_obj.enclosure }}" title="下载附件">{{ week_task_file_name }}</a></td>
+        </tr>
+
+
+        {% comment %}
+        <tr>
+            <th>Reason</th>
+            <td colspan="3">
+                {{ weekworktask_obj.plan.reason|linebreaks }}
+            </td>
+        </tr>
+        {% endcomment %}
+    </table>
+  {% elif process_type_code == '10' %}
+  <!-- 定期工作 -->
+  <section class="content">
+    <div class="tab-content">
+      {% block right_side_tab_ctx_ext %}
+      <div class="tab-pane active"  id="id-tb-base">
+        <table class="table table-bordered tb-detail wf-act-history">
+          <tr>
+            <th class="w-mid">流程编号</th>
+            <td class="process-no">
+              {{ processinstance.no }}
+            </td>
+            <th class="w-mid">创建人</th>
+            <td>{{ processinstance.created_by }}</td>
+          </tr>
+          <tr>
+            <th>创建时间</th>
+            <td>{{ processinstance.created_on|date:"Y-m-d H:i" }}</td>
+            <th>当前节点</th>
+            <td>
+              {{ processinstance.cur_node.name }}
+              {% if task.is_hold %}
+              (hold)
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th>流程名称</th>
+            <td>{{ processinstance.process.myprocess.myprocess_name }}</td>
+            <th>当前操作</th>
+            <td>
+              {{ operators_display }}
+              {% if not processinstance.has_received %}
+              [unreceived]
+              {% endif %}
+            </td>
+          </tr>
+        <!--</table>-->
+        <!--<table class="table table-bordered tb-detail no-margin" >-->
+          <tr>
+            <th>公司名称</th>
+            <td>{{ regularworktask.place }}</td>
+            <th>定期工作编码</th>
+            <td>{{ regularworktask.regularwork.number }}</td>
+          </tr>
+
+          <tr>
+            <th>KKS编码</th>
+            <td>{{ regularworktask.regularwork.KKS_code }}</td>
+            <th>KKS编码名称</th>
+            <td>{{ regularworktask.regularwork.KKS_codename }}</td>
+          </tr>
+
+
+
+          <tr>
+            <th>责任人</th>
+            <td>{{ regularworktask.regularwork.exe_user }}</td>
+            <th>责任组</th>
+            <td>{{ regularworktask.regularwork.exe_group }}</td>
+          </tr>
+
+          <tr>
+            <th>设备专业</th>
+            <td>{{ regularworktask.regularwork.equipment_major }}</td>
+            <th>监督专业</th>
+            <td>{{ regularworktask.regularwork.supervision_major }}</td>
+          </tr>
+
+          <tr>
+            <th>性质</th>
+            <td>{{ regularworktask.nature }}</td>
+            <th>定期工作类型</th>
+            <td>{{ regularworktask.type }}</td>
+          </tr>
+
+          <tr>
+            <th>标准分值</th>
+            <td>{{ regularworktask.regularwork.score }}</td>
+            <th>工作项目</th>
+            <td>{{ regularworktask.regularwork.work_content }}</td>
+          </tr>
+
+          <tr>
+            <th>周期描述</th>
+            <td>{{ regularworktask.regularwork.weekend_desc }}</td>
+            <th>提前提醒时间</th>
+            <td>{{ regularworktask.regularwork.warinig_time }}</td>
+          </tr>
+
+          <tr>
+            <th>状态</th>
+            <td>{{ regularworktask.regularwork.state }}</td>
+            <th>超期一级预警</th>
+            <td>{{ regularworktask.regularwork.overdue_1 }}</td>
+          </tr>
+
+          <tr>
+            <th>超期二级预警</th>
+            <td>{{ regularworktask.regularwork.overdue_2 }}</td>
+            <th>超期三级预警</th>
+            <td>{{ regularworktask.regularwork.overdue_3 }}</td>
+          </tr>
+
+          <tr>
+            <th>业务来源</th>
+            <td>{{ regularworktask.regularwork.resource }}</td>
+            <th>开始时间</th>
+            <td>{{ regularworktask.regularwork.start_time }}</td>
+          </tr>
+
+          <tr>
+            <th>结束时间</th>
+            <td>{{ regularworktask.regularwork.end_time }}</td>
+            <th>是否激活</th>
+            <td>{{ regularworktask.is_activate }}</td>
+          </tr>
+
+          <tr>
+            <th>标准编码</th>
+            <td>{{ regularworktask.regularwork.stard }}</td>
+            <th>标准号</th>
+            <td>{{ regularworktask.regularwork.stard_smallnumber }}</td>
+          </tr>
+          <tr>
+              <th>完成情况</th>
+              <td>{{ regularworktask.result }}</td>
+              <th>附件</th>
+              <td><a href="/media/{{ regularworktask.enclosure_file }}" target="_blank"title="下载附件">{{ file_name }}</a></td>
+
+          </tr>
+          {% comment %}
+          <tr>
+            <th>Reason</th>
+            <td colspan="3">
+              {{ regularworktask.reason|linebreaks }}
+            </td>
+          </tr>
+          {% endcomment %}
+        </table>
+         <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">工作准备</a></li>
+            <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">注意事项</a></li>
+            <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">工作内容</a></li>
+            <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">工作数据</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="first">序号</th>
+                        <th class="fourth">创建人</th>
+                        <th class="fourth">创建时间</th>
+                        <th class="fourth">填写内容</th>
+                    </tr>
+                    </thead>
+                    {% for ready_form in work_ready %}
+                    <tr>
+                        <td class="first ">{{ready_form.number}}</td>
+                        <td class="fourth">{{ready_form.created_by.name}}</td>
+                        <td class="fourth">{{ready_form.created_at}}</td>
+                        <td class="fourth">{{ready_form.content}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">暂无</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_2">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="first">序号</th>
+                        <th class="fourth">创建人</th>
+                        <th class="fourth">创建时间</th>
+                        <th class="fourth">注意事项</th>
+
+                    </tr>
+                    </thead>
+                    {% for work_matter in work_matters %}
+                    <tr>
+                        <td class="first ">{{work_matter.number}}</td>
+                        <td class="fourth">{{work_matter.created_by.name}}</td>
+                        <td class="fourth">{{work_matter.created_at}}</td>
+                        <td class="fourth">{{work_matter.content}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">暂无</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_3">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="first">序号</th>
+                        <th class="fourth">创建人</th>
+                        <th class="fourth">创建时间</th>
+                        <th class="fourth">工作内容</th>
+                    </tr>
+                    </thead>
+                    {% for work_content in work_contents %}
+                    <tr>
+                        <td class="first ">{{work_content.number}}</td>
+                        <td class="fourth">{{work_content.created_by.name}}</td>
+                        <td class="fourth">{{work_content.created_at}}</td>
+                        <td class="fourth">{{work_content.content}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">暂无</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="tab-pane" id="tab_4">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="first">序号</th>
+                        <th class="fourth">数据名称</th>
+                        <th class="fourth">数据标准值</th>
+
+                    </tr>
+                    </thead>
+                    {% for work_data in work_datas %}
+                    <tr>
+                        <td class="first ">{{work_data.number}}</td>
+                        <td class="fourth">{{work_data.data_name}}</td>
+                        <td class="fourth">{{work_data.data_value}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">暂无</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <!-- /.tab-pane -->
+        </div>
+        <!-- /.tab-content -->
+    </div>
+
+      </div>
+      {% endblock %}
+      <!--<div class="tab-pane" id="id-tb-wf-log">-->
+        <!--{% include "lbworkflow/inc_wf_history.html" %}-->
+      <!--</div>-->
+      <div class="tab-pane" id="id-tb-wf-graph">
+        <a href="{% url 'wf_process_flowchart' 'regularworktask' %}" target="_blank">Open in new window</a>
+        <br/>
+        <img src="{% url 'wf_process_flowchart' 'regularworktask' %}"/>
+      </div>
+    </div>
+  </section>
+  {% else %}
+  {% endif %}
+
+
+  <section class="content-header">
+    <h1>审批</h1>
+  </section>
+  <section class="content">
+    <form action="" method="post" id="id-wf-form" role="form" style="width: 100%"onsubmit="return checkIP();">
+      {% csrf_token %}
+      <input type="hidden" name="do_submit" value="submit it">
+      <div class="box form-horizontal {% block form_class %}{% endblock %}">
+        <div class="box-body">
+          <div class="form-group">
+            <!--<label class="control-label">-->
+                <label  class="control-label"><span class="bt">*</span> 审批意见</label>
+            <!--</label>-->
+            <div class="controls" style="padding-top:7px">
+              {% for o in task_list%}
+                <input type="hidden" name="wi" value="{{ o.pk }}">
+                <input type="hidden" name="pi" value="{{ o.instance.pk }}">
+              {% endfor %}
+            </div>
+          </div>
+            <div id="div_id_comment" class="form-group"> <label for="id_comment" class="control-label ">
+
+            </label> <div class="controls col-md-8"> <textarea name="comment" rows="10" class="textarea form-control" cols="40" id="id_comment" required></textarea> </div> </div>
+          {% block submit_btns %}
+            <div class="form-group">
+              <div class="approval_box" style="width: 100%">
+                  <button class="btn btn-sm btn-primary"
+                          onclick="$('#id-wf-form').attr('action', '{% url 'wf_batch_agree' %}');$('#id-wf-form').submit()">
+                          <!--onclick="if($('.textarea form-control').getAttribute('required') != null){$('#id-wf-form').attr('action', '{% url 'wf_batch_agree' %}');$('#id-wf-form').submit()}">-->
+                    同意
+                  </button>
+                  <button class="btn btn-sm btn-danger"
+                          onclick="$('#id-wf-form').attr('action', '{% url 'wf_batch_reject' %}');$('#id-wf-form').submit()">
+                   拒绝
+                  </button>
+                  <a type="button" class="btn btn-default goback" href="/wf/todo/">取消</a>
+
+              </div>
+            </div>
+          {% endblock %}
+        </div>
+      </div>
+      {% block other_forms %}
+      {% endblock %}
+    </form>
+  </section>
+
+{% endblock %}
+
+{% block footer_ext %}
+  {{ block.super }}
+  <script src="{% static 'blueimp-file-upload/js/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'blueimp-file-upload/js/jquery.fileupload.js' %}"></script>
+  <script src="{% static 'blueimp-file-upload/js/jquery.iframe-transport.js' %}"></script>
+  <!--<script type="text/javascript">-->
+    <!--$(document).ready(function () {-->
+      <!--alert('111');-->
+            <!--initUploader($('#id_attachments'));-->
+          <!--$("#div_id_attachments").hide();-->
+    <!--})-->
+  <!--</script>-->
+<script>
+    function checkIP(){//js表单验证方法
+   var text=document.getElementById("id_comment").value;//通过id获取需要验证的表单元素的值
+   if(text==""){//当上面获取的值为空时
+     alert("不能为空哦！");//弹出提示
+     return false;//返回false（不提交表单）
+   }
+   return true;//提交表单
+}
+</script>
+{% endblock %}

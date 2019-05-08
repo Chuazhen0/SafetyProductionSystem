@@ -1,0 +1,159 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">指标定义</span>
+        <small>新建</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>指标管理</span></li>
+        <li class="active">指标定义</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/standard/standard/?action=list&menuid=19"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block save %}
+<!--<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" -->
+   <!--onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip"-->
+   <!--data-placement="top"></a>-->
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存"
+   id="create_btn" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block content %}
+<form method="POST" action="/standard/standard_add/?action=new&menuid=19" class="form-horizontal"
+      enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+    {% csrf_token %}
+    <div class="box-body">
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">编&nbsp;号</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="number" name="number" value="{{number}}"
+                >
+            </div>
+            <label class="col-md-2 control-label">状态</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="state" name="state" value="拟定"
+                >
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+            <div class="form-group" style="margin-left:-12px">
+                <label class="col-md-4 control-label"><span class="bt">*</span>填报周期</label>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="cycle" name="cycle" value="{{cycle}}"
+                    required>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="form-group" style="margin-left:-12px">
+                <label class="col-md-2 control-label">监督类型</label>
+                <div class="col-md-6">
+                    <select class="form-control select2 " name="Supervision_type" id="Supervision_type">
+                        {% for emp in supervise_list %}
+                        <option value="{{emp.id}}">
+                            {{emp.name}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">定义描述</label>
+            <div class="col-md-8">
+                <textarea type="text" class="form-control" id="describe" name="describe" value="{{describe}}"
+                ></textarea>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+{% endblock %}
+{% block javascript %}
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+<script>
+//<!--<script type="text/javascript">-->
+//<!--function checked() {-->
+//            <!--var date1 = $("#cycle").val();-->
+//            <!--if(date1==''){-->
+//             <!--alert('您还未填写周期');-->
+//                <!--return false;-->
+//
+//            <!--}else{-->
+//                <!--return true;-->
+//
+//
+//            <!--}-->
+//            <!--console.log(checked());-->
+//	<!--}-->
+
+   $(function (){
+       $('#myform').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields:{
+            cycle:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入填报周期'
+                    },
+                    callback:{
+                        message:'填报周期错误'
+                    },
+                    stringLength: {//检测长度
+                        min: 1,
+                        max: 10,
+                        message: '长度必须在1-10之间'
+                    },
+                    regexp: {//正则验证
+                        regexp: /^[0-9]+$/,
+                        message: '请输入正确数字（非零正整数)！'
+                    },
+                }
+            },
+        }
+    })
+   });
+
+$("#myform").submit(function (ev) {
+            ev.preventDefault();
+        });
+        $("#create_btn").on("click", function () {
+            var bootstrapValidator = $("#myform").data('bootstrapValidator');
+            bootstrapValidator.validate();
+            if (bootstrapValidator.isValid()) {
+                document.getElementById('myform').submit();
+                layer.msg('添加成功！')
+            }
+            else {
+                layer.msg('添加失败，请填写正确信息!');
+                return false;
+            }
+        });
+ // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+
+{% endblock %}

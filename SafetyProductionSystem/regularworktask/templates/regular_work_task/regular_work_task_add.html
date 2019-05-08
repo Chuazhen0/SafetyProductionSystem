@@ -1,0 +1,191 @@
+{% extends 'my_base.html' %}
+{% load staticfiles %}
+{% load lbutils %}
+{% load compress %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">定期工作任务</span>
+        <small>新建</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>定期工作管理</span></li>
+        <li class="active">定期工作任务</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" data-toggle="tooltip" data-placement="top"
+   class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" data-toggle="tooltip" data-placement="top" title="返回列表"
+   href="/regularworktask/list/?action=list&menuid=49"></a>
+{% endblock %}
+
+{% block save %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="top" title="保存" id="create_btn">
+    <button name="act_save" type="submit" style="display: none" id="baocun"></button>
+</a>
+{% if not process_instance.cur_node.is_submitted %}
+<a class="btn btn-primary glyphicon glyphicon-send" data-toggle="tooltip" data-placement="top"  title="提交" id="tijiao" >
+    <input type="submit" value="提交" name="act_submit" style="display:none;" id="tj" ></a>
+
+{% endif %}
+
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" data-toggle="tooltip" data-placement="top"
+   class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+{% endblock %}
+{% block content %}
+{% block right_side %}
+<section class="content-header">
+    {% include "incs/messages.html" %}
+    {% block right_side_header %}
+    <div class="right-btns">
+        {% if wf_code %}
+        <a target="_black" href="{% url 'wf_process_flowchart' wf_code %}">Flowchart</a>
+        {% endif %}
+    </div>
+    {% endblock %}
+</section>
+<section class="content">
+    <form id="id-m-form" action="" method="post" class="form-horizontal {% block form_css_class %}{% endblock %}" {% block form_ext_attr %}{% endblock %} role="form" enctype="multipart/form-data" >
+        {% block right_side_content %}
+        {% block right_side_content_top %}
+        {% if object %}
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs" role="tablist" id="id-m-nav-tabs">
+                <li class="active">
+                    <a href="#id-tb-base" role="tab" data-toggle="tab">Base Information</a>
+                </li>
+                {% block right_side_tab_nav_ext %}
+                {% endblock %}
+                <li>
+                    <a href="#id-tb-wf-log" role="tab" data-toggle="tab">Operate history</a>
+                </li>
+                <li>
+                    <a href="#id-tb-wf-graph" role="tab" data-toggle="tab">Help</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="id-tb-base">
+                    {% block right_side_tab_base_ctx %}
+                    {% include "lbworkflow/inc_wf_status.html" %}
+                    {% endblock %}
+                </div>
+                {% block right_side_tab_ctx_ext %}
+                {% endblock %}
+                <div class="tab-pane" id="id-tb-wf-log">
+                    {% include "lbworkflow/inc_wf_history.html" %}
+                </div>
+                <div class="tab-pane" id="id-tb-wf-graph">
+                    {% block flow_help %}
+                    {% endblock %}
+                    <a href="{% url 'wf_process_flowchart' process.code %}" target="_blank">Open in new window</a>
+                    <br/>
+                    <img src="{% url 'wf_process_flowchart' wf_code %}"/>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endblock %}
+
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-md-2 control-label">定期工作策划:</label>
+                <div class="col-md-3">
+                    <select style="width:100%" class="form-control js-example-basic-single" name="regular_number" id="regular_number">
+                        {% for regular_plan in regular_plan_list %}
+                        <option value="{{regular_plan.number}}">{{regular_plan.number}}-{{regular_plan.work_content}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">完成情况:</label>
+                <div class="col-md-9">
+                    <textarea id="finish_desc" name="finish_desc" class="form-control" required></textarea>
+                </div>
+                <input type="text" id="num2" name="num2" style="display: none;"/>
+            </div>
+        </div>
+    </form>
+    {% endblock %}
+</section>
+{% endblock %}
+{% endblock %}
+
+{% block javascript %}
+
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+<script type="text/javascript">
+$("#create_btn").click(function(){
+       $("#num2").val(1);
+    });
+
+$("#tijiao").click(function(){
+   $("#num2").val(2);
+});
+
+
+    $(function () {
+        $('#id-m-form').bootstrapValidator({
+            message: 'This value is not valid',
+            url:'/regularwork/checktwo/',
+            data:{'num':1},
+            type:'POST',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                finish_desc: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入完成情况'
+                        },
+                        callback: {
+                            message: '输入信息错误'
+                        }
+                    }
+                },
+
+          }
+        })
+    });
+
+    $("#id-m-form").submit(function (ev) {
+        ev.preventDefault();
+    });
+    $("#tijiao,#create_btn").on("click", function () {
+        var bootstrapValidator = $("#id-m-form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if (bootstrapValidator.isValid()) {
+            document.getElementById('id-m-form').submit();
+            layer.msg('添加成功！')
+        }
+        else {
+            layer.msg('添加失败，请填写正确信息!');
+            return false;
+        }
+    });
+
+    $(document).ready(function() {
+    $('.js-example-basic-single').select2();
+    });
+
+// 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+</script>
+{% endblock %}
+
+
+

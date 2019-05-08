@@ -1,0 +1,117 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">人员资质管理</span>
+        <small>编辑</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span href="#">技术监督</span></li>
+        <li><span href="#">监督网络管理</span></li>
+        <li class="active">人员资质管理</li>
+    </ol>
+{% endblock %}
+{% block beiyong %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block list_edit %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/staff_qua/list/?action=list&menuid=5" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block content %}
+    <form class="form-horizontal" method="post" id="myform" action="/staff_qua/{{u_id}}/edit/?action=edit">
+      {% csrf_token %}
+      <div class="box-body" style="margin-top: 20px;">
+        <div class="form-group">
+          <label for="qua_type" class="col-sm-2 control-label"><span class="bt">*</span>监督类型</label>
+
+          <!--<div class="col-sm-4">-->
+            <!--<input type="text" name="qua_type" class="form-control" id="qua_type" placeholder="资质类型" value="{{qua_info.qua_type}}" required>-->
+          <!--</div>-->
+            <div class="col-md-3">
+                <select class="form-control select2 " name="supervision_major" id="supervision_major">
+                    <!--<option selected value="0">无</option>-->
+                    {% for jdata in majordata %}
+                    <option value="{{jdata.id}}">
+                        {{jdata.number}}--{{jdata.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+         <!--<div class="form-group">-->
+          <!--<label class="col-sm-2 control-label"><span class="bt">*</span>发证单位</label>-->
+             <!--<div class="col-sm-10">-->
+               <!--<select class="form-control select2  " style="width: 38%;" id="publish_organ" name="publish_organ">-->
+                    <!--{% for org in department %}-->
+                    <!--<option>{{org.departname}}</option>-->
+                    <!--{% endfor %}-->
+               <!--</select>-->
+             <!--</div>-->
+             <!--<div class="col-md-3">-->
+                    <!--<select class="form-control select2 " name="publisher" id="publisher">-->
+                        <!--&lt;!&ndash;<option selected value="{{company.id}}">{{company.comnumber}}&#45;&#45;{{company.comname}}</option>&ndash;&gt;-->
+                        <!--{% for plan in power_plan %}-->
+
+                        <!--<option value="{{plan.id}}">-->
+                            <!--{{plan.comnumber}}&#45;&#45;{{plan.comname}}-->
+                        <!--</option>-->
+                        <!--{% endfor %}-->
+                    <!--</select>-->
+                <!--</div>-->
+
+
+          <!--</div>-->
+
+
+        <!--<div class="form-group">-->
+          <!--<label for="number" class="col-sm-2 control-label"><span class="bt">*</span>证书编号</label>-->
+
+          <!--<div class="col-sm-4">-->
+            <!--<input type="text" name="number" class="form-control" id="number" placeholder="证书编号" value="{{qua_info.number}}" required>-->
+          <!--</div>-->
+        <!--</div>-->
+
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label"><span class="bt">*</span>有效日期</label>
+
+          <div class="col-sm-4">
+            <input type="date" name="effect_time" class="form-control" id="effect_time" placeholder="有效日期" value="{{qua_info.effect_time}}" required>
+          </div>
+        </div>
+
+
+      </div>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+<script>
+function checked() {
+            var date1 = $("#qua_type").val();
+            var date2 = $("#number").val();
+            var date3 = $("#effect_time").val();
+
+            if(date1=='' | date2=='' | date3 ==''){
+             alert('您还有未填写的选项');
+                return false;
+
+            }else{
+              return true;
+            }
+            console.log(checked());
+   }
+ // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

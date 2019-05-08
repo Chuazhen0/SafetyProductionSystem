@@ -1,0 +1,197 @@
+{% extends 'my_base.html' %}
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">周期检测计划</span>
+    <small>编辑</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span>25项反措</span></li>
+    <li><span>周期检测</span></li>
+    <li class="active">周期检测计划</li>
+</ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" data-toggle="tooltip" data-placement="top"
+   class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+{% block list_edit %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" data-toggle="tooltip" data-placement="top"
+   title="返回列表" href="/weekworkplan/list/?action=list&menuid=34"></a>
+{% endblock %}
+
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存"
+   onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"
+   data-toggle="tooltip" data-placement="top"></a>
+<!--<a type="button" onClick="javascript :history.back(-1)" class="btn btn-primary">返回</a>-->
+{% endblock %}
+{% block content %}
+<form method="POST" action="/weekworkplan/{{data_plan.id}}/edit/" class="form-horizontal"
+      enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+    {% csrf_token %}
+    <div class="box-body">
+        <div class="form-group">
+            <label class="col-md-2 control-label">策划人:</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="planner" name="planner"
+                       value="{{ data_plan.planner.name }}" readonly>
+            </div>
+
+
+            <label class="col-md-2 control-label">状&nbsp;态:</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="state" name="state" value="拟定"
+                       readonly>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">执行人:</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="execute_user" id="execute_user">
+                    {% for nid in data %}
+                    <option value="{{nid.id}}">
+                        {{nid.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <label class="col-md-2 control-label">第三方机构:</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="third_org" name="third_org" value="{{ data_plan.third_org }}">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label"><span class="bt">*</span>策划时间:</label>
+                    <div class="col-md-6">
+                        <input type="date" class="form-control" id="plan_time" name="plan_time">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-md-2 control-label"><span class="bt">*</span>完成时限:</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="time_limit" name="time_limit" value="{{ data_plan.time_limit }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    <div class="form-group" style="margin-left:-12px">
+        <label class="col-md-2 control-label"><span class="bt">*</span>频率描述:</label>
+        <div class="col-md-3">
+            <!--<input type="text" class="form-control col-md-1" name="rate_desc" id="rate_desc" onblur="check_num()">-->
+            <input type="text" class="form-control col-md-1" name="rate_desc" id="rate_desc" >
+            <input type="radio" class="weekend_desc" name="rate_code" value="小时"/>小时
+            <input type="radio" class="weekend_desc" name="rate_code" value="天"/>天
+            <input type="radio" class="weekend_desc" name="rate_code" value="周"/>周
+            <input type="radio" class="weekend_desc" name="rate_code" value="月"/>月
+            <!--<span class="glyphicon glyphicon-remove-sign error" id="one">请输入正确数字（非零正整数)！</span>-->
+        </div>
+    </div>
+    </div>
+
+
+        <div class="form-group">
+                    <label class="col-md-2 control-label"><span class="bt"></span>监督专业:</label>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="supervision_major" name="supervision_major" value="{{ data_plan.supervision_major.name }}" readonly>
+                    </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>计划内容:</label>
+            <div class="col-md-8">
+                <textarea type="text" class="form-control" id="plan" name="plan" >{{ data_plan.plan }}</textarea>
+            </div>
+        </div>
+
+    <div class="form-group" >
+        <label class="col-md-2 control-label">附&nbsp;件:</label>
+            <div class="col-md-3">
+                <input type="file" id="enclosure" name="enclosure">
+            </div>
+    </div>
+
+    </div>
+</form>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+    $(function () {
+        $("#jump").click(function () {
+            var second = 3;
+
+            //获取显示秒数的元素，通过定时器来更改秒数。
+
+            var message = document.getElementById("countTime");
+
+            function clock() {
+
+                if (second == 0) {
+
+                    goTo();
+
+                } else {
+                    document.getElementById('yes').setAttribute('style', 'display: block');
+                    message.innerHTML = second-- + "秒后回到详情页";
+                    window.setTimeout(clock, 1000);
+
+                }
+
+            }
+
+            clock();
+
+            //通过window的location和history对象来控制网页的跳转。
+
+            function goTo() {
+
+                window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";
+
+            }
+
+            function goBack() {
+
+                //   window.history.Back();
+
+                window.location.href = "http://localhost:8000/supervision/mon_plan_sum/?action=list";
+
+            }
+
+        })
+    })
+
+    function checked() {
+        var date1 = $("#plan_time").val();
+        if (date1 == '') {
+            alert('您还未选择日期');
+            return false;
+
+        } else {
+            return true;
+
+
+        }
+        console.log(checked());
+    }
+
+    // 按钮悬浮效果
+    $("[data-toggle='tooltip']").tooltip();
+
+
+</script>
+{% endblock %}

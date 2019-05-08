@@ -1,0 +1,334 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">用户管理</span>
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>系统设置</span></li>
+        <li><span>用户管理</span></li>
+        <li class="active">用户列表</li>
+    </ol>
+{% endblock %}
+{% block search %}
+<a href="#" class="btn btn-primary btn-secondary glyphicon glyphicon-search" data-toggle="tooltip" onclick="prom()"
+   data-placement="top"
+   title="查询用户" ></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onclick="prom_import()" data-toggle="tooltip" data-placement="top"
+   class="css3 btn btn-primary glyphicon glyphicon-import"
+   title="导入"></a>
+<a href="/media/mould_files/用户导入_模板.xls" data-toggle="tooltip" data-placement="top"
+   class="css3 btn btn-primary glyphicon glyphicon-download-alt"
+   title="下载模板"></a>
+{% endblock %}
+{% block content %}
+{% load pagetag %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    用户查询
+                </h4>
+                <div id="sb1">
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="myform" action="/systemsettings/search_user/?action=list&menuid=39" class="form-horizontal" enctype="multipart/form-data" method="get">
+                    <!--{% csrf_token %}-->
+                    <input type="hidden" name="action" value="list">
+                    <input type="hidden" name="menuid" value="39">
+
+                    <!--<div id="shujuzhanshi">-->
+                    <!--</div>-->
+                    <div class="box-body">
+                         <div class="form-group">
+                            <label class="col-md-2 control-label">公司名称</label>
+                            <div class="col-md-3">
+                               <select class="form-control select2 "  name="company" id="company">
+                                   <option value="">所有</option>
+                                {% for company in company_list %}
+                                <option value="{{company.id}}">
+                                    {{ company.comname}}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">设备专业</label>
+                            <div class="col-md-3">
+                               <select class="form-control select2 "  name="equipment_major" id="equipment_major">
+                                   <option value="">所有</option>
+                                {% for equipment_major in equipment_major_list %}
+                                <option value="{{equipment_major.id}}">
+                                {{equipment_major.name}}
+                                </option>
+                    {% endfor %}
+                            </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">监督专业</label>
+                            <div class="col-md-3">
+                               <select class="form-control select2 "  name="supervision_major" id="supervision_major">
+                                   <option value="">所有</option>
+                                {% for supervision_major in supervision_major_list %}
+                                <option value="{{supervision_major.id}}">
+                                {{supervision_major.name}}
+                                </option>
+                    {% endfor %}
+                            </select>
+                            </div>
+                        </div>
+
+
+                         <div class="form-group">
+                            <label class="col-md-2 control-label">登录名</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="login_user" id="login_user">
+                            </div>
+                        </div>
+
+                         <div class="form-group">
+                            <!--<input type="submit"  class="btn btn-primary" value="搜索">-->
+                             <div class="btn_box" style="width: 20%;float: right">
+                                <input type="submit" class="btn btn-primary" value="搜索">
+                                <button type="button" id='btn' class="btn btn-primary" data-dismiss="modal"
+                                    onclick="closed()">关闭
+                            </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+            <!--<div class="modal-footer">-->
+                <!--<button type="button" class="btn btn-primary" data-dismiss="modal">关闭-->
+                <!--</button>-->
+            <!--</div>-->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+<table class="table table-striped table-borderd">
+    <tr>
+        <th class="first">编号</th>
+        <th class="third">公司名称</th>
+        <!-- <th class="third">部门名称</th> -->
+        <th class="third">登录名</th>
+        <!-- <th class="third">帐号/工号</th> -->
+        <th class="second">姓名</th>
+        <th class="third">设备专业</th>
+        <th class="third">监督专业</th>
+        <!-- <th class="third">岗位名称</th> -->
+        <!-- <th class="second">联系方式</th> -->
+        <th class="third">操作</th>
+        <!--<th></th> -->
+    </tr>
+    {% for user in alluser %}
+    <tr>
+        <td class="first">{{forloop.counter|add:page_last}}</td>
+        <td class="third">{{user.company.comname}}</td>
+        <!-- <td class="third">{{user.department.departname}}</td> -->
+        <td class="third">{{user.user.username}}</td>
+        <!-- <td class="third">{{user.number}}</td> -->
+        <td class="tsecond"><a href="/systemsettings/{{user.id}}/detail/?action=detail&menuid=45">{{user.name}}</a></td>
+        <td class="third">{{user.equipment_major.name}}</td>
+        <td class="third">{{user.supervision_major.name}}</td>
+        <!-- <td class="third">{{user.jobname.jobname}}</td> -->
+        {% if user.phone == None %}
+        <!-- <td class="second">无</td> -->
+        {% else %}
+        <!-- <td class="second">{{user.phone}}</td> -->
+        {% endif %}
+       <!-- <td><a href="#" data-toggle="modal" onclick="prom('{{user.id}}','{{user.name}}')" title="查看角色">点击查看角色</a>&nbsp;</td>-->
+        <td>
+            <a href="/systemsettings/details/{{user.id}}/?action=detail&menuid=39" data-toggle="tooltip" data-placement="top" ></a>&nbsp;
+            <a href="/systemsettings/{{user.number}}/edit/?action=edit&menuid=39" title="编辑用户" data-toggle="tooltip" data-placement="top" ><span class="btn btn-default glyphicon glyphicon-edit"></span></a>&nbsp;
+            <!--<a href="/systemsettings/delete/{{user.id}}/?action=del&menuid=39"><span class="glyphicon glyphicon-trash"></span></a>-->
+            <a href="javascript:;"
+               onclick="if(confirm('您确定删除这条记录？')){location.href='/systemsettings/delete/{{user.id}}/?action=del&menuid=39';}"
+               title="删除用户" data-toggle="tooltip" data-placement="top" ><span class="btn btn-default glyphicon glyphicon-trash"></span></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<div class="box-footer clearf ix" style="float:left;">
+    <ul class="pagination pagination-sm no-margin pull-right">
+
+        <li>
+            <a href="?page=1&action=list&menuid=39&company={{ company }}&equipment_major={{ equipment_major }}&supervision_major={{ supervision_major }}&login_user={{ login_user }}"
+               aria-label="Previous">
+                <span aria-label="true">首页</span>
+            </a>
+        </li>
+
+        {% if alluser.has_previous %}
+        <li>
+            <a href="?page={{ alluser.previous_page_number }}&action=list&menuid=39&company={{ company }}&equipment_major={{ equipment_major }}&supervision_major={{ supervision_major }}&login_user={{ login_user }}"
+               aria-label="Previous">
+                <span aria-label="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!--{% for pg in alluser.paginator.page_range %}-->
+            <!--{% circle_page menuid alluser.number pg %}-->
+        <!--{% endfor %}-->
+
+        {% for pg in page_range %}
+		{% if pg == page %}
+			<li class="active"><a href="#">{{ pg }}</a></li>
+		{% else %}
+			<li><a href="?page={{ pg }}&action=list&menuid=39&company={{ company }}&equipment_major={{ equipment_major }}&supervision_major={{ supervision_major }}&login_user={{ login_user }}">{{ pg }}</a></li>
+		{% endif %}
+	    {% endfor %}
+
+        {% if alluser.has_next %}
+        <li>
+            <a href="?page={{ alluser.next_page_number }}&action=list&menuid=39&company={{ company }}&equipment_major={{ equipment_major }}&supervision_major={{ supervision_major }}&login_user={{ login_user }}"
+               aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if total_page <= 0 %}
+          <li style="display: none">
+          <a href="?page={{ total_page }}" >
+            <span aria-hidden="true">总共{{ total_page }}页</span>
+          </a>
+          </li>
+        {% else %}
+           <li >
+          <a href="?page={{ total_page }}" >
+            <span aria-hidden="true">总共{{ total_page }}页</span>
+          </a>
+          </li>
+        {% endif %}
+
+        {% if total_counts <= 0 %}
+          <li style="display:none;">
+          <a style="background: #FFFFFF" >
+            <span aria-hidden="true">总{{ total_counts }}条</span>
+          </a>
+          </li>
+        {% else %}
+          <li>
+          <a style="background: #FFFFFF">
+            <span aria-hidden="true">总{{ total_counts }}条</span>
+          </a>
+          </li>
+        {% endif %}
+
+    </ul>
+</div>
+<!--导入框-->
+<div class="modal fade" id="myModal_import" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel_import">
+                    导入用户
+                </h4>
+            </div>
+            <div class="modal-body" style="border-top: none">
+                <form class="form-horizontal" method="post" action="/systemsettings/user_import_excel/" id="myform_import" enctype="multipart/form-data" style="width: 80%; margin: 0 auto">
+                    <div class="col-md-12">
+                        <div class="form-group" style="text-align: center">
+                            <label class="col-sm-3 control-label" style="text-align: left">excel文件:</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="file" id="excel_file" name="excel_file">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-primary" id="import_btn" onclick="import_btn();">
+                            导入
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+    function prom_import() {
+        $('#myModal_import').modal('show');
+        $('#myModal_import').on('hide.bs.modal', function () {
+        });
+    }
+    function import_btn(){
+        document.getElementById("myform_import").submit();
+    }
+	function prom(id , name) {
+		
+		$('#myModal').modal('show');
+	
+		$('#myModal').on('hide.bs.modal', function() {
+			$('#myform')[0].reset();
+			$(this).find("shujuzhanshi").remove();
+		});
+		
+		$.ajax({
+				url: "/systemsettings/show_role/?user_id=" + id + "",
+				//			type:'json',
+				success: function(data) {
+					parsedata(data  ,name)
+					
+				}
+			}
+
+		)
+
+	}
+
+	function parsedata(data ,name) {
+
+//		
+		$("ul").remove(".list-group");
+		$("p").remove("#sb");
+
+		var zhanshi = ''+name+',对不起您没有任何角色';
+		if (data['data'] ==''){
+	var ele = '<ul class="list-group"><li class="list-group-item">'+zhanshi+'</li></ul>';
+			$("#shujuzhanshi").append($(ele))
+		}
+		else
+		{
+		for(var i = 0; i < data['data'].length; i++) {
+			zhanshi = data['data'][i]['role_name']
+			var ele = '<ul class="list-group"><li class="list-group-item">'+zhanshi+'</li></ul>'
+			$("#shujuzhanshi").append($(ele))
+	
+		}
+            var ele = '<p id = "sb">'+name+'</p><p id = "sb" >你的角色是：</p>';
+		$("#sb1").append($(ele))
+		}
+//		console.log(name)
+	}
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

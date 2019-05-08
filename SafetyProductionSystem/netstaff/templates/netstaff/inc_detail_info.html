@@ -1,0 +1,61 @@
+{% include "lbworkflow/inc_wf_status.html" %}
+<table class="table table-bordered tb-detail no-margin">
+  
+  <tr>
+    <th>组织</th>
+    <td>{{ object.orgid }}</td>
+    <th>地点</th>
+    <td>{{ object.place }}</td>
+  </tr>
+  
+  <tr>
+    <th>监督网络人员</th>
+    <td>{{ object.staff }}</td>
+    <th>工号</th>
+    <td>{{ object.number }}</td>
+  </tr>
+  
+  <tr>
+    <th>所属监督网络</th>
+    <td>{{ object.netstructure }}</td>
+    <th>职责说明</th>
+    <td>{{ object.desc }}</td>
+  </tr>
+  
+  <tr>
+    <th>联系方式</th>
+    <td>{{ object.phone }}</td>
+    <th>监督网络岗位</th>
+    <td>{{ object.net_name }}</td>
+  </tr>
+  
+  <tr>
+    <th>所在部门</th>
+    <td>{{ object.department }}</td>
+    <th>创建时间</th>
+    <td>{{ object.created_at }}</td>
+  </tr>
+  
+  <tr>
+    <th>最后更新人</th>
+    <td>{{ object.last_updated_by }}</td>
+    <th>最后更新时间</th>
+    <td>{{ object.last_updated_at }}</td>
+  </tr>
+  
+  <tr>
+    <th>是否激活</th>
+    <td>{{ object.is_activate }}</td>
+    <th>工单类型</th>
+    <td>{{ object.work_type }}</td>
+  </tr>
+  
+  {% comment %}
+  <tr>
+    <th>Reason</th>
+    <td colspan="3">
+      {{ object.reason|linebreaks }}
+    </td>
+  </tr>
+  {% endcomment %}
+</table>

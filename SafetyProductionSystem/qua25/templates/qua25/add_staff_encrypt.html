@@ -1,0 +1,55 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+新增监督编码
+{% endblock %}
+
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary btn-secondary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+
+{% block list_new %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/countermeasureson25/qua/?action=list&menuid=37" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block save %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-floppy-save" title="保存" onclick="if(!checked()){return};document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary btn-secondary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block content %}
+  <form class="form-horizontal" method="post" id="myform" action="/qua25/{{u_id}}/add/?action=new&menuid=37">
+    {% csrf_token %}
+
+    <div class="box-body" style="margin-top: 20px;">
+
+
+
+    </div>
+    <!-- /.box-footer -->
+  </form>
+{% endblock %}
+
+{% block javascript %}
+<script>
+function checked() {
+            var date1 = $("#state").val();
+            var date2 = $("#number").val();
+            var date3 = $("#effect_time").val();
+            if(date1=='' | date2 =='' | date3 ==''){
+             alert('您还有未填写的选项');
+                return false;
+
+            }else{
+                return true;
+
+
+            }
+            console.log(checked());
+   }
+      // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

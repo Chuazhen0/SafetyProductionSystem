@@ -1,0 +1,220 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">告警通知单</span>
+        <small>新建</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>告警管理</span></li>
+        <li class="active">告警通知单</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/warning/list/?action=list&menuid=13"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block save %}
+<!--<a class="btn btn-primary glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="top" title="保存" id="create_btn">-->
+    <!--<button name="act_save" type="submit" style="display: none" id="baocun"></button>-->
+<!--</a>-->
+{% if not process_instance.cur_node.is_submitted %}
+<a class="btn btn-primary glyphicon glyphicon-send" data-toggle="tooltip" data-placement="top"  title="提交" id="tijiao" >
+    <input type="submit" value="提交" name="act_submit" style="display:none;" id="tj" ></a>
+{% endif %}
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+
+{% block content %}
+<form method="POST" action="/warning/add/?action=list&menuid=13" class="form-horizontal"
+      enctype="multipart/form-data" id="myform" style="margin-top:20px;white-space:nowrap;">
+    {% csrf_token %}
+    <div class="box-body">
+
+        <div class="row">
+            <div class="col-md-6">
+            <div class="form-group" style="margin-left:-12px">
+                <label class="col-md-4 control-label"><span class="bt">*</span>通知名称</label>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="title" name="title" value="{{title}}"
+                    >
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="form-group" style="margin-left:-12px">
+                <label class="col-md-2 control-label">状&nbsp;态</label>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="state" name="state" value="拟定"
+                           readonly>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-left:-12px">
+           <label class="col-md-2 control-label">监督类型</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="supervise_major" id="supervise_major">
+                    {% for nid in supervision_major_list %}
+                    <option value="{{nid.id}}">
+                        {{nid.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <label class="col-md-2 control-label">来&nbsp;源</label>
+            <div class="col-md-3">
+                <select class="form-control select2 " name="resource" id="resource">
+                    {% for r in resource %}
+                    <option value="{{r.id}}">
+                        {{r.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </div>
+         <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label"><span class="bt">*</span>执行人</label>
+            <div class="col-md-3">
+                <select class="form-control js-example-basic-single select2 " name="exetuct_user" id="exetuct_user">
+                    {% for emp in exetuct_user %}
+                    <option value="{{emp.id}}">
+                        {{emp.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+             <label class="col-md-2 control-label">整改时间要求</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="time_require" name="time_require" value="{{time_require}}">
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">关联设备</label>
+            <div class="col-md-3">
+                <select type="text" class="form-control" id="equipment" name="equipment">
+                  {% for k in kks %}
+                    <option value="{{k.id}}">
+                        {{k.KKS_codename}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <label class="col-md-2 control-label">关联问题</label>
+            <div class="col-md-3">
+                <select type="text" class="form-control" id="problem" name="problem">
+                {% for pro in problem  %}
+                    <option value="{{pro.id}}">
+                        {{pro.desc}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">造成后果</label>
+            <div class="col-md-8">
+                <textarea type="text" class="form-control" id="result" name="result" value="{{result}}"
+                ></textarea>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">整改建议</label>
+            <div class="col-md-8">
+                <textarea type="text" class="form-control" id="suggest" name="suggest" value="{{suggest}}"
+                ></textarea>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">异常情况</label>
+            <div class="col-md-8">
+                <textarea type="text" class="form-control" id="abnormal" name="abnormal" value="{{abnormal}}"
+                ></textarea>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-2 control-label">附 件</label>
+            <div class="col-md-3">
+                <input type="file" id="enclosure" name="enclosure">
+            </div>
+        </div>
+         <input type="text" id="num2" name="num2" style="display: none;"/>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block javascript %}
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.js-example-basic-single').select2();
+
+    });
+$("#create_btn").click(function(){
+   $("#num2").val(1);
+});
+
+$("#tijiao").click(function(){
+   $("#num2").val(2);
+});
+   $(function (){
+       $('#myform').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields:{
+            title:{
+                validators:{
+                    notEmpty:{
+                        message:'请您输入通知名称'
+                    },
+                    callback:{
+                        message:'通知名称错误'
+                    },
+                    stringLength: {//检测长度
+                        min: 2,
+                        max: 20,
+                        message: '长度必须在2-20之间'
+                    },
+                },
+
+            },
+
+        }
+    })
+   });
+
+$("#myform").submit(function (ev) {
+    ev.preventDefault();
+});
+$("#tijiao,#create_btn").on("click", function () {
+    var bootstrapValidator = $("#myform").data('bootstrapValidator');
+    bootstrapValidator.validate();
+    if (bootstrapValidator.isValid()) {
+        document.getElementById('myform').submit();
+        layer.msg('添加成功！')
+    }
+    else {
+        layer.msg('添加失败，请填写正确信息!');
+        return false;
+    }
+});
+ // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+
+{% endblock %}

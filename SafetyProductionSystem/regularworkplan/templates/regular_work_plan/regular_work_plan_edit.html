@@ -1,0 +1,810 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">定期工作策划</span>
+        <small>编辑</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>定期工作管理</span></li>
+        <li class="active">定期工作策划</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" data-toggle="tooltip" data-placement="top"
+   class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+{% block list_edit %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表"
+   href="/regularworkplan/list/?action=list&menuid=48"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" data-toggle="tooltip" data-placement="top"
+  id="create_btn"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block content %}
+<form action="" class="form-horizontal" method="post"
+      enctype="multipart/form-data" id="id-m-form">
+    <div class="box-body">
+            <div class="form-group">
+                <label class="col-md-2 control-label">KKS编码:</label>
+                <div class="col-md-3">
+                    <!--<input type="text" class="form-control" name="KKS_code" id="KKS_code" readonly>-->
+                    <select class="form-control js-example-basic-single select2" onchange="kks_change()" name="KKS_code" id="KKS_code" >
+                        <!--<option value="0"></option>-->
+                        {% for kks in kks_list %}
+                        {% if equipment_plan.KKS_code == kks.KKS_code %}
+                        <option value="{{ kks.id }}" selected kks_codename="{{ kks.KKS_codename }}" >{{kks.KKS_code}}({{ kks.KKS_codename }})
+                        </option>
+                        {% else %}
+                        <option value="{{ kks.id }}"  kks_codename="{{ kks.KKS_codename }}" >{{kks.KKS_code}}({{ kks.KKS_codename }})
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <label class="col-md-3 control-label ">KKS编码名称:</label>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="KKS_codename" id="KKS_codename" value="{{equipment_plan.KKS_codename}}" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">业务来源:</label>
+                <div class="col-md-3">
+                    <select  id="resource" name="resource" class="form-control">
+                        {% if equipment_plan.resource == '技术监督' %}
+                            <option selected>技术监督</option>
+                        {% else %}
+                            <option>技术监督</option>
+                        {% endif %}
+                        {% if equipment_plan.resource == '二十五项反措' %}
+                            <option selected>二十五项反措</option>
+                        {% else %}
+                            <option>二十五项反措</option>
+                        {% endif %}
+                        {% if equipment_plan.resource == '技术监督+二十五项反措' %}
+                            <option selected>技术监督+二十五项反措</option>
+                        {% else %}
+                            <option>技术监督+二十五项反措</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <label class="col-md-2 control-label col-md-offset-1">状&nbsp;态:</label>
+                <div class="col-md-3">
+                    <input type="text" id="state" name="state" class="form-control" value="{{equipment_plan.state}}"  readonly>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">性&nbsp;质:</label>
+                        <div class="col-md-6">
+                            <select class="form-control" name="nature" id="nature">
+                                {% if equipment_plan.nature == '运行' %}
+                                <option value="运行" selected>运行</option>
+                                {% else %}
+                                <option value="运行">运行</option>
+                                {% endif %}
+                                {% if equipment_plan.nature == '检修' %}
+                                <option value="检修" selected>检修</option>
+                                {% else %}
+                                <option value="检修">检修</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label col-md-offset-1">标准分值:</label>
+                        <div class="col-md-6">
+                            <!--<input type="text" class="form-control" name="score" id="score" onblur="check_score()">-->
+                            <!--<span class="glyphicon glyphicon-remove-sign error" id="nine">请输入正确数字（非零正数）！</span>-->
+                            <input type="text" class="form-control" name="score" id="score" value="{{equipment_plan.score}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label"><span class="bt">*</span>定期工作类型:</label>
+                <div class="col-md-3">
+                    <select class="form-control select2" name="type" id="rtype">
+                        {% if equipment_plan.type == '技术监督设备类' %}
+                        <option value="技术监督设备类" selected>技术监督设备类</option>
+                        {% else %}
+                        <option value="技术监督设备类">技术监督设备类</option>
+                        {% endif %}
+                        {% if equipment_plan.type == '技术监督管理类' %}
+                        <option value="技术监督管理类" selected>技术监督管理类</option>
+                        {% else %}
+                        <option value="技术监督管理类">技术监督管理类</option>
+                        {% endif %}
+                        {% if equipment_plan.type == '25项反措设备类' %}
+                        <option value="25项反措设备类" selected>25项反措设备类</option>
+                        {% else %}
+                        <option value="25项反措设备类">25项反措设备类</option>
+                        {% endif %}
+                        {% if equipment_plan.type == '25项反措设备类' %}
+                        <option value="25项反措设备类" selected>25项反措设备类</option>
+                        {% else %}
+                        <option value="25项反措设备类">25项反措设备类</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="col-md-6 col-md-offset-1">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label"><span class="bt">*</span>提前提醒时间（天）:</label>
+                        <div class="col-md-6">
+                            <!--<input type="text" id="warinig_time" name="warinig_time" class="form-control"-->
+                            <!--onblur="check_warinig_time()"/>-->
+                            <!--<span class="glyphicon glyphicon-remove-sign error" id="two">请输入正确数字（非零正整数)！</span>-->
+                            <input type="text" id="warinig_time" name="warinig_time" value="{{equipment_plan.warinig_time}}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label"><span class="bt">*</span>设备专业</label>
+                <div class="col-md-3">
+                    <select class="form-control js-example-basic-single select2  " name="equipment_major">
+                        <option selected value="{{equipment_plan.equipment_major.id}}">
+                            {{equipment_plan.equipment_major.name}}
+                        </option>
+                        {% for equipment_major in equipment_major_list %}
+                        {% if equipment_major.name == equipment_plan.equipment_major.name %}
+                        {% else %}
+                        <option value="{{equipment_major.id}}">{{equipment_major.name}}
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <label class="col-md-2 control-label col-md-offset-1">监督专业:</label>
+                <div class="col-md-3">
+                    <select class="form-control js-example-basic-single select2" name="supervision_major">
+                        <option selected value="{{equipment_plan.supervision_major.id}}">
+                            {{equipment_plan.supervision_major.supervision_major}}
+                        </option>
+                        {% for supervision_major in supervision_major_list %}
+                        {% if supervision_major == equipment_plan.supervision_major %}
+                            <option value="{{supervision_major.name}}" selected>{{supervision_major.name}}</option>
+                        {% else %}
+                            <option value="{{supervision_major.name}}" >{{supervision_major.name}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label"><span class="bt">*</span>工作项目:</label>
+                <div class="col-md-9">
+                    <textarea id="work_content" name="work_content" class="form-control" required>{{equipment_plan.work_content}}</textarea>
+                </div>
+                <input type="text" id="num2" name="num2" style="display: none;"/>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label ">责任人:</label>
+                        <div class="col-md-6">
+                            <!--<input type="text" id="exe_user" name="exe_user" class="form-control" readonly>-->
+                             <select class="form-control js-example-basic-single select2" onchange="change()" name="exe_user" id="exe_user" >
+                                 <!--<option value="0"></option>-->
+                                 {% for user in user_list %}
+                                 {% if equipment_plan.exe_user.number == user.number %}
+                                    <option value="{{ user.name }}" selected group="{% if user.group is None %}暂无责任组
+                                    {% else %}{{ user.group }}
+                                    {% endif %}" >{{user.name}}
+                                        {% if user.group is None %} (暂无责任组) {% else %}({{ user.group }})
+                                        {% endif %}
+                                    </option>
+                                 {% else %}
+                                    <option value="{{ user.name }}" group="{% if user.group is None %}暂无责任组
+                                    {% else %}{{ user.group }}
+                                    {% endif %}" >{{user.name}}
+                                        {% if user.group is None %} (暂无责任组) {% else %}({{ user.group }})
+                                        {% endif %}
+                                    </option>
+                                 {% endif %}
+
+                                 {% endfor %}
+                             </select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label ">责任组:</label>
+                        <div class="col-md-6">
+                            <input type="text" id="exe_group" name="exe_group" class="form-control" value="{{equipment_plan.exe_group}}" readonly>
+
+                        </div>
+                        <!--<div id="not_show" class="col-md-1">-->
+                    <!--<span  class="glyphicon glyphicon-search" style="cursor:pointer;" data-toggle="modal"-->
+                          <!--data-target="#group"></span>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label col-md-offset-1"><span class="bt">*</span>超期一级预警（小时）:</label>
+                        <div class="col-md-6">
+                            <!--<input type="text" id="overdue_major" name="overdue_major" class="form-control"-->
+                            <!--onblur="check_overdue_major()"/>-->
+                            <!--<span class="glyphicon glyphicon-remove-sign error" id="three">请输入正确数字（非零正整数)！</span>-->
+                            <input type="text" id="overdue_major" name="overdue_major" class="form-control" value="{{equipment_plan.overdue_1}}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label"><span class="bt">*</span>开始时间:</label>
+                        <div class="col-md-6">
+                            <!--<input type="date" id="start_time" name="start_time" class="form-control"-->
+                            <!--onblur="check_start_current()"/>-->
+                            <!--<span class="glyphicon glyphicon-remove-sign error" id="six">开始时间必须大于当前时间</span>-->
+                            <input type="date" id="start_time" name="start_time" value="{{equipment_plan.start_time | date:'Y-m-d'}}" class="form-control">
+                            <span class="glyphicon glyphicon-remove-sign error" id="six">开始时间必须大于当前时间</span>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label col-md-offset-1"><span class="bt">*</span>超期二级预警（小时）:</label>
+                        <div class="col-md-6">
+                            <!--<input type="text" id="overdue_dept" name="overdue_dept" class="form-control"-->
+                            <!--onblur="check_overdue_dept()"/>-->
+                            <!--<span class="glyphicon glyphicon-remove-sign error" id="four">请输入正确数字（非零正整数)！</span>-->
+                            <input type="text" id="overdue_dept" name="overdue_dept" class="form-control" value="{{equipment_plan.overdue_2}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label "><span class="bt">*</span>结束时间:</label>
+                        <div class="col-md-6">
+                            <input type="date" id="end_time" name="end_time" class="form-control" value="{{equipment_plan.end_time | date:'Y-m-d'}}" />
+                            <!--<span class="glyphicon glyphicon-remove-sign error" id="seven">结束时间必须大于开始时间</span>-->
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <!--<div class="col-md-6">-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-md-4 control-label "><span class="bt">*</span>周期描述:</label>-->
+                        <!--<div class="col-md-7" id="checkbox">-->
+                            <!--<input type="radio" id="checkbox1" checked="checked" class="weekend_desc" name="weekend_desc" value="小时" required/>按小时&nbsp-->
+                            <!--<input type="radio" id="checkbox2" class="weekend_desc" name="weekend_desc" value="天" required/>按天&nbsp-->
+                            <!--<input type="radio" id="checkbox3" class="weekend_desc" name="weekend_desc" value="周" required/>按周&nbsp-->
+                            <!--<input type="radio" id="checkbox4" class="weekend_desc" name="weekend_desc" value="月" required/>按月&nbsp-->
+                            <!--<input type="radio" id="checkbox5" class="weekend_desc" name="weekend_desc" value="年" required/>按年&nbsp-->
+                            <!--<input type="radio" id="checkbox6" class="weekend_desc" name="weekend_desc" value="一次性工作计划" required/>一次性工作计划&nbsp-->
+                            <!--&lt;!&ndash;<span class="glyphicon glyphicon-remove-sign error" id="one">请输入正确数字（非零正整数)！</span>&ndash;&gt;-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label col-md-offset-1"><span class="bt">*</span>超期三级预警（小时）:</label>
+                        <div class="col-md-6">
+                            <!--<input type="text" id="overdue_leader" name="overdue_leader" class="form-control"-->
+                            <!--onblur="check_overdue_leader()"/>-->
+                            <!--<span class="glyphicon glyphicon-remove-sign error" id="five">请输入正确数字（非零正整数)！</span>-->
+                            <input type="text" id="overdue_leader" name="overdue_leader" class="form-control" value="{{equipment_plan.overdue_3}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="row">-->
+                <!--<div class="col-md-6">-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-md-4 control-label "></label>-->
+                        <!--<div class="col-md-6">-->
+                            <!--<div class="query_info">-->
+                                <!--<div class="form-group">-->
+                                    <!--<label for="time1" class="col-md-2 control-label">每</label>-->
+
+                                    <!--<div class="col-md-4">-->
+                                        <!--<input type="text" class="form-control num1" name="num1" id="time1">-->
+                                    <!--</div>-->
+                                    <!--<label for="time1" class="col-md-1 control-label">时</label>-->
+                                <!--</div>-->
+                                <!--<div class="form-group"><label for="time_minute1" class="col-md-2 control-label">每时</label>-->
+                                    <!--<div class="col-md-4">-->
+                                        <!--<input type="text" class="form-control num2" id="time_minute1" name="num2">-->
+                                    <!--</div>-->
+                                    <!--<label for="time_minute1" class="col-md-1 control-label">分</label>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+</form>
+
+{% endblock %}
+{% block javascript %}
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        // kks及责任人搜索
+        $('.js-example-basic-single').select2();
+        // 判断kks编码是否存在，存在则将查询到的第一个kks编码的名称传如kks编码名称框中
+        if(document.getElementById("KKS_code").options[0]){
+            document.getElementById("KKS_codename").value = document.getElementById("KKS_code").options[0].getAttribute("kks_codename");
+        }
+        // 判断责任人是否存在，存在则将查询到的第一个责任人所在责任组传入责任组框中
+        if(document.getElementById("exe_user").options[0]) {
+            document.getElementById("exe_group").value = document.getElementById("exe_user").options[0].getAttribute("group");
+        }
+    });
+    // 根据kks编码的变化，修改kks编码名称
+    function kks_change(){
+        var kks_obj = document.getElementById("KKS_code");
+        var kks_index = kks_obj.selectedIndex;
+
+        document.getElementById("KKS_codename").value = kks_obj.options[kks_index].getAttribute("kks_codename");
+    }
+
+    // 根据责任人的变化，修改责任组里面的数据
+    function change(){
+        var obj = document.getElementById("exe_user");
+        var index = obj.selectedIndex;
+        console.log(index);
+        document.getElementById("exe_group").value = obj.options[index].getAttribute("group");
+    }
+
+    $(function () {
+        $('#id-m-form').bootstrapValidator({
+            message: 'This value is not valid',
+            url:'/regularwork/checktwo/',
+            data:{'num':1},
+            type:'POST',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                work_content: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入项目描述信息'
+                        },
+                        callback: {
+                            message: '项目描述信息错误'
+                        }
+                    }
+                },
+                score: {
+                    validators: {
+                        // notEmpty: {
+                        //     message: '请您输入标准分值'
+                        // },
+                        callback: {
+                            message: '标准分支错误'
+                        },
+                        regexp: {//正则验证
+                            regexp: /^[1-9]\d*$/,
+                            message: '请输入正确数字(非零正数)!'
+                        },
+                    }
+                },
+                num: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入周期描述'
+                        },
+                        callback: {
+                            message: '周期描述错误'
+                        },
+                        regexp: {//正则验证
+                            regexp: /^[1-9]\d*$/,
+                            message: '请输入正确数字(非零正数)!'
+                        },
+                    }
+                },
+                warinig_time: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入提前提醒时间'
+                        },
+                        callback: {
+                            message: '提前提醒时间错误'
+                        },
+                        regexp: {//正则验证
+                            regexp: /^[1-9]\d*$/,
+                            message: '请输入正确数字(非零正数)!'
+                        },
+                    }
+                },
+                overdue_major: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入超期一级预警'
+                        },
+                        callback: {
+                            message: '超期一级预警错误'
+                        },
+                        regexp: {//正则验证
+                            regexp: /^[1-9]\d*$/,
+                            message: '请输入正确数字(非零正数)!'
+                        },
+                    }
+                },
+                start_time: {
+                    validators: {
+                        notEmpty: {
+                            message: '请选择开始时间'
+                        },
+                        callback: {
+                            message: '开始时间必须大于当前时间',
+                            callback: function (value, validator, $start_time) {
+                                let other = validator.getFieldElements('start_time').val();//获得开始时间的值
+
+                                let start = new Date(other.replace("-", "/").replace("-", "/"));
+                                let d = new Date();// 当前时间
+
+                                if (start >= d) {
+                                    return true;
+                                }
+                                return false;
+                            }
+                        },
+                    }
+                },
+                overdue_dept: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入超期二级预警'
+                        },
+                        callback: {
+                            message: '超期二级预警错误'
+                        },
+                        regexp: {//正则验证
+                            regexp: /^[1-9]\d*$/,
+                            message: '请输入正确数字(非零正数)!'
+                        },
+                    }
+                },
+
+                overdue_leader: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入超期三级预警'
+                        },
+                        callback: {
+                            message: '超期三级预警错误'
+                        },
+                        regexp: {//正则验证
+                            regexp: /^[1-9]\d*$/,
+                            message: '请输入正确数字(非零正数)!'
+                        },
+                    }
+                },
+                checkbox:{// 处理周期描述
+                    validators: {
+                        notEmpty: {
+                            message: '请您选择周期描述'
+                        },
+                        callback: {
+                            message: '周期描述错误'
+                        },
+
+                    }
+                },
+               //  num1:{
+               //      validators: {
+               //          callback:{
+               //              message: '输入错误'
+               //          },
+               //          regexp: {//正则验证
+               //              regexp: /^[1-9]\d*$/,
+               //              message: '请输入正确数字(非零正数)!'
+               //      },
+               //  }
+               // },
+               //  num2:{
+               //      validators: {
+               //          callback:{
+               //              message: '输入错误'
+               //          },
+               //          regexp: {//正则验证
+               //              regexp: /^[1-9]\d*$/,
+               //              message: '请输入正确数字(非零正数)!'
+               //      },
+               //  }
+               // },
+            }
+        })
+    });
+
+    $("#id-m-form").submit(function (ev) {
+        ev.preventDefault();
+    });
+    $("#create_btn").on("click", function () {
+        var bootstrapValidator = $("#id-m-form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if (bootstrapValidator.isValid()) {
+            document.getElementById('id-m-form').submit();
+            layer.msg('添加成功！')
+        }
+        else {
+            layer.msg('添加失败，请填写正确信息!');
+            return false;
+        }
+    });
+
+    // 按钮悬浮效果
+    $("[data-toggle='tooltip']").tooltip();
+
+    $("#checkbox1").click(function(){
+        var s=$("#checkbox1").is(":checked");
+        if(s){
+            $text='<div class="form-group">\n' +
+                '                                <label for="time1" class="col-md-2 control-label">每</label>\n' +
+                '                                <div class="col-md-4">\n' +
+                '                                  <input type="text" class="form-control num1" name="num1" id="time1" >\n' +
+                '                                </div>\n' +
+                '                                <label for="time1" class="col-md-1 control-label">时</label>\n' +
+                '                              </div>\n' +
+                '                              <div class="form-group">\n' +
+                '                                <label for="time_minute1" class="col-md-2 control-label">每时</label>\n' +
+                '                                <div class="col-md-4">\n' +
+                '                                  <input type="text" class="form-control num2" id="time_minute1" name="num2">\n' +
+                '                                </div>\n' +
+                '                                <label for="time_minute1" class="col-md-1 control-label">分</label>\n' +
+                '                              </div>';
+            $('.query_info').html($text);
+            $("#checkbox2").removeAttr("checked");
+            $("#checkbox3").removeAttr("checked");
+            $("#checkbox4").removeAttr("checked");
+            $("#checkbox5").removeAttr("checked");
+            $("#checkbox6").removeAttr("checked");
+
+            // $('#id-m-form').bootstrapValidator('addField', 'num1', {
+            //     validators: {
+            //          regexp: {//正则验证
+            //                 regexp: /^[1-9]\d*$/,
+            //                 message: '请输入正确数字(非零正数)!'
+            //             },
+            //     }
+            // });
+            // $('#id-m-form').bootstrapValidator('addField', 'num2', {
+            //     validators: {
+            //         regexp: {//正则验证
+            //             regexp: /^[1-9]\d*$/,
+            //             message: '请输入正确数字(非零正数)!'
+            //         },
+            //     }
+            // });
+        }
+    });
+
+    $("#checkbox2").click(function(){
+        var s=$("#checkbox2").is(":checked");
+        if(s){
+            $text='<div class="form-group">\n' +
+                '                                <label for="day1" class="col-md-2 control-label">每</label>\n' +
+                '                                <div class="col-md-4">\n' +
+                '                                  <input type="text" class="form-control num1" name="num1" id="day1" >\n' +
+                '                                </div>\n' +
+                '                                <label for="day1" class="col-md-1 control-label">天</label>\n' +
+                '                              </div>\n' +
+                '                              <div class="form-group">\n' +
+                '                                <label for="time2" class="col-md-2 control-label">每天</label>\n' +
+                '                                <div class="col-md-4">\n' +
+                '                                  <input type="text" class="form-control num2" id="time2" name="num2">\n' +
+                '                                </div>\n' +
+                '                                <label for="time2" class="col-md-1 control-label">时</label>\n' +
+                '                              </div>';
+            $('.query_info').html($text);
+            $("#checkbox1").removeAttr("checked");
+            $("#checkbox3").removeAttr("checked");
+            $("#checkbox4").removeAttr("checked");
+            $("#checkbox5").removeAttr("checked");
+            $("#checkbox6").removeAttr("checked");
+
+            // $('#id-m-form').bootstrapValidator('addField', 'num1', {
+            //     validators: {
+            //          regexp: {//正则验证
+            //                 regexp: /^[1-9]\d*$/,
+            //                 message: '请输入正确数字(非零正数)!'
+            //             },
+            //     }
+            // });
+            // $('#id-m-form').bootstrapValidator('addField', 'num2', {
+            //     validators: {
+            //          regexp: {//正则验证
+            //                 regexp: /^[1-9]\d*$/,
+            //                 message: '请输入正确数字(非零正数)!'
+            //             },
+            //     }
+            // });
+        }
+    });
+    $("#checkbox3").click(function(){
+
+
+        var s=$("#checkbox3").is(":checked");
+        if(s){
+            $text=' <div class="form-group">\n' +
+                '                                <label for="week1" class="col-md-2 control-label">每</label>\n' +
+                '                                <div class="col-md-4">\n' +
+                '                                  <input type="text" class="form-control num1" name="num1" id="week1">\n' +
+                '                                </div>\n' +
+                '                                <label for="week1" class="col-md-1 control-label">周</label>\n' +
+                '                                </div>\n' +
+                '                                <div class="form-group">\n' +
+                '                                <label for="week1" class="col-md-2 control-label">每周</label>\n' +
+                '                                    <div class="col-md-9">\n' +
+                '                                    <input type="checkbox" id="check1" class="num2" name="num2" value="1"/>星期一&nbsp\n' +
+                '                                    <input type="checkbox" id="check2" class="num2" name="num2" value="2" />星期二&nbsp\n' +
+                '                                    <input type="checkbox" id="check3" class="num2" name="num2" value="3"/>星期三&nbsp\n' +
+                '                                    <input type="checkbox" id="check4" class="num2" name="num2" value="4"/>星期四&nbsp\n' +
+                '                                    </div>\n' +
+                '                                    <div class="col-md-9">\n' +
+                '                                    <input type="checkbox" id="check5" class="num2" name="num2" value="5"/>星期五&nbsp\n' +
+                '                                    <input type="checkbox" id="check6" class="num2" name="num2" value="6"/>星期六&nbsp\n' +
+                '                                    <input type="checkbox" id="check7" class="num2" name="num2" value="0"/>星期天&nbsp\n' +
+                '                                    </div>\n' +
+                '                                <div class="col-md-8">\n' +
+                '\n' +
+                '                                </div>\n' +
+                '\n' +
+                '                              </div>';
+            $('.query_info').html($text);
+            $("#checkbox1").removeAttr("checked");
+            $("#checkbox2").removeAttr("checked");
+            $("#checkbox4").removeAttr("checked");
+            $("#checkbox5").removeAttr("checked");
+            $("#checkbox6").removeAttr("checked");
+
+            // $('#id-m-form').bootstrapValidator('addField', 'num1', {
+            //     validators: {
+            //          regexp: {//正则验证
+            //                 regexp: /^[1-9]\d*$/,
+            //                 message: '请输入正确数字(非零正数)!'
+            //             },
+            //     }
+            // });
+            // $('#id-m-form').bootstrapValidator('addField', 'num2', {
+            //     validators: {
+            //          regexp: {//正则验证
+            //                 regexp: /^[1-9]\d*$/,
+            //                 message: '请输入正确数字(非零正数)!'
+            //             },
+            //     }
+            // });
+        }
+    });
+    $("#checkbox4").click(function(){
+        var s=$("#checkbox4").is(":checked");
+        if(s){
+            $text='<div class="form-group">\n' +
+                '                                <label for="year1" class="col-md-2 control-label">每</label>\n' +
+                '                                <div class="col-md-4">\n' +
+                '                                  <input type="text" class="form-control num1" name="num1" id="year1" >\n' +
+                '                                </div>\n' +
+                '                                <label for="year1" class="col-md-1 control-label">月</label>\n' +
+                '                              </div>\n' +
+                '                              <div class="form-group">\n' +
+                '                                <label for="year_month1" class="col-md-2 control-label">每月</label>\n' +
+                '                                <div class="col-md-4">\n' +
+                '                                  <input type="text" class="form-control num2" id="year_month1" name="num2" >\n' +
+                '                                </div>\n' +
+                '                                <label for="year_month1" class="col-md-1 control-label">日</label>\n' +
+                '                              </div>';
+            $('.query_info').html($text);
+            $("#checkbox1").removeAttr("checked");
+            $("#checkbox2").removeAttr("checked");
+            $("#checkbox3").removeAttr("checked");
+            $("#checkbox5").removeAttr("checked");
+            $("#checkbox6").removeAttr("checked");
+
+            // $('#id-m-form').bootstrapValidator('addField', 'num1', {
+            //     validators: {
+            //          regexp: {//正则验证
+            //                 regexp: /^[1-9]\d*$/,
+            //                 message: '请输入正确数字(非零正数)!'
+            //             },
+            //     }
+            // });
+            // $('#id-m-form').bootstrapValidator('addField', 'num2', {
+            //     validators: {
+            //          regexp: {//正则验证
+            //                 regexp: /^[1-9]\d*$/,
+            //                 message: '请输入正确数字(非零正数)!'
+            //             },
+            //     }
+            // });
+        }
+    });
+    $("#checkbox5").click(function(){
+        var s=$("#checkbox5").is(":checked");
+        if(s){
+            $text='<div class="form-group">\n' +
+                '                                <label for="year1" class="col-md-2 control-label">每</label>\n' +
+                '                                <div class="col-md-4">\n' +
+                '                                  <input type="text" class="form-control num1" name="num1" id="year1" >\n' +
+                '                                </div>\n' +
+                '                                <label for="year1" class="col-md-1 control-label">年</label>\n' +
+                '                              </div>\n' +
+                '                              <div class="form-group">\n' +
+                '                                <label for="year_month1" class="col-md-2 control-label">每年</label>\n' +
+                '                                <div class="col-md-4">\n' +
+                '                                  <input type="text" class="form-control num2" id="year_month1" name="num2" >\n' +
+                '                                </div>\n' +
+                '                                <label for="year_month1" class="col-md-1 control-label">月</label>\n' +
+                '                              </div>';
+            $('.query_info').html($text);
+            $("#checkbox1").removeAttr("checked");
+            $("#checkbox2").removeAttr("checked");
+            $("#checkbox3").removeAttr("checked");
+            $("#checkbox4").removeAttr("checked");
+            $("#checkbox6").removeAttr("checked");
+            // $('#id-m-form').bootstrapValidator('addField', 'num1', {
+            //     validators: {
+            //          regexp: {//正则验证
+            //                 regexp: /^[1-9]\d*$/,
+            //                 message: '请输入正确数字(非零正数)!'
+            //             },
+            //     }
+            // });
+            // $('#id-m-form').bootstrapValidator('addField', 'num2', {
+            //     validators: {
+            //          regexp: {//正则验证
+            //                 regexp: /^[1-9]\d*$/,
+            //                 message: '请输入正确数字(非零正数)!'
+            //             },
+            //     }
+            // });
+        }
+    });
+    $("#checkbox6").click(function(){
+        var s=$("#checkbox6").is(":checked");
+        if(s){
+            $text=' <div>\n' +
+                '                    <input name="num1" style="display:none">\n' +
+                '                    <input name="num2" style="display:none">\n' +
+                '                </div>';
+            $('.query_info').html($text);
+            $("#checkbox1").removeAttr("checked");
+            $("#checkbox2").removeAttr("checked");
+            $("#checkbox3").removeAttr("checked");
+            $("#checkbox4").removeAttr("checked");
+            $("#checkbox5").removeAttr("checked");
+        }
+    });
+
+</script>
+
+{% endblock %}
+

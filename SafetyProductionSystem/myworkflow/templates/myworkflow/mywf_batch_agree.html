@@ -1,0 +1,107 @@
+{% extends "my_base.html" %}
+
+{% load lbworkflow_tags %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load i18n %}
+{% load lbutils %}
+{% block content_nav_l %}
+    {{ transition.name }}
+{% endblock %}
+
+
+<!--{% block head_ext %}-->
+  <!--<style>-->
+    <!--#id_comment {-->
+      <!--height: 10px;-->
+    <!--}-->
+  <!--</style>-->
+<!--{% endblock %}-->
+{% block css %}
+  <style>
+    #id_comment {
+      height: 100px;
+    }
+    #div_id_attachments{
+      display: none;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <!--<script type="text/javascript">-->
+    <!--$("#div_id_attachments").hide();-->
+  <!--</script>-->
+  <section class="content-header">
+    <!--{% include "incs/messages.html" %}-->
+    <div class="right-btns">
+    </div>
+    <h1>
+      批量
+      -
+      {% if transition_name == 'Agree' %}
+      同意
+      {% elif transition_name == 'Reject' %}
+      拒绝
+      {% else %}
+      {{transition_name}}
+      {% endif %}
+    </h1>
+  </section>
+  <section class="content">
+    <form action="" method="post" id="id-wf-form" role="form">
+      <input type="hidden" name="do_submit" value="submit it">
+      <div class="box form-horizontal {% block form_class %}{% endblock %}">
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+          <div class="form-group">
+            <label class="control-label col-md-2">
+              流程名称
+            </label>
+            <div class="controls col-md-4" style="padding-top:7px">
+              {% for o in task_list%}
+                <input type="hidden" name="wi" value="{{ o.pk }}">
+                <input type="hidden" name="pi" value="{{ o.instance.pk }}">
+                {{ o.instance.no }} : {{ o.instance.summary }} <br>
+              {% endfor %}
+            </div>
+          </div>
+          {% crispy form %}
+          {% block submit_btns %}
+            <div class="form-group">
+              <div class="col-xs-offset-2 col-xs-6">
+                <button type="submit" class="btn btn-primary">
+                  {% if transition_name == 'Agree' %}
+                  同意
+                  {% elif transition_name == 'Reject' %}
+                  拒绝
+                  {% else %}
+                  {{transition_name}}
+                  {% endif %}
+                </button>
+                <a type="button" class="btn btn-default goback" href="/wf/todo/">取消</a>
+              </div>
+            </div>
+          {% endblock %}
+        </div>
+      </div>
+      {% block other_forms %}
+      {% endblock %}
+    </form>
+  </section>
+
+{% endblock %}
+
+{% block footer_ext %}
+  {{ block.super }}
+  <script src="{% static 'blueimp-file-upload/js/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'blueimp-file-upload/js/jquery.fileupload.js' %}"></script>
+  <script src="{% static 'blueimp-file-upload/js/jquery.iframe-transport.js' %}"></script>
+  <!--<script type="text/javascript">-->
+    <!--$(document).ready(function () {-->
+      <!--alert('111');-->
+            <!--initUploader($('#id_attachments'));-->
+          <!--$("#div_id_attachments").hide();-->
+    <!--})-->
+  <!--</script>-->
+{% endblock %}

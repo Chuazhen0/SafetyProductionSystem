@@ -1,0 +1,74 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">所有流程</span>
+    <small>审批记录</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span>工作流</span></li>
+    <li class="active">所有流程</li>
+    <li class="active">审批记录</li>
+</ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" data-toggle="tooltip" data-placement="top"  class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+{% block list_edit %}
+{% endblock %}
+    <!--<a class="btn btn-primary glyphicon glyphicon-list" data-toggle="tooltip" data-placement="top"  title="返回列表" href="/wf/list/?action=list&menuid=45"></a>-->
+{% block save2 %}
+
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" data-toggle="tooltip" data-placement="top"  class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+{% endblock %}
+{% block content %}
+{% load pagetag %}
+
+<table class="table table-striped table-borderd">
+    <tr>
+        <th class="first">编号</th>
+        <th class="third">审批节点名称</th>
+        <th class="third">审批人</th>
+        <th class="second">审批状态</th>
+        <th class="third">描述</th>
+        <th class="third">操作时间</th>
+    </tr>
+    {% for history_obj in history_obj_list %}
+    <tr>
+        <td class="first">{{forloop.counter}}</td>
+        <td class="third">{{history_obj.node_name}}</td>
+        <td class="third">{{history_obj.approve_name}}</td>
+        <td class="third">{{history_obj.approve_type}}</td>
+        <td class="third">{{history_obj.content}}</td>
+        <td class="third">{{history_obj.created_time}}</td>
+    </tr>
+    {% endfor %}
+    {% for node in list3 %}
+    <tr>
+        <td class="first">{{forloop.counter}}</td>
+        <td class="third">{{node.name}}</td>
+        <td class="third">{{node.operators}}</td>
+        <td class="third">{{node.type}}</td>
+        <td class="third"></td>
+        <td class="third"></td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+
+
+
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+// 把none改为空
+    document.body.innerHTML = document.body.innerHTML.replace(/agree/g, '同意');
+    document.body.innerHTML = document.body.innerHTML.replace(/reject/g, '驳回');
+
+</script>
+{% endblock %}

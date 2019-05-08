@@ -1,0 +1,121 @@
+{% extends "base_ext.html" %}
+
+{% load crispy_forms_tags %}
+{% load el_pagination_tags %}
+{% load lbworkflow_tags %}
+
+{% block nav_sel_node %}id-nav-monworkexe{% endblock %}
+
+{% block right_side %}
+  <section class="content-header">
+    {% include "incs/messages.html" %}
+    <div class="right-btns">
+    </div>
+    <h1>
+      月度工作执行
+    </h1>
+  </section>
+  <section class="content">
+    <div class="box">
+      {% if search_form %}
+      <div class="box-header">
+        <div class="input-group show-label-form">
+          {% crispy search_form %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <tbody>
+            <tr>
+              <th>NO.</th>
+              <th>Created by</th>
+              
+              <th>公司名称</th>
+              
+              <th>月度工作执行编码</th>
+              
+              <th>创建时间</th>
+              
+              <th>最后更新时间</th>
+              
+              <th>月度计划编码</th>
+              
+              <th>月度计划记录号</th>
+              
+              <th>计划工作内容</th>
+              
+              <th>计划完成时间</th>
+              
+              <th>执行人</th>
+              
+              <th>执行情况</th>
+              
+              <th>存在问题</th>
+              
+              <th>备注</th>
+              
+              <th>是否激活</th>
+              
+              <th>状态</th>
+              
+              <th>工单类型</th>
+              
+              <th>Created on</th>
+              <th>Current operator</th>
+              <th>Activity</th>
+            </tr>
+            {% paginate object_list %}
+            {% for o in object_list %}{% with pi=o.pinstance %}
+              <tr>
+                <td><a href="{% url 'wf_detail' pi.pk %}">{{ pi.no }}</a></td>
+                <td>{{ pi.created_by }}</td>
+                
+                <td>{{ o.place }}</td>
+                
+                <td>{{ o.number }}</td>
+                
+                <td>{{ o.created_at }}</td>
+                
+                <td>{{ o.last_updated_at }}</td>
+                
+                <td>{{ o.plan_number }}</td>
+                
+                <td>{{ o.plan_smallnumber }}</td>
+                
+                <td>{{ o.plan_content }}</td>
+                
+                <td>{{ o.finish_time }}</td>
+                
+                <td>{{ o.execute_user }}</td>
+                
+                <td>{{ o.execute_desc }}</td>
+                
+                <td>{{ o.problem_desc }}</td>
+                
+                <td>{{ o.remarks }}</td>
+                
+                <td>{{ o.is_activate }}</td>
+                
+                <td>{{ o.state }}</td>
+                
+                <td>{{ o.work_type }}</td>
+                
+                <td>{{ pi.created_on|date:"Y-m-d H:i" }}</td>
+                <td>{{ pi.get_operators_display }}</td>
+                <td>
+                  <span class="label label-{{ pi|flow_status_css_class }}">
+                    {{ pi.cur_activity.name }}
+                  </span>
+                </td>
+              </tr>
+            {% endwith %}{% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="box-footer clearfix">
+        {% show_pages %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

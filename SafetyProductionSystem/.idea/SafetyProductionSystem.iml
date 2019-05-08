@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="NewModuleRootManager">
+<<<<<<< HEAD
+    <content url="file://$MODULE_DIR$" />
+=======
+<<<<<<< HEAD
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="jdk" jdkName="Python 3.5 (untitled)" jdkType="Python SDK" />
+=======
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$" />
+    </content>
+>>>>>>> 05dff8f189afc240d82c96e7f41cc4a5e59b4fa7
+    <orderEntry type="jdk" jdkName="Python 3.5.2 virtualenv at ~/.virtualenvs/dianchang" jdkType="Python SDK" />
+>>>>>>> b2c015c3b0a7442499c041ac372c3f07f233a82d
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="django-lb-workflow-master" />
+    <orderEntry type="module" module-name="django-lb-workflow-master" />
+    <orderEntry type="module" module-name="django-lb-workflow-master" />
+    <orderEntry type="module" module-name="django-lb-workflow-master" />
+    <orderEntry type="module" module-name="project" />
+    <orderEntry type="module" module-name="django-lb-workflow-master" />
+  </component>
+  <component name="TestRunnerService">
+    <option name="PROJECT_TEST_RUNNER" value="Unittests" />
+  </component>
+</module>

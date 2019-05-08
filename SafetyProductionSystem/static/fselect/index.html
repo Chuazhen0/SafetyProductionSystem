@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jQuery fSelect Plugin Demo</title>
+<link href="fSelect.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+<div class="container">
+<select class="demo" multiple="multiple">
+    <optgroup label="Languages">
+        <option value="cp">C++</option>
+        <option value="cs">C#</option>
+        <option value="oc">Object C</option>
+        <option value="c">C</option>
+    </optgroup>
+    <optgroup label="Scripts">
+        <option value="js">JavaScript</option>
+        <option value="php">PHP</option>
+        <option value="asp">ASP</option>
+        <option value="jsp">JSP</option>
+    </optgroup>
+</select>
+</div>
+<script src="jquery-3.2.1.min.js"></script>
+<script src="fSelect.js"></script>
+<script>
+$(function() {
+        $('.demo').fSelect();
+    });
+</script>
+</div>
+
+</body>
+</html>

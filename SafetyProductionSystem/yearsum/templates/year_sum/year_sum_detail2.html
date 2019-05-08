@@ -1,0 +1,145 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">年度总结</span>
+    <small>详情</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span>技术监督</span></li>
+    <li><span>计划与总结</span></li>
+    <li class="active">年度总结</li>
+</ol>
+{% endblock %}
+{% block beiyong  %}
+<a href="/yearsum/list/?action=list&menuid=10" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_detail %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/yearsum/list/?action=list&menuid=10" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block modify %}
+<a href="/yearsum/{{year_sum.id}}/edit/?action=edit&menuid=10"
+   class="btn btn-primary glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="top"
+   title="编辑监督总结"></a>
+{% endblock %}
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/yearsum/{{year_sum.id}}/delete/?action=del&menuid=10';}"
+   title="删除监督总结" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+
+
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" data-toggle="tooltip" data-placement="top" class="css3 btn btn-primary glyphicon glyphicon-refresh"
+   title="刷新"></a>
+{% endblock %}
+{% block content %}
+{% block right_side %}
+<section class="content-header">
+    {% include "incs/messages.html" %}
+    {% block right_side_header %}
+    <div class="right-btns">
+        {% include "lbworkflow/inc_wf_btns.html" %}
+        {% block flow_help %}
+        {% endblock %}
+
+        {% block right_side_header_ext_btns %}
+        {% if processinstance %}
+        <a class="" target="_blank" href="{% url 'wf_print_detail' processinstance.pk %}">打印</a>
+        {% endif %}
+        <span>|</span>
+        {% endblock %}
+    </div>
+    {% endblock %}
+</section>
+<section class="content">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs" role="tablist" id="id-m-nav-tabs">
+            <li class="active">
+                <a href="#id-tb-base" role="tab" data-toggle="tab">基础信息</a>
+            </li>
+            {% block right_side_tab_nav_ext %}
+            {% endblock %}
+            <li>
+                <a href="#id-tb-wf-log" role="tab" data-toggle="tab">操作历史</a>
+            </li>
+            <!--<li>-->
+            <!--<a href="#id-tb-wf-graph" role="tab" data-toggle="tab">流程图</a>-->
+            <!--</li>-->
+        </ul>
+        <div class="tab-content">
+            {% block right_side_tab_ctx_ext %}
+            <div class="tab-pane active"  id="id-tb-base">
+                <table class="table table-bordered tb-detail no-margin">
+
+                    <tr>
+                        <th>公司名称</th>
+                        <td>{{ year_sum.place }}</td>
+                        <th>总结描述</th>
+                        <td>{{ year_sum.sum_desc }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>总结类型</th>
+                        <td>{{ year_sum.sum_type }}</td>
+                        <th>年份</th>
+                        <td>{{ year_sum.year }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>状态</th>
+                        <td>{{ year_sum.pinstance.cur_node.mynode.node_name }}</td>
+                        <th>创建时间</th>
+                        <td>{{ year_sum.created_at }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>最后更新人</th>
+                        <td>{{ year_sum.last_updated_by }}</td>
+                        <th>最后更新时间</th>
+                        <td>{{ year_sum.last_updated_at }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>附件</th>
+                        <td><a href="/media/{{ year_sum.enclosure }}" title="下载附件">{{ file_name }}</a></td>
+                        <th>是否激活</th>
+                        <td>{{ year_sum.is_activate }}</td>
+                    </tr>
+                    
+
+                    {% comment %}
+                    <tr>
+                        <th>Reason</th>
+                        <td colspan="3">
+                            {{ year_sum.reason|linebreaks }}
+                        </td>
+                    </tr>
+                    {% endcomment %}
+                </table>
+
+            </div>
+
+            {% endblock %}
+            <div class="tab-pane" id="id-tb-wf-log">
+                {% include "lbworkflow/inc_wf_history.html" %}
+            </div>
+            <div class="tab-pane" id="id-tb-wf-graph">
+                <a href="{% url 'wf_process_flowchart' 'year_sum' %}" target="_blank">Open in new window</a>
+                <br/>
+                <img src="{% url 'wf_process_flowchart' 'year_sum' %}"/>
+            </div>
+        </div>
+    </div>
+    {% block wf_detail_ext %}
+    {% with btn_css="1" %}
+    <div class="bottom-btns">
+        {% with is_btn="1" %}
+        {% include "lbworkflow/inc_wf_btns.html" %}
+        {% endwith %}
+    </div>
+    {% endwith %}
+    {% endblock %}
+</section>
+{% endblock %}
+{% endblock %}

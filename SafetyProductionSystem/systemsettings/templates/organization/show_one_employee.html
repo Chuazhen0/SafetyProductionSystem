@@ -1,0 +1,141 @@
+{% extends 'my_base.html' %}
+{% block title %}
+人员信息详情
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block list_detail %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/systemsettings/staff/?action=list&menuid=39" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block modify %}
+<a href="/systemsettings/{{data.id}}/staff_edit/?action=edit&menuid=39" class="btn btn-primary glyphicon glyphicon-edit" title="编辑人员信息" data-toggle="tooltip" data-placement="top" ></a >
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+{% endblock %}
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/systemsettings/{{data.id}}/staff_delete/?action=del&menuid=39';}"
+   title="删除人员" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" ></a>
+<!--<a href="/supervision/{{mon_plan_sum.id}}/mon_plan_sum_delete/?action=del&menuid=20" class="btn btn-danger delete" >{{power.title}}</a>-->
+{% endblock %}
+{% block content %}
+  <form action="#" class="form-horizontal" method="post" style="margin-top:20px;white-space:nowrap;">
+      <div class="box-body">
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >姓&nbsp;名</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="name" name="name" value="{{data.name}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >工&nbsp;号</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="number" name="number" value="{{data.number}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >电&nbsp;话</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="phone" name="phone" value="{{data.phone}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >邮&nbsp;箱</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="email" name="email" value="{{data.email}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >城&nbsp;市</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="city" name="city" value="{{data.city}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >地&nbsp;址</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="address" name="address" value="{{data.address}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >邮政编码</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="postalcode" name="postalcode" value="{{data.postalcode}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >状&nbsp;态</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="state" name="state" value="{{data.state}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >出生日期</label>
+            <div class="col-md-3">
+                {{data.birthday}}
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >聘用日期</label>
+            <div class="col-md-3">
+                {{data.startdate}}
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >结束日期</label>
+            <div class="col-md-3">
+                {{data.enddate}}
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >头&nbsp;衔</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="title" name="title" value="{{data.title}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >职务名称</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="job" name="job" value="{{data.job.name}}"
+                       >
+            </div>
+    </div>
+    <div class="form-group" style="margin-left:-47px;">
+        <label class="col-md-1 control-label">头&nbsp;像</label>
+        <div class="col-md-3">
+            <img src="/{{data.headimage}}" height="60" width="60"/>
+
+        </div>
+    </div>
+    <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label" >下载附件</label>
+            <div class="col-md-3">
+                {% if data.addex %}
+                  {{data.addex}}
+                  <a href="{% url 'supervision:down_file' %}?data={{data.addex}}">##下载查看附件</a>
+                {% else %}
+                    无附件
+                {% endif %}
+            </div>
+    </div>
+    </div>
+  </form>
+{% endblock %}
+
+{% block javascript %}
+<script>
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

@@ -1,0 +1,346 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">月度计划</span>
+    <small>新建</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span>技术监督</span></li>
+    <li><span>计划与总结</span></li>
+    <li class="active">月度计划</li>
+</ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" data-toggle="tooltip" data-placement="top"  class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"></a>
+{% endblock %}
+{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" data-toggle="tooltip" data-placement="top"  title="返回列表" href="/mon_plan_sum/list/?action=list&menuid=7"></a>
+{% endblock %}
+
+{% block save %}
+<!--<a class="btn btn-primary glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="top" name="act_save"  title="保存" onclick="if(!checked()){return};document.getElementById('id-m-form').submit();"></a>-->
+<!--{% if not process_instance.cur_node.is_submitted %}-->
+<!--<a class="btn btn-primary glyphicon glyphicon-send" data-toggle="tooltip" data-placement="top" name="act_submit" title="提交" onclick="if(!checked()){return};document.getElementById('id-m-form').submit();"></a>-->
+<!--{% endif %}-->
+
+<!--<a class="btn btn-primary glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="top" title="保存" id="create_btn">-->
+    <!--<button name="act_save" type="submit" style="display: none" id="baocun"></button>-->
+<!--</a>-->
+{% if not process_instance.cur_node.is_submitted %}
+<a class="btn btn-primary glyphicon glyphicon-send" data-toggle="tooltip" data-placement="top"  title="提交" id="tijiao" >
+    <input type="submit" value="提交" name="act_submit" style="display:none;" id="tj" ></a>
+
+{% endif %}
+
+{% endblock %}
+
+
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" data-toggle="tooltip" data-placement="top"  class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"></a>
+{% endblock %}
+{% block content %}
+<form action="/mon_plan_sum/add/" class="form-horizontal" method="post"
+      enctype="multipart/form-data" id="id-m-form" >
+    <div class="box-body">
+        <div class="form-group">
+            <label class="col-md-2 control-label">公司名称</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="place" id="place" value="{{place.comsimplename}}" readonly>
+            </div>
+            <label class="col-md-2 control-label">状&nbsp;态</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="state" name="state" value="拟定" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">创建人</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="created_by" id="created_by"
+                       value="{{request.session.mylogin.username}}" readonly>
+            </div>
+            <label class="col-md-2 control-label">创建时间</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="created_at" id="created_at" value="{{now}}"
+                       readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">更新人</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="last_updated_by" id="last_updated_by"
+                       value="{{request.session.mylogin.username}}" readonly>
+            </div>
+            <label class="col-md-2 control-label">更新时间</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="last_updated_at" id="last_updated_at"
+                       value="{{now}}" readonly>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">计划编码</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="number" id="number" value="{{number}}" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">计划描述</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="desc" id="desc" >
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">年&nbsp份</label>
+            <div class="col-md-1">
+                <select class="form-control" name="year" id="year" required>
+                    <option class="selected2" value="{{year}}">{{year}}</option>
+                    {% for y in year_list %}
+                    {% if y == year %}
+                    {% else %}
+                    <option value="{{y}}">{{y}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <label class="col-md-1  control-label">月&nbsp;份</label>
+            <div class="col-md-1">
+                <select class="form-control" name="month" id="month">
+                    <option class="selected2" value="{{month}}">{{month}}</option>
+                    {% for m in month_list %}
+                    {% if m == month %}
+                    {% else %}
+                    <option value="{{m}}">{{m}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group" >
+            <label class="col-md-2 control-label"><span class="bt">*</span>监督专业</label>
+            <div class="col-md-3">
+                <select class="form-control select2 supervision_major"  name="supervision_major">
+                    {% for supervision_major in supervision_major_list %}
+                    <option value="{{supervision_major.name}}">{{supervision_major.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+
+
+        <div class="form-group" >
+            <label class="col-md-2  control-label"><span class="bt">*</span>计划号</label>
+            <label class="col-md-1  control-label"><span class="bt">*</span>责任人</label>
+            <label class="col-md-1 col-md-offset-1 control-label"><span class="bt">*</span>计划内容</label>
+            <label class="col-md-1 col-md-offset-3 control-label"><span class="bt">*</span>完成时间</label>
+            <div class="col-md-1 col-md-offset-1" style="cursor:pointer;">
+                <label class="btn btn-primary glyphicon glyphicon-plus control-label new">新增行</label>
+            </div>
+        </div>
+
+        <div id="plan">
+            <div class="form-group myplan" >
+                <div class="col-md-1 col-md-offset-1">
+                    <input type="text" class="form-control smallnumber" name="smallnumber" required="required">
+                </div>
+                <div class="col-md-2 ">
+                    <select class="form-control select2 exe_user"  name="exe_user">
+                        {% for exe_user in exe_user_list %}
+                        <option value="{{exe_user.id}}">{{exe_user.user.username}}({{exe_user.name}})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control content1" name="content"  required >
+                </div>
+                <div class="col-md-2">
+                    <input type="date" class="form-control finish_time" name="finish_time"  >
+                </div>
+                <div class="col-md-1 " style="cursor:pointer;">
+                    <label class="btn btn-danger glyphicon glyphicon-trash control-label delete" onclick="$(this).parent().parent().remove()">删除行</label>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group" >
+            <label class="col-md-2 control-label">上传附件</label>
+            <div class="col-md-3">
+                <input type="file" id="enclosure" name="enclosure">
+            </div>
+              <input type="text" id="num2" name="num2" style="display: none;"/>
+        </div>
+
+    </div>
+
+</form>
+
+{% endblock %}
+{% block javascript %}
+<script type="application/javascript" src="/static/js/bootstrapValidator/bootstrapValidator.js"></script>
+<script type="text/javascript">
+  $("#create_btn").click(function(){
+            $("#num2").val(1);
+        });
+
+        $("#tijiao").click(function(){
+            $("#num2").val(2);
+        });
+    // 按钮悬浮效果
+    $("[data-toggle='tooltip']").tooltip();
+
+
+    $(function(){
+        $('.new').click(function(){
+            var mytext='<div class="form-group myplan" >\n' +
+                '                <div class="col-md-1 col-md-offset-1">\n' +
+                '                    <input type="text" class="form-control" name="smallnumber" required="required">\n' +
+                '                </div>\n' +
+                '                <div class="col-md-2 ">\n' +
+                '                    <select class="form-control select2 "  name="exe_user">\n' +
+                '                        {% for exe_user in exe_user_list %}\n' +
+                '                        <option value="{{exe_user.id}}">{{exe_user.user.username}}({{exe_user.name}})\n' +
+                '                        </option>\n' +
+                '                        {% endfor %}\n' +
+                '                    </select>\n' +
+                '                </div>\n' +
+                '                 <div class="col-md-4">\n' +
+                '                    <input type="text" class="form-control" name="content" id="content" required >\n' +
+                '                </div>\n' +
+                '                <div class="col-md-2">\n' +
+                '                    <input type="date" class="form-control" name="finish_time" id="finish_time" >\n' +
+                '                </div>\n' +
+                '                <div class="col-md-1 " style="cursor:pointer;">\n' +
+                '                <label class="btn btn-danger glyphicon glyphicon-trash control-label delete" onclick="$(this).parent().parent().remove();">删除行</label>\n' +
+                '            </div>\n' +
+                '            </div>';
+
+            $('#plan').append(mytext);
+            $('#id-m-form').bootstrapValidator('addField', 'smallnumber', {
+                validators: {
+                    notEmpty: {
+                        message: '计划号不能为空'
+                    }
+                }
+            });
+            $('#id-m-form').bootstrapValidator('addField', 'exe_user', {
+                validators: {
+                    notEmpty: {
+                        message: '责任人不能为空'
+                    }
+                }
+            });
+            $('#id-m-form').bootstrapValidator('addField', 'content', {
+                validators: {
+                    notEmpty: {
+                        message: '计划内容不能为空'
+                    }
+                }
+            });
+            $('#id-m-form').bootstrapValidator('addField', 'finish_time', {
+                validators: {
+                    notEmpty: {
+                        message: '完成时间不能为空'
+                    }
+                }
+            });
+
+
+        });
+        $('.delete').click(function(){
+            $(this).parent().parent().remove();
+        })
+
+    });
+
+
+    $(function () {
+        $('#id-m-form').bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                smallnumber: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入计划编号'
+                        },
+                        callback: {
+                            message: '计划编号错误'
+                        },
+                        regexp: {//正则验证
+                            regexp: /^[1-9]\d*$/,
+                            message: '请输入正确数字(非零正数)!'
+                        },
+                    }
+                },
+                exe_user: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您选择责任人'
+                        },
+                        callback: {
+                            message: '责任人错误'
+                        },
+                    }
+                },
+                content: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入计划内容'
+                        },
+                        callback: {
+                            message: '计划内容错误'
+                        },
+                        stringLength: {//检测长度
+                            min: 2,
+                            max: 200,
+                            message: '长度必须在2-200之间'
+                        },
+                    }
+                },
+                finish_time: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您选择完成时间'
+                        },
+                        callback: {
+                            message: '完成时间错误'
+                        },
+                    }
+                },
+            }
+        })
+    });
+
+   $("#id-m-form").submit(function (ev) {
+        ev.preventDefault();
+    });
+    $("#tijiao,#create_btn").on("click", function () {
+        var bootstrapValidator = $("#id-m-form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if (bootstrapValidator.isValid()) {
+            document.getElementById('id-m-form').submit();
+            layer.msg('添加成功！')
+        }
+        else {
+            layer.msg('添加失败，请填写正确信息!');
+            return false;
+        }
+    });
+
+</script>
+{% endblock %}

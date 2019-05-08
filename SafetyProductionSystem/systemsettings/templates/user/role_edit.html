@@ -1,0 +1,139 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">角色管理</span>
+        <small>编辑</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>系统设置</span></li>
+        <li><span>角色管理</span></li>
+        <li class="active">角色管理</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block list_edit %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/systemsettings/role_list/?action=list&menuid=38" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block save2 %}
+<a class="btn btn-primary glyphicon glyphicon-floppy-save" title="保存" onclick="document.getElementById('myform').submit();" data-toggle="tooltip" data-placement="top" ></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip" data-placement="top" ></a>
+<!--<a type="button" onClick="javascript :history.back(-1)" class="btn btn-primary">返回</a>-->
+{% endblock %}
+{% block content %}
+<form action="/systemsettings/role_edit/{{role.id}}/"  id="myform" method="POST" class="form-horizontal">
+    {% csrf_token %}
+    <div class="box-body">
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>角色名称</label>
+            <div class="col-md-10">
+                <input type="text" name="name" value="{{role.name }}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><span class="bt">*</span>是否启用</label>
+            <div class="col-md-10">
+                {% for sb in pression %}
+                {% if sb == 1 %}
+                <input type="radio" name="is_select" checked="checked" value="1"/>是
+                <input type="radio" name="is_select" value="0"/>否
+                {% else %}
+                <input type="radio" name="is_select" value="1"/>是
+                <input type="radio" name="is_select" checked="checked" value="0"/>否
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-group" >
+            <label class="col-md-2 control-label">变更权限</label>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <table class="table table-striped">
+                    <tr>
+                        <th><input type="checkbox" id="fetchall"/></th>
+                        <th>菜单</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for data in operation_list %}
+                    <tr>
+                        <td>
+						{% if data.id in power_have_list %}
+							<input type="checkbox" checked name="operation_id" value="{{data.id}}"/>
+						{% else %}
+							<input type="checkbox" name="operation_id" value="{{data.id}}"/>
+						{% endif %}
+						</td>
+                        <td>{{data.menu}}</td>
+                        <td>{{data.title}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <h1>{{error}}</h1>
+</form>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+	$("#fetchall").click(function(){
+		console.log("1111")
+		
+		if(this.checked){
+			console.log("aa")
+			$("[name=operation_id]:checkbox").remove('checked',false)
+			$("[name=operation_id]:checkbox").prop('checked',true)
+		}else{
+			$("[name=operation_id]:checkbox").remove('checked',true)
+			$("[name=operation_id]:checkbox").prop('checked',false)
+		}
+	})
+
+//function selectAllCheck(obj, selname) {
+//  var el = document.getElementsByName(selname);//获取所有复选框
+//  var len = el.length;//获取复选框数量
+//  if (obj.checked === true) {//判断全选框是否选中
+//      $(obj).attr('title', '反选');
+//      for (var i = 0; i < len; i++) {
+//          if (!el[i].disabled) {//如果复选框未选中，设置选中状态
+//              el[i].checked = true;
+//          }
+//      }
+//  } else {//全选框未选中 将所有选中的复选框改为未选中
+//      $(obj).attr('title', '全选');
+//      for (var j = 0; j < len; j++) {//循环所有复选框
+//          if (!el[j].disabled) {//复选框已选中
+//              el[j].checked = false;
+//          }
+//      }
+//  }
+//}
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+
+
+
+
+</script>
+
+{% endblock %}

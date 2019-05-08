@@ -1,0 +1,146 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+<h1 style="margin-top:-15px"><span style="color: #0b93d5;">工作数据</span>
+    <small>详情</small>
+</h1>
+<ol class="breadcrumb" style="margin-top: 5px;">
+    <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+    <li><span href="#">技术监督</span></li>
+    <li><span href="#">定期工作策划</span></li>
+    <li class="active">工作数据详情</li>
+</ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回"
+   data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+
+{% block list_new %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表"
+   href=/regularworkplan/{{pid}}/detail/?action=detail&menuid=48"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/regularworkplan/work_data_delete/{{pid}}/{{zid}}/?action=del&menuid=55';}"
+   title="删除工作数据" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block content %}
+<form class="form-horizontal" method="post" id="myform"
+      action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="box-body" style="margin-top: 20px;">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">编号</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="number" class="form-control" id="number1"
+                               value="{{work_data_data.number}}"
+                               readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">数据名称</label>
+                    <div class="col-sm-6">
+                        <input type="text" value="{{work_data_data.data_name}}" name="data_name" class="form-control" id="data_name" placeholder="数据名称">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">数据标准值</label>
+                    <div class="col-sm-6">
+                        <input value="{{work_data_data.data_value}}" placeholder="数据标准值" type="text" name="data_value" class="form-control" id="data_value">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.box-footer -->
+</form>
+
+{% endblock %}
+{% block javascript %}
+<!--<script>-->
+<!--function checked() {-->
+<!--var date2 = $("#number").val();-->
+<!--var date3 = $("#effect_time").val();-->
+
+<!--if(date2=='' | date3 ==''){-->
+<!--alert('您还有未填写的选项');-->
+<!--return false;-->
+
+<!--}else{-->
+<!--return true;-->
+<!--}-->
+<!--console.log(checked());-->
+<!--}-->
+<!--// 按钮悬浮效果-->
+<!--$("[data-toggle='tooltip']").tooltip();-->
+<!--</script>-->
+<script type='application/javascript' src='/static/js/bootstrapValidator/bootstrapValidator.js'></script>
+<script>
+    $(function () {
+        $('#myform').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            content: {
+                number: {
+                    validators: {
+                        notEmpty: {
+                            message: '请您输入内容'
+                        },
+                        callback: {
+                            message: '无内容'
+                        },
+                        stringLength: {//检测长度
+                            min: 1,
+                            max: 1000,
+                            message: '请填写内容'
+                        },
+                    }
+                },
+            }
+        })
+    });
+    $('#myform').submit(function (ev) {
+        ev.preventDefault();
+    });
+    $('#create_btn').on('click', function () {
+        var bootstrapValidator = $('#myform').data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if (bootstrapValidator.isValid()) {
+            document.getElementById('myform').submit();
+            layer.msg('添加成功')
+        }
+        else {
+            document.getElementById('myform').submit();
+            layer.msg('添加失败');
+            return false
+        }
+    });
+
+
+    $("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

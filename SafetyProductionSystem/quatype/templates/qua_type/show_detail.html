@@ -1,0 +1,107 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">资质类型管理</span>
+        <small>详情</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>25项反措</span></li>
+        <li><span>资质类型管理</span></li>
+        <li class="active">资质类型管理</li>
+    </ol>
+{% endblock %}
+
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block list_detail %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/quatype/list/?action=list&menuid=30"></a>
+{% endblock %}
+
+{% block modify %}
+<a href="/quatype/{{qua_detail_info.id}}/edit/?action=edit&menuid=30" data-toggle="tooltip"
+   data-placement="top" class="btn btn-primary glyphicon glyphicon-edit"
+   title="编辑资质类型"></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/quatype/{{u_id}}/delete/?action=del&menuid=30';}"
+   title="删除资质类型" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+<!--<a href="/supervision/{{mon_plan_sum.id}}/mon_plan_sum_delete/?action=del&menuid=20" class="btn btn-danger delete" >{{power.title}}</a>-->
+{% endblock %}
+{% block content %}
+<form action="#" class="form-horizontal" method="post" enctype="multipart/form-data">
+    <div class="box-body">
+        <div class="form-group">
+
+
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">创建人</label>
+          <div class="col-sm-3">
+             <input type="text" class="form-control" name="created_by" id="created_by" value="{{data.created_by}}" readonly>
+          </div>
+
+          <label for="create_at" class="col-sm-2 control-label">创建时间</label>
+          <div class="col-sm-3">
+            <input type="text" name="create_at" class="form-control" id="create_at"  value="{{data.created_at}}" readonly>
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">最后更新人</label>
+            <div class="col-sm-3">
+             <input type="text" class="form-control" name="last_updated_by" id="last_updated_by" value="{{data.last_updated_by}}" readonly>
+            </div>
+
+            <label class="col-sm-2 control-label">最后更新时间</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="last_updated_at" id="last_updated_at" value="{{data.last_updated_at}}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">专业</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="supervision" id="supervision"
+                       value="{{data.supervision.name}}" readonly>
+            </div>
+
+            <label for="state" class="col-sm-2 control-label">状态</label>
+            <div class="col-sm-3">
+                <input type="text" name="state" class="form-control" id="state" value="{{data.state}}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">描述</label>
+           <div class="col-sm-3">
+                <input type="text" class="form-control" name="desc" id="desc"
+                       value="{{data.desc}}" readonly>
+            </div>
+
+            <label class="col-sm-2 control-label">备注</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="remark" id="remark"
+                       value="{{data.remark}}" readonly>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+{% endblock %}
+{% block javascript %}
+<script>
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

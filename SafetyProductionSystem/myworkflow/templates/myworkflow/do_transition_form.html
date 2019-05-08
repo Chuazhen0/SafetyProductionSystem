@@ -1,0 +1,85 @@
+{% extends "base_ext.html" %}
+
+{% load lbworkflow_tags %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block content_nav_l %}
+    {{ transition.name }}
+{% endblock %}
+
+{% block head_ext %}
+  <style>
+    #id_comment {
+      height: 80px;
+    }
+  </style>
+{% endblock %}
+
+{% block right_side %}
+  <section class="content-header">
+    {% include "incs/messages.html" %}
+    <div class="right-btns">
+    </div>
+    <h1>
+      {{ process.name }}
+      -
+      {{ object }}
+      -
+      {{ transition.name }}
+    </h1>
+  </section>
+  <section class="content">
+    <form action="" method="post" id="id-wf-form" role="form">
+      <div class="box form-horizontal {% block form_class %}{% endblock %}">
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+          <div class="form-group">
+            <label class="control-label col-xs-2">当前节点</label>
+            <div class="controls col-xs-6">
+              <span class="text-block">
+                {{ transition.input_node.name }}
+              </span>
+            </div>
+          </div>
+          {% if backto_node_form %}
+            <div class="form-group">
+              <label class="control-label col-xs-2">下一节点</label>
+              <div class="controls col-xs-6">
+                {{ backto_node_form.backto_node }}
+              </div>
+            </div>
+          {% endif %}
+          {% crispy form %}
+          {% block submit_btns %}
+            <div class="form-group">
+              <div class="col-xs-offset-2 col-xs-6">
+                <button type="submit" class="btn btn-primary">
+                  {{ transition.name }}
+                </button>
+                <button type="button" class="btn btn-default goback">取消</button>
+              </div>
+            </div>
+          {% endblock %}
+        </div>
+      </div>
+      {% block other_forms %}
+      {% endblock %}
+    </form>
+  </section>
+{% endblock %}
+
+{% block footer_ext %}
+  {{ block.super }}
+  <link href="{% static 'flatpickr/dist/flatpickr.min.css' %}" rel="stylesheet" type="text/css" />
+  <script src="{% static 'flatpickr/dist/flatpickr.min.js' %}"></script>
+  <script src="{% static 'blueimp-file-upload/js/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'blueimp-file-upload/js/jquery.fileupload.js' %}"></script>
+  <script src="{% static 'blueimp-file-upload/js/jquery.iframe-transport.js' %}"></script>
+  <script type="text/javascript">
+    $(function(){
+      initUploader($('#id_attachments'));
+    });
+  </script>
+{% endblock %}

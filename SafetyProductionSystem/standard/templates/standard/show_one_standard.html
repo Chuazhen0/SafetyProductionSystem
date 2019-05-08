@@ -1,0 +1,81 @@
+{% extends 'my_base.html' %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">指标定义</span>
+        <small>详情</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>指标管理</span></li>
+        <li class="active">指标定义</li>
+    </ol>
+{% endblock %}
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block list_detail %}
+<a class="btn btn-primary btn-secondary glyphicon glyphicon-list" title="返回列表" href="/standard/standard/?action=new&menuid=50"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block modify %}
+<a href="/standard/{{data.id}}/standard_edit/?action=edit&menuid=50" class="btn btn-primary glyphicon glyphicon-edit" title="编辑指标定义"
+   data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/standard/{{data.id}}/standard_delete/?action=del&menuid=50';}"
+   title="删除指标定义" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+<!--<a href="/standard/{{mon_plan_sum.id}}/mon_plan_sum_delete/?action=del&menuid=20" class="btn btn-danger delete" >{{power.title}}</a>-->
+{% endblock %}
+{% block box_title %}详情{% endblock %}
+{% block content %}
+<form action="#" class="form-horizontal" method="post" style="margin-top:20px;white-space:nowrap;">
+    <div class="box-body">
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">编&nbsp;号</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="number" name="number" value="{{data.number}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">定义描述</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="describe" name="describe" value="{{data.describe}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">监督类型</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="Supervision_type" name="Supervision_type" value="{{data.Supervision_type.supervision_major}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">填报周期</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="cycle" name="cycle" value="{{data.cycle}}"
+                >
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:-12px">
+            <label class="col-md-1 control-label">状态</label>
+            <div class="col-md-3">
+                <input readonly type="text" class="form-control" id="state" name="state" value="{{data.state}}"
+                >
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+{% block javascript %}
+<script>
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

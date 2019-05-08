@@ -1,0 +1,150 @@
+{% extends 'my_base.html' %}
+
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">网络结构</span>
+        <small>详情</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>监督网络管理</span></li>
+        <li class="active">网络结构</li>
+    </ol>
+{% endblock %}
+
+{% block beiyong  %}
+<a onClick="javascript :history.back(-1)" class="btn btn-primary glyphicon glyphicon-chevron-left" title="返回" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block list_detail %}
+<a class="btn btn-primary glyphicon glyphicon-list" title="返回列表" href="/netstructure/list/?action=list&menuid=3" data-toggle="tooltip" data-placement="top"></a>
+{% endblock %}
+
+{% block modify %}
+<a href="/netstructure/{{u_id}}/edit/?action=edit&menuid=3" data-toggle="tooltip"
+   data-placement="top" class="btn btn-primary glyphicon glyphicon-edit"
+   title="编辑网络结构"></a>
+{% endblock %}
+
+{% block update %}
+<a href="#" onClick="document.location.reload()" class="css3 btn btn-primary glyphicon glyphicon-refresh" title="刷新" data-toggle="tooltip"
+   data-placement="top"></a>
+{% endblock %}
+
+{% block del %}
+<a href="javascript:;"
+   onclick="if(confirm('您确定删除这条记录？')){location.href='/netstructure/{{u_id}}/delete/?action=del&menuid=3';}"
+   title="删除网络结构" class="btn btn-primary glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top"></a>
+
+{% endblock %}
+{% block content %}
+{% load pagetag %}
+<form action="#" class="form-horizontal" method="post" enctype="multipart/form-data">
+    <div class="box-body">
+        <div class="form-group">
+            <label class="col-md-1 control-label">编&nbsp;号</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="number" id="number" value="{{structure.number}}"
+                       readonly>
+            </div>
+            <label class="col-md-1 control-label">状&nbsp;态</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="state" id="state"
+                       value="{{structure.state}}" readonly>
+            </div>
+        </div>
+         <div class="form-group">
+            <label class="col-md-1 control-label">类&nbsp;别</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="classify" id="classify"
+                       value="{{structure.classify}}" readonly>
+            </div>
+             <label class="col-md-1 control-label">上级监督网络</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="parent_id" id="parent_id"
+                       value="{{structure.parent.desc}}"
+                       readonly>
+            </div>
+        </div>
+        <div class="form-group">
+        <label class="col-md-1 control-label">描&nbsp;述</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="desc" id="desc"
+                       value="{{structure.desc}}" readonly>
+            </div>
+        <label class="col-md-1 control-label">监督网络级别</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="level" id="level"
+                       value="{{structure.level}}" readonly>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header" style="background-color: #ffffe3;">
+                <h3 class="box-title">监督网络成员</h3>
+            </div>
+             <!--/.box-header -->
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-striped">
+                    <tr>
+                        <th>序号</th>
+                        <th>工号</th>
+                        <th>姓名</th>
+                        <th>岗位</th>
+                        <th>部门</th>
+                    </tr>
+                    {% for staff in person_list %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{staff.number}}</td>
+                        <td>{{staff.name}}</td>
+                        <td>{{staff.jobname}}</td>
+                        <td>{{staff.department}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">暂时没有数据</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="clearfix">
+                <ul class="pagination pagination-sm no-margin pull-left">
+                    {% if data.has_previous %}
+                    <li>
+                        <a href="?page={{ data.previous_page_number }}" aria-label="Previous">
+                            <span aria-label="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for pg in data.paginator.page_range %}
+                    {% circle_page menuid data.number pg %}
+                    {% endfor %}
+                    {% if data.has_next %}
+                    <li>
+                        <a href="?page={{ data.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+             <!--/.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+   // 按钮悬浮效果
+$("[data-toggle='tooltip']").tooltip();
+</script>
+{% endblock %}

@@ -1,0 +1,314 @@
+{% extends 'my_base.html' %}
+{% load count_add %}
+{% block title %}
+    <h1 style="margin-top:-15px"><span style="color: #0b93d5;">定期工作任务</span>
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb" style="margin-top: 5px;">
+        <li><a href="/systemsettings/starter/"><i class="fa fa-dashboard"></i>当前位置：首页</a></li>
+        <li><span>技术监督</span></li>
+        <li><span>定期工作管理</span></li>
+        <li class="active">定期工作任务</li>
+    </ol>
+{% endblock %}
+{% block add %}
+
+{% endblock %}
+{% block search %}
+<a href="#" class="btn btn-primary glyphicon glyphicon-search" data-toggle="tooltip"
+   data-placement="top" onclick="prom()"
+   title="查询定期工作任务"></a>
+{% endblock %}
+{% block update %}
+<a href="#" onClick="document.location.reload()" data-toggle="tooltip" data-placement="top"
+   class="css3 btn btn-primary glyphicon glyphicon-refresh"
+   title="刷新"></a>
+<!--<a href="#" onclick="prom_import()" data-toggle="tooltip" data-placement="top"-->
+   <!--class="css3 btn btn-primary glyphicon glyphicon-import"-->
+   <!--title="导入"></a>-->
+{% endblock %}
+{% block content %}
+{% load pagetag %}
+<table class="table table-striped table-bordered">
+    <tr>
+        <th class="first">编号</th>
+        <th class="third">公司名称</th>
+        <th class="fifth">工作项目</th>
+        <th class="third">完成情况</th>
+        <th class="third">KKS名称</th>
+        <th class="second">监督专业</th>
+        <th class="second">设备专业</th>
+        <th class="second">责任人</th>
+        <th class="fourth">定期工作类型</th>
+        <th class="first" >状态</th>
+        <th class="third">操作</th>
+    </tr>
+    {% for regular_work in regularwork_list %}
+    <tr>
+
+
+        <td class="first">{%tag_cheng_add page 10 forloop.counter%}</td>
+
+        <td class="third">{{regular_work.place}}</td>
+        <td class="fifth">{{regular_work.regularwork.work_content}}</td>
+        <td class="award-name third" data-placement="bottom"
+        title="{{regular_work.result}}">{{regular_work.result}}</td>
+        <td class="third">{{regular_work.regularwork.KKS_codename}}</td>
+        <td class="second" >{{regular_work.regularwork.supervision_major.name}}</td>
+        <td class="second">{{regular_work.regularwork.equipment_major.name}}</td>
+        <td class="second">{{regular_work.regularwork.exe_user.name}}</td>
+        <td class="fourth">{{regular_work.regularwork.type}}</td>
+        <td class="first">{{regular_work.pinstance.cur_node.mynode.node_name}}</td>
+        <td>
+            <a href="/regularworktask/{{regular_work.id}}/detail/?action=detail&menuid=49"
+               title="查看定期工作任务" data-toggle="tooltip" data-placement="top"><span
+                    class="btn btn-default glyphicon glyphicon-zoom-in"></span></a>
+            <!--<a href="/regularworktask/{{regular_work_task.id}}/edit/?action=edit&menuid=49"-->
+               <!--title="编辑定期工作任务" data-toggle="tooltip" data-placement="top"><span-->
+                    <!--class="glyphicon glyphicon-edit"></span></a>-->
+            <a href="/wf/{{regular_work.pinstance.id | default:'0' }}/wf_history/?action=edit&menuid=47" data-toggle="tooltip" data-placement="top" title="查看流程历史"><span
+                          class="btn btn-default glyphicon glyphicon-calendar" ></span></a>
+            <a href="javascript:;"
+               onclick="if(confirm('您确定删除这条记录？')){location.href='/regularworktask/{{regular_work.id}}/delete/?action=delete&menuid=49';}"
+               title="删除定期工作任务" data-toggle="tooltip" data-placement="top" id="mydel"><span
+                    class="btn btn-default glyphicon glyphicon-trash"></span></a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="11">暂时还没有定期工作任务</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="box-footer clearfix">
+    <nav aria-label="Page navigation">
+        <ul class="pagination pagination-sm no-margin pull-left">
+
+            <li>
+                <a href="?page=1&action=list&menuid=49&supervision_major={{ supervision_major }}&equipment_major={{ equipment_major }}&type={{ type }}&exe_user={{ exe_user }}" aria-label="Previous">
+                    <span aria-hidden="true">首页</span>
+                </a>
+            </li>
+
+            {% if regularwork_list.has_previous %}
+            <li>
+                <a href="?page={{ regularwork_list.previous_page_number }}&action=list&menuid=49&supervision_major={{ supervision_major }}&equipment_major={{ equipment_major }}&type={{ type }}&exe_user={{ exe_user }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+             <!--{% for pg in regularwork_list.paginator.page_range %}-->
+                <!--{% circle_page menuid regularwork_list.number pg %}-->
+             <!--{% endfor %}-->
+
+             {% for pg in page_range %}
+                {% if pg == page %}
+                    <li class="active"><a href="#">{{ pg }}</a></li>
+                {% else %}
+                    <li><a href="?page={{ pg }}&action=list&menuid=49&supervision_major={{ supervision_major }}&equipment_major={{ equipment_major }}&type={{ type }}&exe_user={{ exe_user }}">{{ pg }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if regularwork_list.has_next %}
+            <li>
+                <a href="?page={{ regularwork_list.next_page_number }}&action=list&menuid=49&supervision_major={{ supervision_major }}&equipment_major={{ equipment_major }}&type={{ type }}&exe_user={{ exe_user }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            <li>
+          <a href="?page={{ total_page }}" >
+            <span aria-hidden="true">总共{{ total_page }}页</span>
+          </a>
+          </li>
+
+        {% if total_counts < 0 %}
+          <li style="display:none;">
+          <a>
+            <span aria-hidden="true">总{{ total_counts }}条</span>
+          </a>
+          </li>
+        {% else %}
+          <li>
+          <a>
+            <span aria-hidden="true">总{{ total_counts }}条</span>
+          </a>
+          </li>
+        {% endif %}
+
+        </ul>
+    </nav>
+</div>
+
+
+<!------------------------------------搜索框------------------------------>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        onclick="closed()">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    定期工作任务查询
+                </h4>
+                <hr>
+                <!--form表单输入查询条件-->
+                <form action="/regularworktask/search/?action=find&menuid=49" class="form-horizontal" method="get"
+                      enctype="multipart/form-data" id="myform">
+                    <input type="hidden" name="action" value="list">
+                    <input type="hidden" name="menuid" value="49">
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">监督专业</label>
+                            <div class="col-md-4">
+                                <select class="form-control" name="supervision_major" id="supervision_major">
+                                    <option value="">所有</option>
+                                    {% for supervision_major in supervision_major_list %}
+                                    <option value="{{supervision_major.id}}">{{supervision_major.name}}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">设备专业</label>
+                            <div class="col-md-4">
+                                <select  class="form-control" name="equipment_major" id="equipment_major">
+                                    <option value="">所有</option>
+                                    {% for equipment_major in equipment_major_list %}
+                                    <option value="{{equipment_major.id}}">{{equipment_major.name}}</option>
+                                     {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <!--<div class="form-group">-->
+                            <!--<label class="col-md-3 control-label">工作内容</label>-->
+                            <!--<div class="col-md-4">-->
+                                <!--<input type="text" class="form-control" name="work_content" id="work_content">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">责任人</label>
+                            <div class="col-md-4">
+                                <select class="form-control" name="exe_user" id="exe_user">
+                                    <option value="">所有</option>
+                                    {% for user in user_list %}
+                                    <option value="{{user.id}}">{{user.name}}</option>
+                                    {% endfor  %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">定期工作类型</label>
+                            <!--<div class="col-md-4">-->
+                                <!--<input type="text" class="form-control" name="state" id="state">-->
+                                <!---->
+                            <!--</div>-->
+                             <div class="col-md-4">
+                            <select class="form-control select2" name="type" id="rtype">
+                                <option value="">所有</option>
+                                <option value="技术监督设备类">技术监督设备类</option>
+                                <option value="技术监督管理类">技术监督管理类</option>
+                                <option value="25项反措设备类">25项反措设备类</option>
+                                <option value="25项反措管理类">25项反措管理类</option>
+                            </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit"  class="btn btn-primary" value="搜索">
+                        <button type="button" id='btn' class="btn btn-primary" data-dismiss="modal"
+                                    onclick="closed()">关闭
+                            </button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+</div>
+
+<!--导入框-->
+<div class="modal fade" id="myModal_import" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel_import">
+                    导入定期工作任务
+                </h4>
+                <div id="sb1"></div>
+            </div>
+            <div class="modal-body" style="border-top: none">
+                <form class="form-horizontal" method="post" action="/regularworktask/regularwork_import_excel/" id="myform_import" enctype="multipart/form-data" style="width: 80%; margin: 0 auto">
+                    <div class="col-md-12">
+                        <div class="form-group" style="text-align: center">
+                            <label class="col-sm-3 control-label" style="text-align: left">excel文件:</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="file" id="excel_file" name="excel_file">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-primary" id="import_btn" onclick="import_btn();">
+                            导入
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="/static/js/qtip/jquery.qtip.min.js"></script>
+<script>
+    function prom_import() {
+        $('#myModal_import').modal('show');
+        $('#myModal_import').on('hide.bs.modal', function () {
+        });
+    }
+    function prom(){
+        $("#myModal").modal('show');
+    };
+    function import_btn(){
+        document.getElementById("myform_import").submit();
+
+
+    }
+
+$().click(function(){
+    //询问框
+
+layer.confirm('您确定要删除该记录吗？', {
+  btn: ['确定','取消'] //按钮
+}, function(){
+  layer.msg('已删除', {icon: 1});
+},
+    function(){
+  layer.msg('也可以这样', {
+    time: 20000, //20s后自动关闭
+    btn: ['明白了', '知道了']
+  }
+  );
+}
+);
+})
+</script>
+{% endblock %}
+
+

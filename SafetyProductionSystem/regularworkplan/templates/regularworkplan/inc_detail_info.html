@@ -1,0 +1,103 @@
+{% include "lbworkflow/inc_wf_status.html" %}
+<table class="table table-bordered tb-detail no-margin">
+  
+  <tr>
+    <th>公司名称</th>
+    <td>{{ object.place }}</td>
+    <th>定期工作编码</th>
+    <td>{{ object.number }}</td>
+  </tr>
+
+  <tr>
+    <th>KKS编码</th>
+    <td>{{ object.KKS_code }}</td>
+    <th>KKS编码名称</th>
+    <td>{{ object.KKS_codename }}</td>
+  </tr>
+
+  <tr>
+    <th>台账编号</th>
+    <td>{{ object.count_number }}</td>
+    <th>台账名称</th>
+    <td>{{ object.count_name }}</td>
+  </tr>
+
+  <tr>
+    <th>工作区域</th>
+    <td>{{ object.work_area }}</td>
+    <th>责任人</th>
+    <td>{{ object.exe_user }}</td>
+  </tr>
+
+  <tr>
+    <th>设备专业</th>
+    <td>{{ object.equipment_major }}</td>
+    <th>监督专业</th>
+    <td>{{ object.supervision_major }}</td>
+  </tr>
+
+  <tr>
+    <th>性质</th>
+    <td>{{ object.nature }}</td>
+    <th>定期工作类型</th>
+    <td>{{ object.type }}</td>
+  </tr>
+
+  <tr>
+    <th>标准分值</th>
+    <td>{{ object.score }}</td>
+    <th>工作项目</th>
+    <td>{{ object.work_content }}</td>
+  </tr>
+
+  <tr>
+    <th>周期描述</th>
+    <td>{{ object.weekend_desc }}</td>
+    <th>提前提醒时间</th>
+    <td>{{ object.warinig_time }}</td>
+  </tr>
+
+  <tr>
+    <th>状态</th>
+    <td>{{ object.state }}</td>
+    <th>超期一级预警</th>
+    <td>{{ object.overdue_1 }}</td>
+  </tr>
+
+  <tr>
+    <th>超期二级预警</th>
+    <td>{{ object.overdue_2 }}</td>
+    <th>超期三级预警</th>
+    <td>{{ object.overdue_3 }}</td>
+  </tr>
+
+  <tr>
+    <th>业务来源</th>
+    <td>{{ object.resource }}</td>
+    <th>开始时间</th>
+    <td>{{ object.start_time }}</td>
+  </tr>
+
+  <tr>
+    <th>结束时间</th>
+    <td>{{ object.end_time }}</td>
+    <th>是否激活</th>
+    <td>{{ object.is_activate }}</td>
+  </tr>
+
+  <tr>
+    <th>标准编码</th>
+    <td>{{ object.stard }}</td>
+    <th>标准号</th>
+    <td>{{ object.stard_smallnumber }}</td>
+  </tr>
+
+  {% comment %}
+  <tr>
+    <th>Reason</th>
+    <td colspan="3">
+      {{ object.reason|linebreaks }}
+    </td>
+  </tr>
+  {% endcomment %}
+</table>
